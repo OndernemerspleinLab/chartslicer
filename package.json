@@ -10,6 +10,7 @@
     "immutable-js": "^0.3.1-6",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
+    "recompose": "^0.23.1",
     "victory": "^0.18.4"
   },
   "devDependencies": {
