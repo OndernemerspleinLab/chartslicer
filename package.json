@@ -6,11 +6,16 @@
     "axios": "^0.16.1",
     "date-fns": "^1.28.4",
     "glamor": "^2.20.24",
+    "glamor-reset": "^3.0.0-1",
     "glamorous": "^3.12.1",
+    "got": "^6.7.1",
     "immutable-js": "^0.3.1-6",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
+    "react-redux": "^5.0.4",
     "recompose": "^0.23.1",
+    "redux": "^3.6.0",
+    "redux-thunk": "^2.2.0",
     "victory": "^0.18.4"
   },
   "devDependencies": {

@@ -1,12 +1,5 @@
 import React from 'react'
-import { TableIdInput } from './TableIdInput'
-import { stateEnhancer } from './state'
+import { GraphPicker } from './GraphPicker'
+import 'glamor-reset'
 
-const AppComponent = ({ tableId, onTableIdChange }) => (
-  <div>
-    <TableIdInput tableId={tableId} setTableId={onTableIdChange} />
-    <p>{tableId}</p>
-  </div>
-)
-
-export const App = stateEnhancer(AppComponent)
+export const App = () => <div><GraphPicker /></div>
