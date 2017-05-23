@@ -4,9 +4,12 @@ export const counterResetStyle = {
   counterReset: counterName,
 }
 
-export const counterStyle = {
-  ':before': {
-    content: `counter(${counterName})`,
-    counterIncrement: counterName,
-  },
-}
+export const getCounterStyle = (...styles) => ({
+  ':before': Object.assign(
+    {
+      content: `counter(${counterName})`,
+      counterIncrement: counterName,
+    },
+    ...styles
+  ),
+})

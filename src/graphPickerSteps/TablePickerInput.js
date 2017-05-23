@@ -1,33 +1,52 @@
-import { pure } from 'recompose'
+import { pure, compose, withHandlers, withState } from 'recompose'
 import React from 'react'
+import { Label, Input } from './Elements'
+import { Submit } from '../CallToAction'
+import { Media, MediaText, MediaFigure } from '../Media'
+import { marginBottomHalfStyle } from '../marginStyle'
+import { afterPaste } from '../domHelpers'
+import { borderRadiusOnlyLeft } from '../styles'
+import { connectActions } from '../store'
 
-const listenOn = (eventName, callback, options) => target => {
-  target.addEventListener(eventName, callback, options)
-
-  return () => {
-    target.removeEventListener(eventName, callback, options)
-  }
-}
-const listenOnce = (eventName, callback, options) => target => {
-  const off = listenOn(eventName, event => (off(), callback(event)), options)(
-    target
+const enhancer = compose(
+  pure,
+  connectActions,
+  withState('value', 'updateValue', ''),
+  withHandlers({
+    onChange: ({ updateValue }) => event =>
+      updateValue(event.currentTarget.value),
+    onSubmit: ({ tableSelectionChanged, value }) => event => {
+      event.preventDefault()
+      tableSelectionChanged(value)
+    },
+    onPaste: ({ tableSelectionChanged }) =>
+      afterPaste(event => {
+        tableSelectionChanged(event.currentTarget.value)
+      }),
+  })
+)
+export const TablePickerInput = enhancer(
+  ({ onChange, onSubmit, onPaste, tableUrl, updateValue }) => (
+    <form onSubmit={onSubmit}>
+      <Label htmlFor="tableIdInput" css={marginBottomHalfStyle}>
+        Tabel URL of ID
+      </Label>
+      <Media>
+        <MediaText>
+          <Input
+            type="text"
+            value={tableUrl}
+            id="tableIdInput"
+            css={borderRadiusOnlyLeft}
+            onPaste={onPaste}
+            onChange={onChange}
+            placeholder="bijv. ‘https://opendata.cbs.nl/#/CBS/nl/dataset/82439NED/line?graphtype=Line’ of ‘81573NED’"
+          />
+        </MediaText>
+        <MediaFigure>
+          <Submit>{'Kies'}</Submit>
+        </MediaFigure>
+      </Media>
+    </form>
   )
-
-  return off
-}
-
-export const TablePickerInput = pure(({ tableUrl, onTableFieldChange }) => (
-  <p>
-    <label htmlFor="tableIdInput">Tabel URL of ID</label>
-    <input
-      type="text"
-      value={tableUrl}
-      onPaste={event =>
-        listenOnce('input', event =>
-          console.log('onPaster', event.currentTarget.value)
-        )(event.currentTarget)}
-      id="tableIdInput"
-      placeholder="bijv. ‘https://opendata.cbs.nl/#/CBS/nl/dataset/82439NED/line?graphtype=Line’ of ‘81573NED’"
-    />
-  </p>
-))
+)

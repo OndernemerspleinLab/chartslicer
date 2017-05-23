@@ -1,0 +1,1 @@
+export const TABLE_ID_SELECTING = 'TABLE_ID_SELECTING'
