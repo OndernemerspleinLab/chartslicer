@@ -14,6 +14,7 @@
     "recompose": "^0.23.1",
     "redux": "^3.6.0",
     "redux-thunk": "^2.2.0",
+    "url-polyfill": "^1.0.5",
     "victory": "^0.18.4",
     "whatwg-fetch": "^2.0.3"
   },
