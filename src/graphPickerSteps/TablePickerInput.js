@@ -29,7 +29,7 @@ export const TablePickerInput = enhancer(
   ({ onChange, onSubmit, onPaste, tableUrl, updateValue }) => (
     <form onSubmit={onSubmit}>
       <Label htmlFor="tableIdInput" css={marginBottomHalfStyle}>
-        Tabel URL of ID
+        Dataset URL of ID
       </Label>
       <Media>
         <MediaText>
