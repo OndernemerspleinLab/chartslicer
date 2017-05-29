@@ -1,4 +1,4 @@
-import { update } from 'lodash/fp'
+import { update } from '../getset'
 
 export const composeReducers = (...reducers) =>
   reducers.length === 0

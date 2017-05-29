@@ -7,7 +7,7 @@ import {
 } from './actions'
 import { cbsIdExtractor } from './cbsIdExtractor'
 import { fetchJson } from './fetchLatest'
-import { get, assign } from 'lodash/fp'
+import { get, getIn, merge } from './getset'
 
 const plucker = source => (memo, propName) => {
   memo[propName] = source[propName]
@@ -33,7 +33,7 @@ export const tableIdSelectingFailed = createSimpleAction(
 )
 
 const fetchTableInfo = id =>
-  fetchJson(getTableInfoUrl(id)).then(get(['value', 0]))
+  fetchJson(getTableInfoUrl(id)).then(getIn(['value', 0]))
 
 const fetchDataProperties = id =>
   fetchJson(getDataPropertiesUrl(id))
@@ -53,8 +53,8 @@ export const tableSelectionChanged = input => dispatch => {
   }
   dispatch(tableIdSelecting(maybeExtracted))
   fetchTableData(maybeExtracted)
-    .then(data => dispatch(tableIdSelected(assign(maybeExtracted)(data))))
+    .then(data => dispatch(tableIdSelected(merge(data)(maybeExtracted))))
     .catch(error =>
-      dispatch(tableIdSelectingFailed(assign(maybeExtracted)({ error })))
+      dispatch(tableIdSelectingFailed(merge({ error })(maybeExtracted)))
     )
 }
