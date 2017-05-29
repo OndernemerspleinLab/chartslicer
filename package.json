@@ -2,6 +2,7 @@
   "name": "chartslicer",
   "version": "0.1.0",
   "private": true,
+  "homepage": "http://ondernemerspleinlab.github.io/chartslicer",
   "dependencies": {
     "date-fns": "^1.28.4",
     "gh-pages": "^1.0.0",
