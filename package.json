@@ -1,9 +1,10 @@
 {
-  "name": "cbs-statline-tridion-custompage",
+  "name": "chartslicer",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
     "date-fns": "^1.28.4",
+    "gh-pages": "^1.0.0",
     "glamor": "^2.20.24",
     "glamor-reset": "^3.0.0-1",
     "glamorous": "^3.12.1",
@@ -29,6 +30,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "predeploy": "yarn run build",
+    "deploy": "gh-pages -d build"
   }
 }
