@@ -1,11 +1,9 @@
-import { assign } from '../helpers'
+import { merge } from '../getset'
 
-export const assignLoading = (state = {}) =>
-  assign(state, { loading: true, error: null })
-export const assignLoadSuccess = (state = {}) =>
-  assign(state, { loading: false, error: null })
+export const assignLoading = merge({ loading: true, error: null })
+export const assignLoadSuccess = merge({ loading: false, error: null })
 export const assignLoadError = ({ error = true }) =>
-  assign({ loading: true, error })
+  merge({ loading: true, error })
 
 export const loadingHor = reducer => (state = {}, action) =>
   reducer(assignLoading(state), action)
