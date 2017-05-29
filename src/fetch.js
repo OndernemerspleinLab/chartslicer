@@ -21,7 +21,17 @@ const addJsonHeaders = (options = {}) =>
     }),
   })
 
+const addTextHeaders = (options = {}) =>
+  Object.assign({}, options, {
+    headers: Object.assign({}, options.headers, {
+      Accept: 'text/plain',
+    }),
+  })
+
 export const httpFetch = (url, options) => fetch(url, options).then(checkStatus)
 
 export const fetchJson = (url, options) =>
   httpFetch(url, addJsonHeaders(options)).then(response => response.json())
+
+export const fetchText = (url, options) =>
+  httpFetch(url, addTextHeaders(options)).then(response => response.text())

@@ -1,4 +1,9 @@
-import { getTableInfoUrl, getDataPropertiesUrl } from './config'
+import {
+  getTableInfoUrl,
+  getDataPropertiesUrl,
+  getDatasetCountUrl,
+  getFilteredDatasetUrl,
+} from './config'
 import { groupBy } from 'lodash/fp'
 import {
   TABLE_ID_SELECTING,
@@ -6,7 +11,7 @@ import {
   TABLE_ID_SELECTING_FAILED,
 } from './actions'
 import { cbsIdExtractor } from './cbsIdExtractor'
-import { fetchJson } from './fetchLatest'
+import { fetchJson, fetchText } from './fetch'
 import { get, getIn, merge } from './getset'
 
 const plucker = source => (memo, propName) => {
@@ -23,7 +28,8 @@ export const tableIdSelected = createSimpleAction(
   'id',
   'url',
   'dataProperties',
-  'tableInfo'
+  'tableInfo',
+  'dataset'
 )
 
 export const tableIdSelectingFailed = createSimpleAction(
@@ -40,11 +46,23 @@ const fetchDataProperties = id =>
     .then(get('value'))
     .then(groupBy(({ Type }) => Type))
 
+const fetchDataset = id =>
+  fetchText(getDatasetCountUrl(id))
+    .then(Number)
+    .then(r => (window.r = r))
+    .then(datasetSize => fetchJson(getFilteredDatasetUrl({ id, datasetSize })))
+    .then(get('value'))
+
 const fetchTableData = ({ id }) =>
   Promise.all([
     fetchTableInfo(id),
     fetchDataProperties(id),
-  ]).then(([tableInfo, dataProperties]) => ({ tableInfo, dataProperties }))
+    fetchDataset(id),
+  ]).then(([tableInfo, dataProperties, dataset]) => ({
+    tableInfo,
+    dataProperties,
+    dataset,
+  }))
 export const tableSelectionChanged = input => dispatch => {
   const maybeExtracted = cbsIdExtractor(input)
 

@@ -17,8 +17,10 @@ const selectingReducer = compose(
   reduceFor(TABLE_ID_SELECTING)
 )(tableIdReducer)
 
-const tableInfoReducer = (state = {}, { id, url, dataProperties, tableInfo }) =>
-  update(id, merge({ url, dataProperties, tableInfo }))(state)
+const tableInfoReducer = (
+  state = {},
+  { id, url, dataProperties, tableInfo, dataset }
+) => update(id, merge({ url, dataProperties, tableInfo, dataset }))(state)
 
 const selectedReducer = compose(
   tableInfoReducerSelector,

@@ -1,2 +1,3 @@
-export const assign = (...sources) => (object = {}) =>
-  Object.assign({}, object, ...sources)
+export const minimal = minimum => number => Math.max(minimum, number)
+
+export const minimalZero = minimal(0)

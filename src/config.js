@@ -1,3 +1,9 @@
+import { minimalZero } from './helpers'
+export const dataSetMaxSize = 9999
+
+export const getDatasetFilter = datasetSize =>
+  `$top=${dataSetMaxSize}&$skip=${minimalZero(datasetSize - dataSetMaxSize)}`
+
 export const apiOrigin = `https://opendata.cbs.nl`
 
 export const apiBaseUrl = `${apiOrigin}/ODataApi/odata`
@@ -5,9 +11,12 @@ export const feedBaseUrl = `${apiOrigin}/ODataFeed/odata`
 
 export const getTableInfoUrl = id => `${apiBaseUrl}/${id}/TableInfos`
 
-export const getDataSetUrl = id => `${feedBaseUrl}/${id}/TypedDataSet`
+export const getDatasetUrl = id => `${feedBaseUrl}/${id}/TypedDataSet`
 
-export const getDataSetCountUrl = id => `${apiBaseUrl}/${id}/$count`
+export const getFilteredDatasetUrl = ({ datasetSize, id }) =>
+  `${getDatasetUrl(id)}?${getDatasetFilter(datasetSize)}`
+
+export const getDatasetCountUrl = id => `${getDatasetUrl(id)}/$count`
 
 export const getDataPropertiesUrl = id => `${apiBaseUrl}/${id}/DataProperties`
 
