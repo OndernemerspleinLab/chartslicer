@@ -1,7 +1,6 @@
 import React from 'react'
 import { StepTitle, Step } from './Elements'
 import { TablePickerInput } from './TablePickerInput'
-import { TablePickerResult } from './TablePickerResult'
 
 const urlExplanationText =
   'bijvoorbeeld ‘https://opendata.cbs.nl/#/CBS/nl/dataset/82439NED/line?graphtype=Line’'
@@ -20,6 +19,5 @@ export const TablePicker = () => (
       van de dataset hier
     </StepTitle>
     <TablePickerInput />
-    <TablePickerResult />
   </Step>
 )

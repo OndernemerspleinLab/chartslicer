@@ -12,6 +12,17 @@ const commonStepStyle = css({
   padding: '0.5rem 1rem 1rem 3.2rem',
   position: 'relative',
 })
+const commonStepIconStyle = css(square(counterSize), {
+  display: 'block',
+  position: 'absolute',
+  left: '0.9rem',
+  top: '0.7rem',
+  textAlign: 'center',
+  fontSize: '0.9rem',
+  fontWeight: 'bold',
+  lineHeight: counterSize,
+  borderRadius: '999px',
+})
 
 export const Step = glamorous.section(
   commonStepStyle,
@@ -19,16 +30,7 @@ export const Step = glamorous.section(
     backgroundColor: violet.lightest,
     color: violet.default,
   },
-  getCounterStyle(square(counterSize), {
-    display: 'block',
-    position: 'absolute',
-    left: '0.9rem',
-    top: '0.7rem',
-    textAlign: 'center',
-    fontSize: '0.9rem',
-    fontWeight: 'bold',
-    lineHeight: counterSize,
-    borderRadius: '999px',
+  getCounterStyle(commonStepIconStyle, {
     color: wit,
     backgroundColor: violet.default,
   })
@@ -42,24 +44,35 @@ export const StepTitle = glamorous.h2(
   marginBottomStyle
 )
 
+export const Paragraph = glamorous.p({
+  margin: 0,
+})
+
 export const Message = glamorous.section(commonStepStyle, {
-  ':before': css(
-    {
-      content: '',
-      top: 0,
-      bottom: 0,
-      left: 0,
-      backgroundColor: violet.default,
-      color: wit,
-      width: '2.2rem',
-    },
-    ({ error }) =>
-      error
-        ? {
-            backgroundImage: `repeating-linear-gradient(-45deg, ${violet.lightest}, ${violet.lightest} 20px, transparent 20px, transparent 40px)`,
-          }
-        : {}
-  ),
+  backgroundColor: violet.default,
+  color: wit,
+  ':before': css(commonStepIconStyle, {
+    content: '"✔"',
+    color: violet.default,
+    backgroundColor: wit,
+  }),
+})
+
+const stripeWidth = 6
+
+export const ErrorMessage = glamorous.section(commonStepStyle, {
+  backgroundColor: violet.default,
+  color: wit,
+  ':before': css({
+    content: '""',
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    backgroundColor: violet.lightest,
+    width: '2.5rem',
+    backgroundImage: `repeating-linear-gradient(-45deg, ${violet.lightest}, ${violet.lightest} ${stripeWidth}px, ${violet.default} ${stripeWidth}px, ${violet.default} ${stripeWidth * 2 + 1}px)`,
+  }),
 })
 
 export const Label = glamorous.label({
