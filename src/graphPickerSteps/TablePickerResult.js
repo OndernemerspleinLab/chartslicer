@@ -1,5 +1,4 @@
 import React from 'react'
-import glamorous from 'glamorous'
 import { get } from '../getset'
 import {
   compose,

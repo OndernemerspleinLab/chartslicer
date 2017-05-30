@@ -1,8 +1,8 @@
 import { DATASET_LOAD_SUCCESS } from '../actions'
 import { reduceFor, reduceIn, defaultState } from './reducerHelpers'
 import { compose } from 'redux'
-import { last, mapValues } from 'lodash/fp'
-import { update, merge, set, get, getIn } from '../getset'
+import { mapValues } from 'lodash/fp'
+import { update, merge, get, getIn } from '../getset'
 import { connect } from 'react-redux'
 
 const datasetsReducerSelector = compose(reduceIn('datasets'), defaultState({}))
