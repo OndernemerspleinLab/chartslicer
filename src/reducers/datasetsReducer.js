@@ -1,16 +1,29 @@
 import { DATASET_LOAD_SUCCESS } from '../actions'
 import { reduceFor, reduceIn, defaultState } from './reducerHelpers'
 import { compose } from 'redux'
-import { mapValues } from 'lodash/fp'
+import { mapValues, groupBy } from 'lodash/fp'
 import { update, merge, get, getIn } from '../getset'
 import { connect } from 'react-redux'
+import { getCbsPeriodType } from '../cbsPeriod'
 
 const datasetsReducerSelector = compose(reduceIn('datasets'), defaultState({}))
+
+const groupByPeriodType = groupBy(({ Perioden }) => getCbsPeriodType(Perioden))
 
 const datasetsReducer = (
   state = {},
   { id, url, dataProperties, tableInfo, dataset }
-) => update(id, merge({ id, url, dataProperties, tableInfo, dataset }))(state)
+) =>
+  update(
+    id,
+    merge({
+      id,
+      url,
+      dataProperties,
+      tableInfo,
+      data: groupByPeriodType(dataset),
+    })
+  )(state)
 
 export const reduceDatasets = compose(
   datasetsReducerSelector,
@@ -19,9 +32,19 @@ export const reduceDatasets = compose(
 
 const getValue = dataset => keyPath => getIn(keyPath)(dataset)
 
-export const connectActiveDataset = keyPathMap =>
-  connect(({ activeDatasetId, datasets }) => {
-    const activeDataset = get(activeDatasetId)(datasets)
+const getFromActiveDataset = keyPathMap => ({ activeDatasetId, datasets }) => {
+  const activeDataset = get(activeDatasetId)(datasets) || {}
 
-    return mapValues(getValue(activeDataset))(keyPathMap)
-  })
+  return mapValues(getValue(activeDataset))(keyPathMap)
+}
+
+export const connectPeriodTypes = connect(state => {
+  const { data = {} } = getFromActiveDataset({ data: ['data'] })(state)
+
+  return {
+    periodTypes: Object.keys(data),
+  }
+})
+
+export const connectActiveDataset = keyPathMap =>
+  connect(getFromActiveDataset(keyPathMap))

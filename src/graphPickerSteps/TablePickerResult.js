@@ -1,35 +1,40 @@
 import React from 'react'
 import { get } from '../getset'
-import {
-  compose,
-  pure,
-  branch,
-  renderComponent,
-  renderNothing,
-} from 'recompose'
+import { compose, branch, renderComponent } from 'recompose'
 import { existing } from '../helpers'
 import {
   connectActiveDatasetsNetworkState,
 } from '../reducers/networkStateReducer'
 import { connectActiveDataset } from '../reducers/datasetsReducer'
-import { Message, ErrorMessage, StepTitle, Paragraph } from './Elements'
+import {
+  Message,
+  ErrorMessage,
+  StepTitle,
+  Paragraph,
+  InlineTerm,
+} from './Elements'
+import { onlyWhenLoaded } from '../higherOrderComponents'
 
 const connectData = compose(
-  connectActiveDatasetsNetworkState('error', 'loaded'),
+  connectActiveDatasetsNetworkState('error'),
   connectActiveDataset({ title: ['tableInfo', 'ShortTitle'], id: ['id'] })
 )
 
 const TablePickerResultContainer = ({ title, id }) => (
   <Message>
     <StepTitle>{title}</StepTitle>
-    <Paragraph>Dataset ID: <code>{id}</code></Paragraph>
+    <Paragraph>
+      <InlineTerm>Dataset ID:</InlineTerm> <code>{id}</code>
+    </Paragraph>
   </Message>
 )
 
 const ResultError = ({ error }) => (
   <ErrorMessage>
-    <StepTitle>Het ophalen van de dataset is mislukt</StepTitle>
-    <Paragraph>Foutmelding: <code>{get('message')(error)}</code></Paragraph>
+    <StepTitle>Het ophalen van de dataset is niet gelukt</StepTitle>
+    <Paragraph>
+      <InlineTerm>Foutmelding:</InlineTerm> <code>{get('message')(error)}</code>
+    </Paragraph>
   </ErrorMessage>
 )
 
@@ -38,8 +43,6 @@ const errorHoc = branch(
   renderComponent(ResultError)
 )
 
-const nothingHoc = branch(({ loaded }) => !loaded, renderNothing)
-
-const enhancer = compose(connectData, pure, errorHoc, nothingHoc)
+const enhancer = compose(connectData, errorHoc, onlyWhenLoaded)
 
 export const TablePickerResult = enhancer(TablePickerResultContainer)

@@ -1,5 +1,5 @@
 import { minimalZero } from './helpers'
-export const dataSetMaxSize = 9999
+export const dataSetMaxSize = 2000
 
 export const getDatasetFilter = datasetSize =>
   `$top=${dataSetMaxSize}&$skip=${minimalZero(datasetSize - dataSetMaxSize)}`

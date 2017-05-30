@@ -1,4 +1,4 @@
-import { pure, compose, withHandlers, withState } from 'recompose'
+import { compose, withHandlers, withState } from 'recompose'
 import React from 'react'
 import { Label, Input } from './Elements'
 import { Submit } from '../CallToAction'
@@ -13,7 +13,6 @@ import {
 } from '../reducers/networkStateReducer'
 
 const enhancer = compose(
-  pure,
   connectActions,
   connectDatasetsNetworkState,
   connectActiveDatasetsNetworkState('loading'),
@@ -39,7 +38,7 @@ const enhancer = compose(
   })
 )
 export const TablePickerInput = enhancer(
-  ({ onChange, onSubmit, onPaste, tableUrl, updateValue, loading }) => (
+  ({ onChange, onSubmit, onPaste, updateValue, loading }) => (
     <form onSubmit={onSubmit}>
       <Label htmlFor="tableIdInput" css={marginBottomHalfStyle}>
         Dataset URL of ID
@@ -48,7 +47,6 @@ export const TablePickerInput = enhancer(
         <MediaText>
           <Input
             type="text"
-            value={tableUrl}
             id="tableIdInput"
             css={borderRadiusOnlyLeft}
             onPaste={onPaste}

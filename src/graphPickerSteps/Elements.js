@@ -1,15 +1,27 @@
+import React from 'react'
 import glamorous from 'glamorous'
 import { getCounterStyle } from './counterStyle'
 import { violet, wit } from '../colors'
 import { square } from '../styleHelpers'
 import { resetMarginStyle, marginBottomStyle } from '../marginStyle'
 import { css } from 'glamor'
+import { withProps } from 'recompose'
+
+const hiddenStyle = {
+  position: 'absolute',
+  left: '-999em',
+  top: '0',
+  height: '1px',
+  overflow: 'hidden',
+}
+
+export const Hidden = glamorous.span(hiddenStyle)
 
 const counterSize = '1.6em'
 
 const commonStepStyle = css({
   marginBottom: '2px',
-  padding: '0.5rem 1rem 1rem 3.2rem',
+  padding: '0.7rem 1rem 1rem 3.2rem',
   position: 'relative',
 })
 const commonStepIconStyle = css(square(counterSize), {
@@ -39,6 +51,7 @@ export const Step = glamorous.section(
 export const StepTitle = glamorous.h2(
   {
     lineHeight: 1.15,
+    fontSize: '1.3rem',
   },
   resetMarginStyle,
   marginBottomStyle
@@ -48,40 +61,68 @@ export const Paragraph = glamorous.p({
   margin: 0,
 })
 
-export const Message = glamorous.section(commonStepStyle, {
-  backgroundColor: violet.default,
-  color: wit,
-  ':before': css(commonStepIconStyle, {
-    content: '"✔"',
-    color: violet.default,
-    backgroundColor: wit,
-  }),
+const arrowThickness = 8
+
+const arrowUpStyle = css({
+  ':after': {
+    content: '""',
+    border: `${arrowThickness}px solid transparent`,
+    borderBottomColor: violet.default,
+    position: 'absolute',
+    left: '50%',
+    marginLeft: -arrowThickness,
+    bottom: '100%',
+  },
 })
+export const Message = glamorous.section(
+  commonStepStyle,
+  {
+    backgroundColor: violet.default,
+    color: wit,
+    ':before': css(commonStepIconStyle, {
+      content: '"✔"',
+      color: violet.default,
+      backgroundColor: wit,
+    }),
+  },
+  arrowUpStyle
+)
 
 const stripeWidth = 6
 
-export const ErrorMessage = glamorous.section(commonStepStyle, {
-  backgroundColor: violet.default,
-  color: wit,
-  ':before': css({
-    content: '""',
-    position: 'absolute',
-    top: 0,
-    bottom: 0,
-    left: 0,
-    backgroundColor: violet.lightest,
-    width: '2.5rem',
-    backgroundImage: `repeating-linear-gradient(-45deg, ${violet.lightest}, ${violet.lightest} ${stripeWidth}px, ${violet.default} ${stripeWidth}px, ${violet.default} ${stripeWidth * 2 + 1}px)`,
-  }),
-})
+export const ErrorMessage = glamorous.section(
+  commonStepStyle,
+  {
+    backgroundColor: violet.default,
+    color: wit,
+    ':before': css({
+      content: '""',
+      position: 'absolute',
+      top: 0,
+      bottom: 0,
+      left: 0,
+      backgroundColor: violet.lightest,
+      width: '2.5rem',
+      backgroundImage: `repeating-linear-gradient(-45deg, ${violet.lightest}, ${violet.lightest} ${stripeWidth}px, ${violet.default} ${stripeWidth}px, ${violet.default} ${stripeWidth * 2 + 1}px)`,
+    }),
+  },
+  arrowUpStyle
+)
 
-export const Label = glamorous.label({
-  display: 'block',
+const labelStyle = css({
   fontWeight: 'bold',
-  // textTransform: 'uppercase',
   lineHeight: 1.15,
   fontSize: '0.8rem',
 })
+
+export const Label = glamorous.label(
+  {
+    display: 'block',
+  },
+  labelStyle
+)
+
+export const InlineTerm = glamorous.span(labelStyle)
 
 export const Input = glamorous.input({
   display: 'block',
@@ -95,10 +136,42 @@ export const Input = glamorous.input({
   },
 })
 
-export const Hidden = glamorous.span({
-  position: 'absolute',
-  left: '-999em',
-  top: '0',
-  height: '1px',
-  overflow: 'hidden',
+const RadioComp = glamorous.span({
+  display: 'inline-block',
+  margin: '0.5rem 0.3rem 0 0',
 })
+const RadioInput = withProps({ type: 'radio' })(
+  glamorous.input(
+    {
+      '&:checked + label:before': {
+        backgroundColor: wit,
+      },
+    },
+    hiddenStyle
+  )
+)
+const RadioLabel = glamorous.label({
+  color: wit,
+  backgroundColor: violet.default,
+  lineHeight: 1.2,
+  display: 'inline-block',
+  borderRadius: '2px',
+  padding: '0.2em 0.6em 0.2em 1.4em',
+  position: 'relative',
+  ':before': {
+    content: '""',
+    left: '0.55em',
+    top: '0.55em',
+    position: 'absolute',
+    ...square('0.4em'),
+    borderRadius: '9999px',
+    boxShadow: `0 0 0 2px ${violet.default}, 0 0 0 3px ${wit}`,
+  },
+})
+
+export const Radio = ({ children, id, value = id, name = id }) => (
+  <RadioComp>
+    <RadioInput id={id} name={name} value={value} />
+    <RadioLabel htmlFor={id}>{children}</RadioLabel>
+  </RadioComp>
+)
