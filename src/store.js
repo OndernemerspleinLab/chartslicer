@@ -19,6 +19,7 @@ import {
   reduceInvalidActiveId,
 } from './reducers/activeDatasetReducer'
 import { reduceDatasets } from './reducers/datasetsReducer'
+import { reduceConfig } from './reducers/configReducer'
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 
@@ -35,7 +36,8 @@ export const addReducers = () => {
     reduceInvalidId,
     reduceActiveDataset,
     reduceDatasets,
-    reduceInvalidActiveId
+    reduceInvalidActiveId,
+    reduceConfig
   )
 }
 

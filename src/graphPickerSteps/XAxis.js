@@ -2,26 +2,35 @@ import React from 'react'
 import { Step, StepTitle, Label, Radio } from './Elements'
 import { connectPeriodTypes } from '../reducers/datasetsReducer'
 import glamorous from 'glamorous'
-import { onlyWhenLoaded } from '../higherOrderComponents'
+import { onlyWhenLoaded, connectConfigChange } from '../higherOrderComponents'
 
-const PeriodTypePickerComp = glamorous.form()
+const PeriodTypePickerForm = glamorous.form()
 
-const renderPeriodTypeRadio = periodType => (
+const PeriodTypeRadioComp = ({ periodType, onChange, name, value }) => (
   <Radio
-    key={periodType}
     id={`xAxis-${periodType}`}
-    name="xAxisPeriodType"
+    name={name}
     value={periodType}
+    onChange={onChange}
+    checked={value === periodType}
   >
     {periodType}
   </Radio>
 )
 
+const PeriodTypeRadio = connectConfigChange(PeriodTypeRadioComp)
+
 const PeriodTypePickerContainer = ({ periodTypes }) => (
-  <PeriodTypePickerComp>
+  <PeriodTypePickerForm>
     <Label>Toon periode per</Label>
-    {periodTypes.map(renderPeriodTypeRadio)}
-  </PeriodTypePickerComp>
+    {periodTypes.map(periodType => (
+      <PeriodTypeRadio
+        key={periodType}
+        name="periodType"
+        periodType={periodType}
+      />
+    ))}
+  </PeriodTypePickerForm>
 )
 
 const PeriodTypePicker = connectPeriodTypes(PeriodTypePickerContainer)

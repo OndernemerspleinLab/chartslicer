@@ -169,9 +169,22 @@ const RadioLabel = glamorous.label({
   },
 })
 
-export const Radio = ({ children, id, value = id, name = id }) => (
+export const Radio = ({
+  children,
+  id,
+  value = id,
+  name = id,
+  onChange,
+  checked,
+}) => (
   <RadioComp>
-    <RadioInput id={id} name={name} value={value} />
+    <RadioInput
+      id={id}
+      name={name}
+      value={value}
+      onChange={onChange}
+      checked={checked}
+    />
     <RadioLabel htmlFor={id}>{children}</RadioLabel>
   </RadioComp>
 )

@@ -10,6 +10,7 @@ import {
   DATASET_LOAD_SUCCESS,
   DATASET_LOAD_ERROR,
   INVALID_DATASET_ID_SELECTED,
+  CONFIG_CHANGED,
 } from './actions'
 import { cbsIdExtractor } from './cbsIdExtractor'
 import { fetchJson, fetchText } from './fetch'
@@ -22,6 +23,13 @@ const plucker = source => (memo, propName) => {
 }
 const createSimpleAction = (type, ...propNames) => props =>
   Object.assign({ type }, propNames.reduce(plucker(props), {}))
+
+export const configChanged = createSimpleAction(
+  CONFIG_CHANGED,
+  'id',
+  'name',
+  'value'
+)
 
 export const datasetIdSelected = createSimpleAction(
   DATASET_ID_SELECTED,
