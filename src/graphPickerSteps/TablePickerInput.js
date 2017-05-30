@@ -7,12 +7,16 @@ import { marginBottomHalfStyle } from '../marginStyle'
 import { afterPaste } from '../domHelpers'
 import { borderRadiusOnlyLeft } from '../styles'
 import { connectActions } from '../store'
-import { connectDatasetsNetworkState } from '../reducers/networkStateReducer'
+import {
+  connectDatasetsNetworkState,
+  connectActiveDatasetsNetworkState,
+} from '../reducers/networkStateReducer'
 
 const enhancer = compose(
   pure,
   connectActions,
   connectDatasetsNetworkState,
+  connectActiveDatasetsNetworkState('loading'),
   withState('value', 'updateValue', ''),
   withHandlers({
     onChange: ({ updateValue }) => event =>
@@ -35,7 +39,7 @@ const enhancer = compose(
   })
 )
 export const TablePickerInput = enhancer(
-  ({ onChange, onSubmit, onPaste, tableUrl, updateValue }) => (
+  ({ onChange, onSubmit, onPaste, tableUrl, updateValue, loading }) => (
     <form onSubmit={onSubmit}>
       <Label htmlFor="tableIdInput" css={marginBottomHalfStyle}>
         Dataset URL of ID
@@ -52,7 +56,7 @@ export const TablePickerInput = enhancer(
           />
         </MediaText>
         <MediaFigure>
-          <Submit>{'Kies'}</Submit>
+          <Submit loading={loading}>{'Kies'}</Submit>
         </MediaFigure>
       </Media>
     </form>

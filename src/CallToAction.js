@@ -8,6 +8,15 @@ import { square } from './styleHelpers'
 import { Hidden } from './graphPickerSteps/Elements'
 import { borderRadius, borderRadiusOnlyRight } from './styles'
 
+const rotateKeyframes = css.keyframes({
+  from: {
+    transform: 'rotateX(0deg)',
+  },
+  to: {
+    transform: 'rotateX(180deg)',
+  },
+})
+
 const callToActionStyle = css(
   {
     border: 'none',
@@ -23,35 +32,63 @@ const callToActionStyle = css(
   borderRadius
 )
 
-const CallToActionIcon = glamorous(ChevronRight)(square('1.2em'), {
-  marginRight: '-0.3em',
-})
+const CallToActionIcon = glamorous(ChevronRight, {
+  displayName: 'CallToActionIcon',
+})(
+  square('1.2em'),
+  {
+    marginRight: '-0.3em',
+  },
+  ({ loading }) =>
+    loading
+      ? {
+          animationName: rotateKeyframes,
+          animationDuration: '600ms',
+          animationIterationCount: 'infinite',
+        }
+      : null
+)
 
 const CallToActionInner = props => (
   <InlineMedia {...props}>
     <MediaText>{props.children}</MediaText>
-    <MediaFigure><CallToActionIcon /></MediaFigure>
+    <MediaFigure><CallToActionIcon loading={props.loading} /></MediaFigure>
   </InlineMedia>
 )
+const CallToActionButton = glamorous.button({})
+const CallToActionLinkComp = glamorous.a({})
 
-export const CallToAction = glamorous(props => (
-  <button {...props}>
-    <CallToActionInner>{props.children}</CallToActionInner>
-  </button>
-))(callToActionStyle)
+export const CallToAction = glamorous(
+  props => (
+    <CallToActionButton {...props}>
+      <CallToActionInner loading={props.loading}>
+        {props.children}
+      </CallToActionInner>
+    </CallToActionButton>
+  ),
+  { displayName: 'CallToAction' }
+)(callToActionStyle)
 
-export const CallToActionLink = glamorous(props => (
-  <a {...props} className={callToActionStyle}>
-    <CallToActionInner>{props.children}</CallToActionInner>
-  </a>
-))(callToActionStyle)
+export const CallToActionLink = glamorous(
+  props => (
+    <CallToActionLinkComp {...props}>
+      <CallToActionInner loading={props.loading}>
+        {props.children}
+      </CallToActionInner>
+    </CallToActionLinkComp>
+  ),
+  { displayName: 'CallToActionLink' }
+)(callToActionStyle)
 
-export const Submit = glamorous(props => (
-  <button type="submit" {...props}>
-    <Hidden>{props.children}</Hidden>
-    <CallToActionIcon />
-  </button>
-))(callToActionStyle, borderRadiusOnlyRight, {
+export const Submit = glamorous(
+  props => (
+    <CallToActionButton type="submit" {...props}>
+      <Hidden>{props.children}</Hidden>
+      <CallToActionIcon loading={props.loading} />
+    </CallToActionButton>
+  ),
+  { displayName: 'Submit' }
+)(callToActionStyle, borderRadiusOnlyRight, {
   paddingLeft: '0.3em',
   paddingRight: '0.6em',
 })

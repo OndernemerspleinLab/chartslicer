@@ -1,3 +1,4 @@
+import { css } from 'glamor'
 const counterName = 'graphPicker'
 
 export const counterResetStyle = {
@@ -5,7 +6,7 @@ export const counterResetStyle = {
 }
 
 export const getCounterStyle = (...styles) => ({
-  ':before': Object.assign(
+  ':before': css(
     {
       content: `counter(${counterName})`,
       counterIncrement: counterName,

@@ -9,6 +9,7 @@ import {
   DATASET_ID_SELECTED,
   DATASET_LOAD_SUCCESS,
   DATASET_LOAD_ERROR,
+  INVALID_DATASET_ID_SELECTED,
 } from './actions'
 import { cbsIdExtractor } from './cbsIdExtractor'
 import { fetchJson, fetchText } from './fetch'
@@ -26,6 +27,11 @@ export const datasetIdSelected = createSimpleAction(
   DATASET_ID_SELECTED,
   'id',
   'loaded'
+)
+
+export const invalidDatasetIdSelected = createSimpleAction(
+  INVALID_DATASET_ID_SELECTED,
+  'input'
 )
 
 export const datasetLoadSuccess = createSimpleAction(
@@ -75,6 +81,7 @@ export const tableSelectionChanged = ({
   const maybeExtracted = cbsIdExtractor(input)
 
   if (!maybeExtracted) {
+    dispatch(invalidDatasetIdSelected({ input }))
     return
   }
 

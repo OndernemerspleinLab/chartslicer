@@ -12,8 +12,12 @@ import {
   reduceLoading,
   reduceLoadSuccess,
   reduceLoadError,
+  reduceInvalidId,
 } from './reducers/networkStateReducer'
-import { reduceActiveDataset } from './reducers/activeDatasetReducer'
+import {
+  reduceActiveDataset,
+  reduceInvalidActiveId,
+} from './reducers/activeDatasetReducer'
 import { reduceDatasets } from './reducers/datasetsReducer'
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
@@ -28,8 +32,10 @@ export const addReducers = () => {
     reduceLoading,
     reduceLoadSuccess,
     reduceLoadError,
+    reduceInvalidId,
     reduceActiveDataset,
-    reduceDatasets
+    reduceDatasets,
+    reduceInvalidActiveId
   )
 }
 
