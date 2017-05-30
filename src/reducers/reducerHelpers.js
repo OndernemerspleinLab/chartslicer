@@ -13,6 +13,9 @@ export const reduceIn = (...keyPath) => reducer => (state, action) =>
 export const reduceFor = type => reducer => (state, action) =>
   action.type === type ? reducer(state, action) : state
 
+export const reduceWhen = predicate => reducer => (state, action) =>
+  predicate(state, action) ? reducer(state, action) : state
+
 export const defaultState = defaultState => reducer => (
   state = defaultState,
   action

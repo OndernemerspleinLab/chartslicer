@@ -7,21 +7,30 @@ import { marginBottomHalfStyle } from '../marginStyle'
 import { afterPaste } from '../domHelpers'
 import { borderRadiusOnlyLeft } from '../styles'
 import { connectActions } from '../store'
+import { connectDatasetsNetworkState } from '../reducers/networkStateReducer'
 
 const enhancer = compose(
   pure,
   connectActions,
+  connectDatasetsNetworkState,
   withState('value', 'updateValue', ''),
   withHandlers({
     onChange: ({ updateValue }) => event =>
       updateValue(event.currentTarget.value),
-    onSubmit: ({ tableSelectionChanged, value }) => event => {
+    onSubmit: ({
+      tableSelectionChanged,
+      datasetsNetworkState,
+      value,
+    }) => event => {
       event.preventDefault()
-      tableSelectionChanged(value)
+      tableSelectionChanged({ input: value, datasetsNetworkState })
     },
-    onPaste: ({ tableSelectionChanged }) =>
+    onPaste: ({ tableSelectionChanged, datasetsNetworkState }) =>
       afterPaste(event => {
-        tableSelectionChanged(event.currentTarget.value)
+        tableSelectionChanged({
+          input: event.currentTarget.value,
+          datasetsNetworkState,
+        })
       }),
   })
 )
@@ -40,7 +49,6 @@ export const TablePickerInput = enhancer(
             css={borderRadiusOnlyLeft}
             onPaste={onPaste}
             onChange={onChange}
-            placeholder="bijv. ‘https://opendata.cbs.nl/#/CBS/nl/dataset/82439NED/line?graphtype=Line’ of ‘81573NED’"
           />
         </MediaText>
         <MediaFigure>

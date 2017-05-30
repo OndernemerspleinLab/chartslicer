@@ -6,13 +6,14 @@ import {
 } from './config'
 import { groupBy } from 'lodash/fp'
 import {
-  TABLE_ID_SELECTING,
-  TABLE_ID_SELECTED,
-  TABLE_ID_SELECTING_FAILED,
+  DATASET_ID_SELECTED,
+  DATASET_LOAD_SUCCESS,
+  DATASET_LOAD_ERROR,
 } from './actions'
 import { cbsIdExtractor } from './cbsIdExtractor'
 import { fetchJson, fetchText } from './fetch'
-import { get, getIn, merge } from './getset'
+import { get, getIn, merge, set } from './getset'
+import { shouldFetchForId } from './reducers/networkStateReducer'
 
 const plucker = source => (memo, propName) => {
   memo[propName] = source[propName]
@@ -21,10 +22,14 @@ const plucker = source => (memo, propName) => {
 const createSimpleAction = (type, ...propNames) => props =>
   Object.assign({ type }, propNames.reduce(plucker(props), {}))
 
-export const tableIdSelecting = createSimpleAction(TABLE_ID_SELECTING, 'id')
+export const datasetIdSelected = createSimpleAction(
+  DATASET_ID_SELECTED,
+  'id',
+  'loaded'
+)
 
-export const tableIdSelected = createSimpleAction(
-  TABLE_ID_SELECTED,
+export const datasetLoadSuccess = createSimpleAction(
+  DATASET_LOAD_SUCCESS,
   'id',
   'url',
   'dataProperties',
@@ -32,8 +37,8 @@ export const tableIdSelected = createSimpleAction(
   'dataset'
 )
 
-export const tableIdSelectingFailed = createSimpleAction(
-  TABLE_ID_SELECTING_FAILED,
+export const datasetLoadError = createSimpleAction(
+  DATASET_LOAD_ERROR,
   'id',
   'error'
 )
@@ -63,16 +68,27 @@ const fetchTableData = ({ id }) =>
     dataProperties,
     dataset,
   }))
-export const tableSelectionChanged = input => dispatch => {
+export const tableSelectionChanged = ({
+  input,
+  datasetsNetworkState,
+}) => dispatch => {
   const maybeExtracted = cbsIdExtractor(input)
 
   if (!maybeExtracted) {
     return
   }
-  dispatch(tableIdSelecting(maybeExtracted))
+
+  if (!shouldFetchForId(maybeExtracted)(datasetsNetworkState)) {
+    dispatch(datasetIdSelected(set('loaded', true)(maybeExtracted)))
+    return
+  }
+
+  dispatch(datasetIdSelected(maybeExtracted))
+
   fetchTableData(maybeExtracted)
-    .then(data => dispatch(tableIdSelected(merge(data)(maybeExtracted))))
-    .catch(error =>
-      dispatch(tableIdSelectingFailed(merge({ error })(maybeExtracted)))
-    )
+    .then(data => dispatch(datasetLoadSuccess(merge(data)(maybeExtracted))))
+    .catch(error => {
+      console.log('E', error)
+      return dispatch(datasetLoadError(merge({ error })(maybeExtracted)))
+    })
 }

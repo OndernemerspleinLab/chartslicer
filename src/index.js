@@ -5,10 +5,16 @@ import 'url-polyfill'
 import React from 'react'
 import ReactDOM from 'react-dom'
 import 'glamor-reset'
-import { App } from './App'
+
 import { startStore } from './store'
-import './reducers/tableInfoReducer'
+
+import { App } from './App'
 import { Provider } from 'react-redux'
+
+// import reducers
+import './reducers/datasetsReducer'
+import './reducers/activeDatasetReducer'
+import './reducers/networkStateReducer'
 
 const store = startStore()
 
