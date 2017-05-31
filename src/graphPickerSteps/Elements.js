@@ -5,7 +5,7 @@ import { violet, wit } from '../colors'
 import { square } from '../styleHelpers'
 import { resetMarginStyle, marginBottomStyle } from '../marginStyle'
 import { css } from 'glamor'
-import { withProps } from 'recompose'
+import { withProps, nest } from 'recompose'
 
 const hiddenStyle = {
   position: 'absolute',
@@ -17,11 +17,34 @@ const hiddenStyle = {
 
 export const Hidden = glamorous.span(hiddenStyle)
 
+export const InsideMargin = glamorous.div(
+  ({ size, bottom = size, top = size }) => ({
+    ':before': top
+      ? {
+          content: '""',
+          display: 'block',
+          paddingTop: '1px',
+          marginTop: '-1px',
+          marginBottom: top,
+        }
+      : null,
+    ':after': bottom
+      ? {
+          content: '""',
+          display: 'block',
+          paddingBottom: '1px',
+          marginBottom: '-1px',
+          marginTop: bottom,
+        }
+      : null,
+  })
+)
+
 const counterSize = '1.6em'
 
 const commonStepStyle = css({
   marginBottom: '2px',
-  padding: '0.7rem 1rem 1rem 3.2rem',
+  padding: '0 1rem 0 3.2rem',
   position: 'relative',
 })
 const commonStepIconStyle = css(square(counterSize), {
@@ -36,7 +59,7 @@ const commonStepIconStyle = css(square(counterSize), {
   borderRadius: '999px',
 })
 
-export const Step = glamorous.section(
+const StepComp = glamorous.section(
   commonStepStyle,
   {
     backgroundColor: violet.lightest,
@@ -47,6 +70,12 @@ export const Step = glamorous.section(
     backgroundColor: violet.default,
   })
 )
+
+const StepInsideMargin = withProps({ top: '0.7rem', bottom: '1rem' })(
+  InsideMargin
+)
+
+export const Step = nest(StepComp, StepInsideMargin)
 
 export const StepTitle = glamorous.h2(
   {
@@ -59,6 +88,10 @@ export const StepTitle = glamorous.h2(
 
 export const Paragraph = glamorous.p({
   margin: 0,
+})
+
+export const FormRow = glamorous.p({
+  margin: '0 0 1rem 0',
 })
 
 const arrowThickness = 8
@@ -74,7 +107,7 @@ const arrowUpStyle = css({
     bottom: '100%',
   },
 })
-export const Message = glamorous.section(
+const MessageComp = glamorous.section(
   commonStepStyle,
   {
     backgroundColor: violet.default,
@@ -88,9 +121,11 @@ export const Message = glamorous.section(
   arrowUpStyle
 )
 
+export const Message = nest(MessageComp, StepInsideMargin)
+
 const stripeWidth = 6
 
-export const ErrorMessage = glamorous.section(
+export const ErrorMessageComp = glamorous.section(
   commonStepStyle,
   {
     backgroundColor: violet.default,
@@ -109,6 +144,8 @@ export const ErrorMessage = glamorous.section(
   arrowUpStyle
 )
 
+export const ErrorMessage = nest(ErrorMessageComp, StepInsideMargin)
+
 const labelStyle = css({
   fontWeight: 'bold',
   lineHeight: 1.15,
@@ -122,7 +159,16 @@ export const Label = glamorous.label(
   labelStyle
 )
 
+export const InputQuantifier = glamorous.label({
+  lineHeight: 1.15,
+  marginLeft: '0.5em',
+})
+
 export const InlineTerm = glamorous.span(labelStyle)
+
+export const Form = withProps({
+  onSubmit: event => event.preventDefault(),
+})(glamorous.form())
 
 export const Input = glamorous.input({
   display: 'block',
@@ -135,6 +181,14 @@ export const Input = glamorous.input({
     color: violet.light,
   },
 })
+
+export const NumberInput = withProps({
+  type: 'number',
+  css: css({
+    width: '4rem',
+    textAlign: 'right',
+  }),
+})(Input)
 
 const RadioComp = glamorous.span({
   display: 'inline-block',
@@ -171,9 +225,9 @@ const RadioLabel = glamorous.label({
 
 export const Radio = ({
   children,
-  id,
-  value = id,
-  name = id,
+  name,
+  id = name,
+  value = '',
   onChange,
   checked,
 }) => (

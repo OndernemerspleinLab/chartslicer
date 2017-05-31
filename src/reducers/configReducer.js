@@ -1,9 +1,10 @@
-import { CONFIG_CHANGED } from '../actions'
+import { CONFIG_CHANGED, DATASET_LOAD_SUCCESS } from '../actions'
 import { reduceFor, reduceIn, defaultState } from './reducerHelpers'
 import { compose } from 'redux'
-import { reduce } from 'lodash/fp'
-import { set, setIn, get } from '../getset'
+import { reduce, first } from 'lodash/fp'
+import { set, setIn, get, update, addDefaults } from '../getset'
 import { connect } from 'react-redux'
+import { defaultPeriodLength } from '../config'
 
 const configReducerSelector = compose(reduceIn('config'), defaultState({}))
 
@@ -14,6 +15,23 @@ export const reduceConfig = compose(
   configReducerSelector,
   reduceFor(CONFIG_CHANGED)
 )(configReducer)
+
+const initConfig = ({ id, data }) => (config = {}) =>
+  addDefaults({
+    id,
+    periodType: first(Object.keys(data)),
+    periodLength: defaultPeriodLength,
+  })(config)
+
+const newDatasetConfigReducer = (state = {}, action) =>
+  update(action.id, initConfig(action))(state)
+
+export const reduceNewDatasetConfig = compose(
+  configReducerSelector,
+  reduceFor(DATASET_LOAD_SUCCESS)
+)(newDatasetConfigReducer)
+
+// GETTERS
 
 const addValue = config => (memo, name) => set(name, get(name)(config))(memo)
 

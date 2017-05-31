@@ -16,6 +16,7 @@ import { cbsIdExtractor } from './cbsIdExtractor'
 import { fetchJson, fetchText } from './fetch'
 import { get, getIn, merge, set } from './getset'
 import { shouldFetchForId } from './reducers/networkStateReducer'
+import { getCbsPeriodType } from './cbsPeriod'
 
 const plucker = source => (memo, propName) => {
   memo[propName] = source[propName]
@@ -48,7 +49,7 @@ export const datasetLoadSuccess = createSimpleAction(
   'url',
   'dataProperties',
   'tableInfo',
-  'dataset'
+  'data'
 )
 
 export const datasetLoadError = createSimpleAction(
@@ -56,6 +57,8 @@ export const datasetLoadError = createSimpleAction(
   'id',
   'error'
 )
+
+const groupByPeriodType = groupBy(({ Perioden }) => getCbsPeriodType(Perioden))
 
 const fetchTableInfo = id =>
   fetchJson(getTableInfoUrl(id)).then(getIn(['value', 0]))
@@ -68,19 +71,24 @@ const fetchDataProperties = id =>
 const fetchDataset = id =>
   fetchText(getDatasetCountUrl(id))
     .then(Number)
-    .then(r => (window.r = r))
     .then(datasetSize => fetchJson(getFilteredDatasetUrl({ id, datasetSize })))
     .then(get('value'))
+    .then(groupByPeriodType)
+
+const allPromises = (...promises) => {
+  promises.forEach(promise => promise.catch(() => {}))
+  return Promise.all(promises)
+}
 
 const fetchTableData = ({ id }) =>
-  Promise.all([
+  allPromises(
     fetchTableInfo(id),
     fetchDataProperties(id),
-    fetchDataset(id),
-  ]).then(([tableInfo, dataProperties, dataset]) => ({
+    fetchDataset(id)
+  ).then(([tableInfo, dataProperties, data]) => ({
     tableInfo,
     dataProperties,
-    dataset,
+    data,
   }))
 export const tableSelectionChanged = ({
   input,
@@ -103,7 +111,6 @@ export const tableSelectionChanged = ({
   fetchTableData(maybeExtracted)
     .then(data => dispatch(datasetLoadSuccess(merge(data)(maybeExtracted))))
     .catch(error => {
-      console.log('E', error)
       return dispatch(datasetLoadError(merge({ error })(maybeExtracted)))
     })
 }

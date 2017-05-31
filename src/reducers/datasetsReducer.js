@@ -1,18 +1,15 @@
 import { DATASET_LOAD_SUCCESS } from '../actions'
 import { reduceFor, reduceIn, defaultState } from './reducerHelpers'
 import { compose } from 'redux'
-import { mapValues, groupBy } from 'lodash/fp'
+import { mapValues } from 'lodash/fp'
 import { update, merge, get, getIn } from '../getset'
 import { connect } from 'react-redux'
-import { getCbsPeriodType } from '../cbsPeriod'
 
 const datasetsReducerSelector = compose(reduceIn('datasets'), defaultState({}))
 
-const groupByPeriodType = groupBy(({ Perioden }) => getCbsPeriodType(Perioden))
-
 const datasetsReducer = (
   state = {},
-  { id, url, dataProperties, tableInfo, dataset }
+  { id, url, dataProperties, tableInfo, data }
 ) =>
   update(
     id,
@@ -21,7 +18,7 @@ const datasetsReducer = (
       url,
       dataProperties,
       tableInfo,
-      data: groupByPeriodType(dataset),
+      data,
     })
   )(state)
 

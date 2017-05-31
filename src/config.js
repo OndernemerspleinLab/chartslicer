@@ -22,3 +22,5 @@ export const getDataPropertiesUrl = id => `${apiBaseUrl}/${id}/DataProperties`
 
 export const getStatlineUrl = id =>
   `https://opendata.cbs.nl/#/CBS/nl/dataset/${id}/line`
+
+export const defaultPeriodLength = 10
