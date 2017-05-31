@@ -50,7 +50,12 @@ const TopicGroupContainer = ({
     <Label>{title}</Label>
     <FormRow>
       {topics.map(({ Title, Key }) => (
-        <TopicRadio title={Title} inputValue={Key} name={'topicId'} key={Key} />
+        <TopicRadio
+          title={Title}
+          inputValue={Key}
+          name={'topicKey'}
+          key={Key}
+        />
       ))}
     </FormRow>
     {topicGroups.map(({ Title, ID }) => (

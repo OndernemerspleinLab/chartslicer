@@ -70,7 +70,7 @@ const initConfig = ({ id, data, dataProperties }) => (config = {}) =>
     id,
     periodType: first(Object.keys(data)),
     periodLength: defaultPeriodLength,
-    topicId: findFirstTopic(dataProperties),
+    topicKey: findFirstTopic(dataProperties),
   })(config)
 
 const newDatasetConfigReducer = (state = {}, action) =>
