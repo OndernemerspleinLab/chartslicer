@@ -6,6 +6,7 @@ import { square } from '../styleHelpers'
 import { resetMarginStyle, marginBottomStyle } from '../marginStyle'
 import { css } from 'glamor'
 import { withProps, nest } from 'recompose'
+import { borderRadius } from '../styles'
 
 const hiddenStyle = {
   position: 'absolute',
@@ -43,7 +44,7 @@ export const InsideMargin = glamorous.div(
 const counterSize = '1.6em'
 
 const commonStepStyle = css({
-  marginBottom: '2px',
+  borderBottom: `3px solid ${wit}`,
   padding: '0 1rem 0 3.2rem',
   position: 'relative',
 })
@@ -170,7 +171,7 @@ export const Form = withProps({
   onSubmit: event => event.preventDefault(),
 })(glamorous.form())
 
-export const Input = glamorous.input({
+export const Input = glamorous.input(borderRadius, {
   display: 'block',
   border: `1px solid ${violet.default}`,
   padding: '0.5em 0.3em',
@@ -204,12 +205,11 @@ const RadioInput = withProps({ type: 'radio' })(
     hiddenStyle
   )
 )
-const RadioLabel = glamorous.label({
+const RadioLabel = glamorous.label(borderRadius, {
   color: wit,
   backgroundColor: violet.default,
   lineHeight: 1.2,
   display: 'inline-block',
-  borderRadius: '2px',
   padding: '0.2em 0.6em 0.2em 1.4em',
   position: 'relative',
   ':before': {
