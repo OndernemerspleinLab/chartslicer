@@ -15,15 +15,15 @@ import { Media, MediaFigure, MediaText } from '../Media'
 import { connectConfigValues } from '../reducers/configReducer'
 import { marginBottomHalfStyle } from '../marginStyle'
 
-const PeriodTypeRadioComp = ({ periodType, onChange, name, value }) => (
+const PeriodTypeRadioComp = ({ inputValue, onChange, name, value }) => (
   <Radio
-    id={`xAxis-${periodType}`}
+    id={`xAxis-${inputValue}`}
     name={name}
-    value={periodType}
+    value={inputValue}
     onChange={onChange}
-    checked={value === periodType}
+    checked={value === inputValue}
   >
-    {periodType}
+    {inputValue}
   </Radio>
 )
 
@@ -36,7 +36,7 @@ const PeriodTypePickerContainer = ({ periodTypes }) => (
       <PeriodTypeRadio
         key={periodType}
         name="periodType"
-        periodType={periodType}
+        inputValue={periodType}
       />
     ))}
   </FormRow>

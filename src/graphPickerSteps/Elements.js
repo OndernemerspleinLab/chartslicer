@@ -91,7 +91,7 @@ export const Paragraph = glamorous.p({
   margin: 0,
 })
 
-export const FormRow = glamorous.p({
+export const FormRow = glamorous.div({
   margin: '0 0 1rem 0',
 })
 
@@ -195,33 +195,36 @@ const RadioComp = glamorous.span({
   display: 'inline-block',
   margin: '0.5rem 0.3rem 0 0',
 })
-const RadioInput = withProps({ type: 'radio' })(
-  glamorous.input(
-    {
-      '&:checked + label:before': {
-        backgroundColor: wit,
-      },
+const RadioInput = withProps({ type: 'radio' })(glamorous.input(hiddenStyle))
+const RadioLabel = glamorous.label(
+  borderRadius,
+  {
+    color: wit,
+    lineHeight: 1.2,
+    display: 'inline-block',
+    padding: '0.2em 0.6em 0.2em 1.4em',
+    position: 'relative',
+    ':before': {
+      content: '""',
+      left: '0.55em',
+      top: '0.55em',
+      position: 'absolute',
+      ...square('0.4em'),
+      borderRadius: '9999px',
     },
-    hiddenStyle
-  )
-)
-const RadioLabel = glamorous.label(borderRadius, {
-  color: wit,
-  backgroundColor: violet.default,
-  lineHeight: 1.2,
-  display: 'inline-block',
-  padding: '0.2em 0.6em 0.2em 1.4em',
-  position: 'relative',
-  ':before': {
-    content: '""',
-    left: '0.55em',
-    top: '0.55em',
-    position: 'absolute',
-    ...square('0.4em'),
-    borderRadius: '9999px',
-    boxShadow: `0 0 0 2px ${violet.default}, 0 0 0 3px ${wit}`,
   },
-})
+  ({ checked }) => {
+    const backgroundColor = checked ? violet.darker : violet.default
+
+    return {
+      backgroundColor,
+      ':before': {
+        boxShadow: `0 0 0 2px ${backgroundColor}, 0 0 0 3px ${wit}`,
+        backgroundColor: checked ? wit : 'transparent',
+      },
+    }
+  }
+)
 
 export const Radio = ({
   children,
@@ -239,6 +242,6 @@ export const Radio = ({
       onChange={onChange}
       checked={checked}
     />
-    <RadioLabel htmlFor={id}>{children}</RadioLabel>
+    <RadioLabel htmlFor={id} checked={checked}>{children}</RadioLabel>
   </RadioComp>
 )

@@ -16,11 +16,61 @@ export const reduceConfig = compose(
   reduceFor(CONFIG_CHANGED)
 )(configReducer)
 
-const initConfig = ({ id, data }) => (config = {}) =>
+// const findFirstTopicInGroups = (Topic) => (groups = []) => groups.find(({ID}) => {
+//   const topics = Topic[ID];
+
+//   if (topics) {
+//     const firstTopic = first(topics)
+
+//     if (firstTopic) {
+//       return firstTopic
+//     }
+//   }
+// })
+
+const findFirstTopicInGroup = ({ Topic = {}, groupId }) => {
+  const group = Topic[groupId]
+  const firstTopic = first(group)
+
+  if (firstTopic) {
+    return firstTopic.Key
+  }
+}
+
+const findFirstTopicInGroups = ({ Topic, TopicGroup = {}, groupId }) => {
+  const topicGroups = TopicGroup[groupId]
+
+  if (!topicGroups) {
+    return
+  }
+
+  for (let topicGroup of topicGroups) {
+    const firstKey = findFirstTopicInGroup({ Topic, groupId: topicGroup.ID })
+
+    if (firstKey) {
+      return firstKey
+    }
+
+    return findFirstTopicInGroups({ Topic, TopicGroup, groupId: topicGroup.ID })
+  }
+}
+
+const findFirstTopic = ({ Topic, TopicGroup }) => {
+  const firstKey = findFirstTopicInGroup({ Topic, groupId: 'root' })
+
+  if (firstKey) {
+    return firstKey
+  }
+
+  return findFirstTopicInGroups({ Topic, TopicGroup, groupId: 'root' })
+}
+
+const initConfig = ({ id, data, dataProperties }) => (config = {}) =>
   addDefaults({
     id,
     periodType: first(Object.keys(data)),
     periodLength: defaultPeriodLength,
+    topicId: findFirstTopic(dataProperties),
   })(config)
 
 const newDatasetConfigReducer = (state = {}, action) =>

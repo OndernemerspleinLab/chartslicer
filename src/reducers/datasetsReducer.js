@@ -29,7 +29,10 @@ export const reduceDatasets = compose(
 
 const getValue = dataset => keyPath => getIn(keyPath)(dataset)
 
-const getFromActiveDataset = keyPathMap => ({ activeDatasetId, datasets }) => {
+export const getFromActiveDataset = keyPathMap => ({
+  activeDatasetId,
+  datasets,
+}) => {
   const activeDataset = get(activeDatasetId)(datasets) || {}
 
   return mapValues(getValue(activeDataset))(keyPathMap)

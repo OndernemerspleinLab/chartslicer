@@ -5,9 +5,13 @@ import { counterResetStyle } from './graphPickerSteps/counterStyle'
 import { TablePicker } from './graphPickerSteps/TablePicker'
 import { TablePickerResult } from './graphPickerSteps/TablePickerResult'
 import { XAxis } from './graphPickerSteps/XAxis'
+import { YAxis } from './graphPickerSteps/YAxis'
+import { violet } from './colors'
 
 const GraphPickerComp = glamorous.div(counterResetStyle, {
   maxWidth: '25rem',
+  minHeight: '100vh',
+  backgroundColor: violet.lightest,
 })
 
 export const GraphPicker = () => (
@@ -16,5 +20,6 @@ export const GraphPicker = () => (
     <TablePicker />
     <TablePickerResult />
     <XAxis />
+    <YAxis />
   </GraphPickerComp>
 )

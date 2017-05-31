@@ -14,7 +14,7 @@ import {
 } from './actions'
 import { cbsIdExtractor } from './cbsIdExtractor'
 import { fetchJson, fetchText } from './fetch'
-import { get, getIn, merge, set } from './getset'
+import { get, getIn, merge, set, update } from './getset'
 import { shouldFetchForId } from './reducers/networkStateReducer'
 import { getCbsPeriodType } from './cbsPeriod'
 
@@ -60,6 +60,8 @@ export const datasetLoadError = createSimpleAction(
 
 const groupByPeriodType = groupBy(({ Perioden }) => getCbsPeriodType(Perioden))
 
+const groupByParentID = groupBy(({ ParentID }) => ParentID || 'root')
+
 const fetchTableInfo = id =>
   fetchJson(getTableInfoUrl(id)).then(getIn(['value', 0]))
 
@@ -67,6 +69,8 @@ const fetchDataProperties = id =>
   fetchJson(getDataPropertiesUrl(id))
     .then(get('value'))
     .then(groupBy(({ Type }) => Type))
+    .then(update('Topic', groupByParentID))
+    .then(update('TopicGroup', groupByParentID))
 
 const fetchDataset = id =>
   fetchText(getDatasetCountUrl(id))

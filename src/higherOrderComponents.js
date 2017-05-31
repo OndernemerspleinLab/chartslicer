@@ -6,6 +6,7 @@ import {
 import { connectActions } from './store'
 import { connectActiveDataset } from './reducers/datasetsReducer'
 import { connectConfigFieldValue } from './reducers/configReducer'
+import { existing } from './helpers'
 
 export const onlyWhenLoaded = compose(
   connectActiveDatasetsNetworkState('loaded'),
@@ -17,8 +18,10 @@ export const connectConfigChange = compose(
   connectActiveDataset({ id: ['id'] }),
   connectConfigFieldValue,
   withHandlers({
-    onChange: ({ id, configChanged }) => event => {
-      const { name, value } = event.currentTarget
+    onChange: ({ id, name, configChanged, inputValue }) => event => {
+      const value = existing(inputValue)
+        ? inputValue
+        : event.currentTarget.value
       configChanged({ name, value, id })
     },
   })
