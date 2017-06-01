@@ -103,3 +103,7 @@ export const connectConfigFieldValue = connect(
     return { value: get(name)(activeConfig) || '' }
   }
 )
+
+export const connectFullConfig = connect(
+  ({ activeDatasetId, config }) => get(activeDatasetId)(config) || {}
+)

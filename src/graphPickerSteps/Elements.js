@@ -201,6 +201,7 @@ const RadioLabel = glamorous.label(
   {
     color: wit,
     lineHeight: 1.2,
+    cursor: 'pointer',
     display: 'inline-block',
     padding: '0.2em 0.6em 0.2em 1.4em',
     position: 'relative',

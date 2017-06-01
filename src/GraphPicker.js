@@ -12,6 +12,7 @@ const GraphPickerComp = glamorous.div(counterResetStyle, {
   maxWidth: '25rem',
   minHeight: '100vh',
   backgroundColor: violet.lightest,
+  flex: '0 0 auto',
 })
 
 export const GraphPicker = () => (

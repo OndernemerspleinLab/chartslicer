@@ -4,9 +4,16 @@ import {
   connectActiveDatasetsNetworkState,
 } from './reducers/networkStateReducer'
 import { connectActions } from './store'
-import { connectActiveDataset } from './reducers/datasetsReducer'
-import { connectConfigFieldValue } from './reducers/configReducer'
+import {
+  connectActiveDataset,
+  getFromActiveDataset,
+} from './reducers/datasetsReducer'
+import {
+  connectConfigFieldValue,
+  connectFullConfig,
+} from './reducers/configReducer'
 import { existing } from './helpers'
+import { connect } from 'react-redux'
 
 export const onlyWhenLoaded = compose(
   connectActiveDatasetsNetworkState('loaded'),
@@ -25,4 +32,42 @@ export const connectConfigChange = compose(
       configChanged({ name, value, id })
     },
   })
+)
+
+const filterTakeRight = (predicate, length) => array => {
+  const memo = []
+
+  for (
+    let index = array.length - 1;
+    index >= 0 && memo.length < length;
+    index -= 1
+  ) {
+    const value = array[index]
+    if (predicate(value, index, array)) {
+      memo.unshift(value)
+    }
+  }
+
+  return memo
+}
+
+const propertyExisting = key => object => existing(object[key])
+
+const filterDataset = (state, { periodType, periodLength, topicKey }) => {
+  const { data: dataByPeriodType } = getFromActiveDataset({
+    data: ['data', periodType],
+  })(state) || []
+
+  const data = filterTakeRight(propertyExisting(topicKey), periodLength)(
+    dataByPeriodType
+  )
+
+  return {
+    data,
+  }
+}
+
+export const connectFilteredDataset = compose(
+  connectFullConfig,
+  connect(filterDataset)
 )
