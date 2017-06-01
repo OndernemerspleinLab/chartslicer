@@ -1,8 +1,13 @@
 import { minimalZero } from './helpers'
-export const dataSetMaxSize = 2000
+const dataSetMaxSize = 2000
+
+const fromYear = 2005
+
+const getPeriodFilter = (propName = 'Perioden') =>
+  `$filter=substring(${propName},0,4) ge '${fromYear}'`
 
 export const getDatasetFilter = datasetSize =>
-  `$top=${dataSetMaxSize}&$skip=${minimalZero(datasetSize - dataSetMaxSize)}`
+  `$top=${dataSetMaxSize}&$skip=${minimalZero(datasetSize - dataSetMaxSize)}&${getPeriodFilter()}`
 
 export const apiOrigin = `https://opendata.cbs.nl`
 
