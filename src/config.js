@@ -24,3 +24,8 @@ export const getStatlineUrl = id =>
   `https://opendata.cbs.nl/#/CBS/nl/dataset/${id}/line`
 
 export const defaultPeriodLength = 10
+
+const breakpoint = 840
+
+export const mqSmall = `@media (max-width: ${breakpoint - 1}px)`
+export const mqBig = `@media (min-width: ${breakpoint}px)`

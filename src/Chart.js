@@ -7,8 +7,6 @@ import glamorous from 'glamorous'
 const enhancer = compose(onlyWhenLoaded, connectFilteredDataset)
 
 const chartParentStyle = {
-  maxHeight: '100vh',
-  maxWidth: '100vh',
   position: 'absolute',
   left: 0,
   top: 0,
@@ -18,11 +16,13 @@ const chartParentStyle = {
 
 const Square = glamorous.div({
   position: 'relative',
+  maxWidth: '100vh',
   ':before': {
     content: '""',
     display: 'block',
     position: 'relative',
     paddingBottom: '100%',
+    maxHeight: '100vh',
   },
 })
 const ChartComp = glamorous.div({})

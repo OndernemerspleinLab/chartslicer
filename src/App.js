@@ -4,6 +4,7 @@ import { css } from 'glamor'
 import { Chart } from './Chart'
 import { DataTable } from './DataTable'
 import glamorous from 'glamorous'
+import { mqBig } from './config'
 
 css.global('*', {
   boxSizing: 'border-box',
@@ -14,6 +15,10 @@ css.global('html', {
 
 const Layout = glamorous.div({
   display: 'flex',
+  flexDirection: 'column',
+  [mqBig]: {
+    flexDirection: 'row',
+  },
 })
 
 const Sidebar = glamorous.div({

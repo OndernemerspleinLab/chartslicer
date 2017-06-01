@@ -7,12 +7,15 @@ import { TablePickerResult } from './graphPickerSteps/TablePickerResult'
 import { XAxis } from './graphPickerSteps/XAxis'
 import { YAxis } from './graphPickerSteps/YAxis'
 import { violet } from './colors'
+import { mqBig } from './config'
 
 const GraphPickerComp = glamorous.div(counterResetStyle, {
   maxWidth: '25rem',
-  minHeight: '100vh',
   backgroundColor: violet.lightest,
   flex: '0 0 auto',
+  [mqBig]: {
+    minHeight: '100vh',
+  },
 })
 
 export const GraphPicker = () => (
