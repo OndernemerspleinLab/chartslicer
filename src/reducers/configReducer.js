@@ -1,10 +1,11 @@
 import { CONFIG_CHANGED, DATASET_LOAD_SUCCESS } from '../actions'
 import { reduceFor, reduceIn, defaultState } from './reducerHelpers'
 import { compose } from 'redux'
-import { reduce, first } from 'lodash/fp'
+import { reduce, first, last } from 'lodash/fp'
 import { set, setIn, get, getIn, update, addDefaults } from '../getset'
 import { connect } from 'react-redux'
 import { defaultPeriodLength } from '../config'
+import { lastChild } from 'glamor'
 
 const configReducerSelector = compose(reduceIn('config'), defaultState({}))
 
@@ -17,6 +18,10 @@ export const reduceConfig = compose(
 )(configReducer)
 
 const getFirstKeyFor = subcollectionKey => getIn([subcollectionKey, 0, 'Key'])
+
+const getLastKeyFor = subcollectionKey =>
+  compose(get('Key'), last, get(subcollectionKey))
+
 const findFirstDimension = ({ dataProperties, dimensions }) => {
   const dimensionGroupKey =
     getFirstKeyFor('Dimension')(dataProperties) ||
@@ -24,7 +29,7 @@ const findFirstDimension = ({ dataProperties, dimensions }) => {
 
   return {
     groupKey: dimensionGroupKey,
-    key: getFirstKeyFor(dimensionGroupKey)(dimensions),
+    key: getLastKeyFor(dimensionGroupKey)(dimensions),
   }
 }
 
