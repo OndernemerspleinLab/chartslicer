@@ -2,7 +2,7 @@ import { CONFIG_CHANGED, DATASET_LOAD_SUCCESS } from '../actions'
 import { reduceFor, reduceIn, defaultState } from './reducerHelpers'
 import { compose } from 'redux'
 import { reduce, first } from 'lodash/fp'
-import { set, setIn, get, update, addDefaults } from '../getset'
+import { set, setIn, get, getIn, update, addDefaults } from '../getset'
 import { connect } from 'react-redux'
 import { defaultPeriodLength } from '../config'
 
@@ -16,17 +16,17 @@ export const reduceConfig = compose(
   reduceFor(CONFIG_CHANGED)
 )(configReducer)
 
-// const findFirstTopicInGroups = (Topic) => (groups = []) => groups.find(({ID}) => {
-//   const topics = Topic[ID];
+const getFirstKeyFor = subcollectionKey => getIn([subcollectionKey, 0, 'Key'])
+const findFirstDimension = ({ dataProperties, dimensions }) => {
+  const dimensionGroupKey =
+    getFirstKeyFor('Dimension')(dataProperties) ||
+    getFirstKeyFor('GeoDimension')(dataProperties)
 
-//   if (topics) {
-//     const firstTopic = first(topics)
-
-//     if (firstTopic) {
-//       return firstTopic
-//     }
-//   }
-// })
+  return {
+    groupKey: dimensionGroupKey,
+    key: getFirstKeyFor(dimensionGroupKey)(dimensions),
+  }
+}
 
 const findFirstTopicInGroup = ({ Topic = {}, groupId }) => {
   const group = Topic[groupId]
@@ -65,12 +65,15 @@ const findFirstTopic = ({ Topic, TopicGroup }) => {
   return findFirstTopicInGroups({ Topic, TopicGroup, groupId: 'root' })
 }
 
-const initConfig = ({ id, data, dataProperties }) => (config = {}) =>
+const initConfig = ({ id, data, dataProperties, dimensions }) => (
+  config = {}
+) =>
   addDefaults({
     id,
     periodType: first(Object.keys(data)),
     periodLength: defaultPeriodLength,
     topicKey: findFirstTopic(dataProperties),
+    dimensionKey: findFirstDimension({ dataProperties, dimensions }),
   })(config)
 
 const newDatasetConfigReducer = (state = {}, action) =>

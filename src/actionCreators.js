@@ -3,8 +3,10 @@ import {
   getDataPropertiesUrl,
   getDatasetCountUrl,
   getFilteredDatasetUrl,
+  getDimensionGroupsUrl,
+  getDimensionUrl,
 } from './config'
-import { groupBy } from 'lodash/fp'
+import { groupBy, zipObject } from 'lodash/fp'
 import {
   DATASET_ID_SELECTED,
   DATASET_LOAD_SUCCESS,
@@ -18,10 +20,15 @@ import { get, getIn, merge, set, update } from './getset'
 import { shouldFetchForId } from './reducers/networkStateReducer'
 import { getCbsPeriodType } from './cbsPeriod'
 
+const allPromises = (...promises) => Promise.all(promises)
+
+const getFirstValue = getIn(['value', 0])
+
 const plucker = source => (memo, propName) => {
   memo[propName] = source[propName]
   return memo
 }
+
 const createSimpleAction = (type, ...propNames) => props =>
   Object.assign({ type }, propNames.reduce(plucker(props), {}))
 
@@ -48,6 +55,8 @@ export const datasetLoadSuccess = createSimpleAction(
   'id',
   'url',
   'dataProperties',
+  'dimensions',
+  'dimensionGroups',
   'tableInfo',
   'data'
 )
@@ -62,8 +71,7 @@ const groupByPeriodType = groupBy(({ Perioden }) => getCbsPeriodType(Perioden))
 
 const groupByParentID = groupBy(({ ParentID }) => ParentID || 'root')
 
-const fetchTableInfo = id =>
-  fetchJson(getTableInfoUrl(id)).then(getIn(['value', 0]))
+const fetchTableInfo = id => fetchJson(getTableInfoUrl(id)).then(getFirstValue)
 
 const fetchDataProperties = id =>
   fetchJson(getDataPropertiesUrl(id))
@@ -72,6 +80,40 @@ const fetchDataProperties = id =>
     .then(update('Topic', groupByParentID))
     .then(update('TopicGroup', groupByParentID))
 
+const fetchDimension = id => dimensionKey =>
+  fetchJson(getDimensionUrl({ id, dimensionKey })).then(get('value'))
+
+const fetchDimensions = ({ id, dimensionKeys = [] }) => {
+  return allPromises(
+    ...dimensionKeys.map(fetchDimension(id))
+  ).then(dimensionValues => {
+    return zipObject(dimensionKeys, dimensionValues)
+  })
+}
+
+const fetchDimensionGroups = id =>
+  fetchJson(getDimensionGroupsUrl(id)).then(getFirstValue)
+
+const fetchDimensionInfo = id => ({ Dimension = [], GeoDimension = [] }) =>
+  allPromises(
+    fetchDimensions({
+      id,
+      dimensionKeys: [...Dimension, ...GeoDimension].map(({ Key }) => Key),
+    }),
+    fetchDimensionGroups(id)
+  )
+
+const fetchDataProperstiesAndDimensionInfo = id =>
+  fetchDataProperties(id).then(dataProperties => {
+    return fetchDimensionInfo(id)(
+      dataProperties
+    ).then(([dimensions, dimensionGroups]) => ({
+      dataProperties,
+      dimensions,
+      dimensionGroups,
+    }))
+  })
+
 const fetchDataset = id =>
   fetchText(getDatasetCountUrl(id))
     .then(Number)
@@ -79,21 +121,20 @@ const fetchDataset = id =>
     .then(get('value'))
     .then(groupByPeriodType)
 
-const allPromises = (...promises) => {
-  promises.forEach(promise => promise.catch(() => {}))
-  return Promise.all(promises)
-}
-
 const fetchTableData = ({ id }) =>
   allPromises(
     fetchTableInfo(id),
-    fetchDataProperties(id),
+    fetchDataProperstiesAndDimensionInfo(id),
     fetchDataset(id)
-  ).then(([tableInfo, dataProperties, data]) => ({
-    tableInfo,
-    dataProperties,
-    data,
-  }))
+  ).then(
+    ([tableInfo, { dataProperties, dimensions, dimensionGroups }, data]) => ({
+      tableInfo,
+      dataProperties,
+      data,
+      dimensions,
+      dimensionGroups,
+    })
+  )
 export const tableSelectionChanged = ({
   input,
   datasetsNetworkState,

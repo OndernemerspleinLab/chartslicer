@@ -1,14 +1,9 @@
 import React from 'react'
-import { connectFullConfig } from './reducers/configReducer'
 import { compose } from 'recompose'
 import { onlyWhenLoaded, connectFilteredDataset } from './higherOrderComponents'
 import glamorous from 'glamorous'
 
-const enhancer = compose(
-  onlyWhenLoaded,
-  connectFullConfig,
-  connectFilteredDataset
-)
+const enhancer = compose(onlyWhenLoaded, connectFilteredDataset)
 
 const DataTableComp = glamorous.div({
   padding: '1rem 3rem',

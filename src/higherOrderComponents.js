@@ -51,16 +51,25 @@ const filterTakeRight = (predicate, length) => array => {
   return memo
 }
 
+const dataFilterPredicate = ({
+  topicKey,
+  dimensionKey: { groupKey, key } = {},
+}) => object => propertyExisting(topicKey)(object) && object[groupKey] === key
+
 const propertyExisting = key => object => existing(object[key])
 
-const filterDataset = (state, { periodType, periodLength, topicKey }) => {
+const filterDataset = (
+  state,
+  { periodType, periodLength, topicKey, dimensionKey }
+) => {
   const { data: dataByPeriodType } = getFromActiveDataset({
     data: ['data', periodType],
   })(state) || []
 
-  const data = filterTakeRight(propertyExisting(topicKey), periodLength)(
-    dataByPeriodType
-  )
+  const data = filterTakeRight(
+    dataFilterPredicate({ topicKey, dimensionKey }),
+    periodLength
+  )(dataByPeriodType)
 
   return {
     data,

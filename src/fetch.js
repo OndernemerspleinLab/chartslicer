@@ -28,7 +28,13 @@ const addTextHeaders = (options = {}) =>
     }),
   })
 
-export const httpFetch = (url, options) => fetch(url, options).then(checkStatus)
+export const httpFetch = (url, options) => {
+  const responsePromise = fetch(url, options).then(checkStatus)
+  responsePromise.catch(error => {
+    console.log(error)
+  })
+  return responsePromise
+}
 
 export const fetchJson = (url, options) =>
   httpFetch(url, addJsonHeaders(options)).then(response => response.json())

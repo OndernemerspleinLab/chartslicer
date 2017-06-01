@@ -9,7 +9,7 @@ const datasetsReducerSelector = compose(reduceIn('datasets'), defaultState({}))
 
 const datasetsReducer = (
   state = {},
-  { id, url, dataProperties, tableInfo, data }
+  { id, url, dataProperties, dimensions, dimensionGroups, tableInfo, data }
 ) =>
   update(
     id,
@@ -17,6 +17,8 @@ const datasetsReducer = (
       id,
       url,
       dataProperties,
+      dimensions,
+      dimensionGroups,
       tableInfo,
       data,
     })
