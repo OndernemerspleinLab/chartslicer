@@ -4,6 +4,7 @@
   "private": true,
   "homepage": "http://ondernemerspleinlab.github.io/chartslicer",
   "dependencies": {
+    "babel-polyfill": "^6.23.0",
     "date-fns": "^1.28.5",
     "gh-pages": "^1.0.0",
     "glamor": "^2.20.24",
