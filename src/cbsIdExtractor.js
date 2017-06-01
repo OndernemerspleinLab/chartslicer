@@ -1,4 +1,6 @@
 import { getStatlineUrl } from './config'
+import { trim } from 'lodash/fp'
+
 export const parseUrl = maybeUrl => {
   try {
     return new URL(maybeUrl)
@@ -35,11 +37,17 @@ const extractFromId = input =>
     : false
 
 export const cbsIdExtractor = input => {
-  const maybeParsedUrl = parseUrl(input)
+  const trimmedInput = trim(input)
+
+  if (isValidId(trimmedInput)) {
+    return extractFromId(trimmedInput)
+  }
+
+  const maybeParsedUrl = parseUrl(trimmedInput)
 
   if (maybeParsedUrl) {
     return extractFromUrl(maybeParsedUrl)
   }
 
-  return extractFromId(input)
+  return false
 }
