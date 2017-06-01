@@ -5,7 +5,6 @@ import { reduce, first, last } from 'lodash/fp'
 import { set, setIn, get, getIn, update, addDefaults } from '../getset'
 import { connect } from 'react-redux'
 import { defaultPeriodLength } from '../config'
-import { lastChild } from 'glamor'
 
 const configReducerSelector = compose(reduceIn('config'), defaultState({}))
 
