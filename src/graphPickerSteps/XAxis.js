@@ -53,7 +53,7 @@ const PeriodLengthPickerComp = ({ periodType }) => (
     </Label>
     <Media alignItems="center">
       <MediaFigure>
-        <PeriodLengthInput name="periodLength" />
+        <PeriodLengthInput id="periodLength" name="periodLength" />
       </MediaFigure>
       <MediaText>
         <InputQuantifier htmlFor="periodLength">{periodType}</InputQuantifier>

@@ -3,6 +3,7 @@ import { compose } from 'recompose'
 import { onlyWhenLoaded, connectFilteredDataset } from './higherOrderComponents'
 import { VictoryTheme, VictoryAxis, VictoryChart, VictoryLine } from 'victory'
 import glamorous from 'glamorous'
+import { violet } from './colors'
 
 const enhancer = compose(onlyWhenLoaded, connectFilteredDataset)
 
@@ -54,13 +55,14 @@ const ChartContainer = ({ topicKey, data }) => (
           }}
         />
         <VictoryLine
+          interpolation="catmullRom"
           data={data}
           x="Perioden"
           y={topicKey}
           style={{
             data: {
               strokeWidth: 1,
-              opacity: 0.5,
+              stroke: violet.default,
             },
           }}
         />

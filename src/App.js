@@ -14,9 +14,9 @@ css.global('html', {
 })
 
 const Layout = glamorous.div({
-  display: 'flex',
-  flexDirection: 'column',
   [mqBig]: {
+    display: 'flex',
+    justifyContent: 'stretch',
     flexDirection: 'row',
   },
 })

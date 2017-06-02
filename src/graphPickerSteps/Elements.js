@@ -7,6 +7,7 @@ import { resetMarginStyle, marginBottomStyle } from '../marginStyle'
 import { css } from 'glamor'
 import { withProps, nest } from 'recompose'
 import { borderRadius } from '../styles'
+import { mqSmall } from '../config'
 
 const hiddenStyle = {
   position: 'absolute',
@@ -25,7 +26,6 @@ export const InsideMargin = glamorous.div(
           content: '""',
           display: 'block',
           paddingTop: '1px',
-          marginTop: '-1px',
           marginBottom: top,
         }
       : null,
@@ -34,7 +34,6 @@ export const InsideMargin = glamorous.div(
           content: '""',
           display: 'block',
           paddingBottom: '1px',
-          marginBottom: '-1px',
           marginTop: bottom,
         }
       : null,
@@ -44,9 +43,15 @@ export const InsideMargin = glamorous.div(
 const counterSize = '1.6em'
 
 const commonStepStyle = css({
-  borderBottom: `3px solid ${wit}`,
+  borderBottom: `2px solid ${wit}`,
   padding: '0 1rem 0 3.2rem',
   position: 'relative',
+
+  [mqSmall]: {
+    '&:last-child': {
+      borderBottom: 'none',
+    },
+  },
 })
 const commonStepIconStyle = css(square(counterSize), {
   display: 'block',
@@ -185,6 +190,7 @@ export const Input = glamorous.input(borderRadius, {
 
 export const NumberInput = withProps({
   type: 'number',
+  min: 1,
   css: css({
     width: '4rem',
     textAlign: 'right',
@@ -195,7 +201,13 @@ const RadioComp = glamorous.span({
   display: 'inline-block',
   margin: '0.5rem 0.3rem 0 0',
 })
-const RadioInput = withProps({ type: 'radio' })(glamorous.input(hiddenStyle))
+const RadioInput = withProps({ type: 'radio' })(
+  glamorous.input(hiddenStyle, {
+    ':focus + label': {
+      textDecoration: 'underline',
+    },
+  })
+)
 const RadioLabel = glamorous.label(
   borderRadius,
   {

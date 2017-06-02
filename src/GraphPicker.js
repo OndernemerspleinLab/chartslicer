@@ -10,11 +10,14 @@ import { violet } from './colors'
 import { mqBig } from './config'
 
 const GraphPickerComp = glamorous.div(counterResetStyle, {
-  maxWidth: '25rem',
   backgroundColor: violet.lightest,
+  borderBottom: `2px solid ${violet.default}`,
   flex: '0 0 auto',
   [mqBig]: {
+    maxWidth: '25rem',
     minHeight: '100vh',
+    height: '100%',
+    borderRight: `2px solid ${violet.default}`,
   },
 })
 
