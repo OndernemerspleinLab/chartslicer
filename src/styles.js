@@ -23,3 +23,11 @@ export const borderRadiusRight = css({
 export const borderRadiusOnlyLeft = css(resetBorderRadius, borderRadiusLeft)
 
 export const borderRadiusOnlyRight = css(resetBorderRadius, borderRadiusRight)
+
+export const fadeInKeyframes = css.keyframes({
+  from: {
+    opacity: 0,
+  },
+})
+
+export const fadeInAnimation = `300ms ease-in ${fadeInKeyframes}`

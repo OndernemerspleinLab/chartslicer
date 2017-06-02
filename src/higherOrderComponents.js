@@ -12,8 +12,10 @@ import {
   connectConfigFieldValue,
   connectFullConfig,
 } from './reducers/configReducer'
+import { flatten, find } from 'lodash/fp'
 import { existing } from './helpers'
 import { connect } from 'react-redux'
+import { getConfigValues } from './reducers/configReducer'
 
 export const onlyWhenLoaded = compose(
   connectActiveDatasetsNetworkState('loaded'),
@@ -88,3 +90,18 @@ export const connectFilteredDataset = compose(
   connectFullConfig,
   connect(filterDataset)
 )
+
+export const connectDataInfo = connect(state => {
+  const { topicKey } = getConfigValues('topicKey')(state)
+  const { topics } = getFromActiveDataset({
+    topics: ['dataProperties', 'Topic'],
+  })(state)
+  const { periodType } = getConfigValues(['periodType'])(state)
+
+  const findTopic = topicKey => find(({ Key }) => Key === topicKey)
+  const topic = compose(findTopic(topicKey), flatten, Object.values)(
+    topics
+  ) || {}
+
+  return { topic, periodType }
+})

@@ -6,7 +6,7 @@ import { square } from '../styleHelpers'
 import { resetMarginStyle, marginBottomStyle } from '../marginStyle'
 import { css } from 'glamor'
 import { withProps, nest } from 'recompose'
-import { borderRadius } from '../styles'
+import { borderRadius, fadeInAnimation } from '../styles'
 import { mqSmall } from '../config'
 
 const hiddenStyle = {
@@ -46,6 +46,7 @@ const commonStepStyle = css({
   borderBottom: `2px solid ${wit}`,
   padding: '0 1rem 0 3.2rem',
   position: 'relative',
+  animation: fadeInAnimation,
 
   [mqSmall]: {
     '&:last-child': {
@@ -200,6 +201,7 @@ export const NumberInput = withProps({
 const RadioComp = glamorous.span({
   display: 'inline-block',
   margin: '0.5rem 0.3rem 0 0',
+  position: 'relative',
 })
 const RadioInput = withProps({ type: 'radio' })(
   glamorous.input(hiddenStyle, {

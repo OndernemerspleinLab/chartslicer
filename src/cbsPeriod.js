@@ -7,6 +7,10 @@ import {
   format,
 } from 'date-fns'
 import nlLocale from 'date-fns/locale/nl'
+import { isFunction } from 'lodash/fp'
+import { getConfigValues } from './reducers/configReducer'
+import { get } from './getset'
+import { connect } from 'react-redux'
 
 const formatDate = (date, formatTemplate) =>
   format(date, formatTemplate, { locale: nlLocale })
@@ -238,3 +242,26 @@ export const parseCbsPeriod = cbsPeriodString => {
 
   return parse(cbsPeriod)
 }
+
+export const getParserForType = parserType =>
+  cbsPeriodTypes.find(({ type }) => type === parserType)
+
+const createFormatPeriod = parser => cbsPeriodString => {
+  const cbsPeriod = splitCbsPeriodString(cbsPeriodString)
+  const { format } = parser(cbsPeriod)
+
+  return format()
+}
+
+export const connectPeriodFormatter = connect(state => {
+  const { periodType } = getConfigValues(['periodType'])(state)
+
+  const periodParser =
+    get('parse')(getParserForType(periodType)) || (value => value)
+
+  const formatPeriod = createFormatPeriod(periodParser)
+  return {
+    periodType,
+    formatPeriod,
+  }
+})

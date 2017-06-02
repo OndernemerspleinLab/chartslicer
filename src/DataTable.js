@@ -1,40 +1,89 @@
 import React from 'react'
 import { compose } from 'recompose'
-import { onlyWhenLoaded, connectFilteredDataset } from './higherOrderComponents'
+import {
+  onlyWhenLoaded,
+  connectFilteredDataset,
+  connectDataInfo,
+} from './higherOrderComponents'
 import glamorous from 'glamorous'
+import { hemelblauw, wit } from './colors'
+import { InsideMargin } from './graphPickerSteps/Elements'
+import { fadeInAnimation } from './styles'
+import { connectPeriodFormatter } from './cbsPeriod'
 
-const enhancer = compose(onlyWhenLoaded, connectFilteredDataset)
+const enhancer = compose(
+  onlyWhenLoaded,
+  connectDataInfo,
+  connectPeriodFormatter,
+  connectFilteredDataset
+)
 
 const DataTableComp = glamorous.div({
-  padding: '1rem 3rem',
+  padding: '0 3rem',
+  backgroundColor: hemelblauw.lighter,
+  animation: fadeInAnimation,
 })
 
-const DataTableContainer = ({ topicKey, data }) => (
+const Table = glamorous.table({
+  minWidth: '30rem',
+})
+
+const TableHead = glamorous.thead()
+const Tablebody = glamorous.tbody()
+
+const Row = glamorous.tr({
+  backgroundColor: hemelblauw.lightest,
+  ':nth-child(2n)': {
+    backgroundColor: wit,
+  },
+})
+
+const HeadingRow = glamorous.tr({
+  backgroundColor: hemelblauw.darker,
+  color: wit,
+})
+
+const cellStyle = {
+  padding: '0.2rem 0.8rem',
+}
+const Cell = glamorous.td(cellStyle)
+
+const HeadingCell = glamorous.th(cellStyle)
+
+const DataTableContainer = ({
+  topicKey,
+  topic: { Unit, Title },
+  data,
+  formatPeriod,
+  periodType,
+}) => (
   <DataTableComp>
-    <table>
-      <thead>
-        <tr>
-          <th>
-            Periode
-          </th>
-          <th>
-            {topicKey}
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        {data.map(entry => (
-          <tr key={entry.ID}>
-            <td>
-              {entry.Perioden}
-            </td>
-            <td>
-              {entry[topicKey]}
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+    <InsideMargin top="2rem" bottom="2rem">
+      <Table>
+        <TableHead>
+          <HeadingRow>
+            <HeadingCell>
+              {periodType}
+            </HeadingCell>
+            <HeadingCell>
+              {Title} ({Unit})
+            </HeadingCell>
+          </HeadingRow>
+        </TableHead>
+        <Tablebody>
+          {data.map(entry => (
+            <Row key={entry.ID}>
+              <Cell>
+                {formatPeriod(entry.Perioden)}
+              </Cell>
+              <Cell>
+                {entry[topicKey]}
+              </Cell>
+            </Row>
+          ))}
+        </Tablebody>
+      </Table>
+    </InsideMargin>
   </DataTableComp>
 )
 

@@ -1,11 +1,34 @@
 import React from 'react'
 import { compose } from 'recompose'
-import { onlyWhenLoaded, connectFilteredDataset } from './higherOrderComponents'
-import { VictoryTheme, VictoryAxis, VictoryChart, VictoryLine } from 'victory'
+import {
+  onlyWhenLoaded,
+  connectFilteredDataset,
+  connectDataInfo,
+} from './higherOrderComponents'
+import {
+  VictoryTheme,
+  VictoryAxis,
+  VictoryChart,
+  VictoryLine,
+  VictoryGroup,
+} from 'victory'
 import glamorous from 'glamorous'
-import { violet } from './colors'
+import { hemelblauw, wit } from './colors'
+import { fadeInAnimation } from './styles'
+import {
+  chartAspectRatio,
+  chartWidth,
+  chartHeight,
+  chartMaxWidth,
+} from './config'
+import { connectPeriodFormatter } from './cbsPeriod'
 
-const enhancer = compose(onlyWhenLoaded, connectFilteredDataset)
+const enhancer = compose(
+  onlyWhenLoaded,
+  connectPeriodFormatter,
+  connectDataInfo,
+  connectFilteredDataset
+)
 
 const chartParentStyle = {
   position: 'absolute',
@@ -13,61 +36,86 @@ const chartParentStyle = {
   top: 0,
   width: '100%',
   height: '100%',
+  background: wit,
+  border: `1px solid ${hemelblauw.light}`,
 }
 
-const Square = glamorous.div({
+const Rectangle = glamorous.div({
   position: 'relative',
-  maxWidth: '100vh',
+  maxWidth: chartMaxWidth,
   ':before': {
     content: '""',
     display: 'block',
     position: 'relative',
-    paddingBottom: '100%',
+    paddingBottom: `${100 / chartAspectRatio}%`,
     maxHeight: '100vh',
   },
 })
-const ChartComp = glamorous.div({})
-const ChartContainer = ({ topicKey, data }) => (
+const ChartComp = glamorous.div({
+  animation: fadeInAnimation,
+  padding: '0 3rem',
+  maxWidth: '60rem',
+})
+const ChartContainer = ({
+  topicKey,
+  data,
+  formatPeriod,
+  topic,
+  periodType,
+}) => (
   <ChartComp>
-    <Square>
+    <Rectangle>
       <VictoryChart
-        width={350}
-        height={350}
-        domainPadding={0}
+        width={chartWidth}
+        height={chartHeight}
         style={{ parent: chartParentStyle }}
         theme={VictoryTheme.material}
+        domainPadding={0}
       >
         <VictoryAxis
           dependentAxis
           fixLabelOverlap
+          label={`${topic.Title} (${topic.Unit})`}
           style={{
             tickLabels: {
               fontSize: '7px',
+            },
+            axisLabel: {
+              fontSize: '7px',
+              padding: 35,
             },
           }}
         />
         <VictoryAxis
           fixLabelOverlap
+          tickValues={data.map(({ Perioden }) => formatPeriod(Perioden))}
+          label={periodType}
+          scale="time"
           style={{
             tickLabels: {
               fontSize: '7px',
             },
-          }}
-        />
-        <VictoryLine
-          interpolation="catmullRom"
-          data={data}
-          x="Perioden"
-          y={topicKey}
-          style={{
-            data: {
-              strokeWidth: 1,
-              stroke: violet.default,
+            axisLabel: {
+              fontSize: '7px',
+              padding: 25,
             },
           }}
         />
+        <VictoryGroup>
+          <VictoryLine
+            data={data}
+            x="Perioden"
+            y={topicKey}
+            style={{
+              data: {
+                strokeWidth: 1,
+                stroke: hemelblauw.grijscontrast,
+              },
+            }}
+          />
+        </VictoryGroup>
       </VictoryChart>
-    </Square>
+    </Rectangle>
 
   </ChartComp>
 )
