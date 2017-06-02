@@ -7,7 +7,6 @@ import {
   format,
 } from 'date-fns'
 import nlLocale from 'date-fns/locale/nl'
-import { isFunction } from 'lodash/fp'
 import { getConfigValues } from './reducers/configReducer'
 import { get } from './getset'
 import { connect } from 'react-redux'

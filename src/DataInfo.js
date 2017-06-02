@@ -9,7 +9,6 @@ import { InsideMargin } from './graphPickerSteps/Elements'
 import { fadeInAnimation } from './styles'
 import { getConfigValues } from './reducers/configReducer'
 import { connect } from 'react-redux'
-import { get } from './getset'
 
 const findTopic = topicKey => find(({ Key }) => Key === topicKey)
 const connectDataInfo = connect(state => {
