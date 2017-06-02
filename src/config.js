@@ -1,5 +1,6 @@
 const fromYear = 2000
 
+export const localStorageKey = 'redux'
 
 const getPeriodFilter = (propName = 'Perioden') =>
   `$filter=substring(${propName},0,4) ge '${fromYear}'`
