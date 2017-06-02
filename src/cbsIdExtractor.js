@@ -1,5 +1,5 @@
 import { getStatlineUrl } from './config'
-import { trim } from 'lodash/fp'
+import { trim, toUpper } from 'lodash/fp'
 
 export const parseUrl = maybeUrl => {
   try {
@@ -28,13 +28,10 @@ const extractFromUrl = parsedUrl => {
     : false
 }
 
-const extractFromId = input =>
-  isValidId(input)
-    ? {
-        id: input,
-        url: getStatlineUrl(input),
-      }
-    : false
+const extractFromId = input => ({
+  id: toUpper(input),
+  url: getStatlineUrl(input),
+})
 
 export const cbsIdExtractor = input => {
   const trimmedInput = trim(input)
