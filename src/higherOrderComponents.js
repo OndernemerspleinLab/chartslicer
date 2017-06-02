@@ -22,19 +22,19 @@ export const onlyWhenLoaded = compose(
 
 export const connectConfigChange = compose(
   connectActions,
-  connectActiveDataset({ id: ['id'] }),
+  connectActiveDataset({ fieldId: ['id'] }),
   connectConfigFieldValue,
   withHandlers({
-    onChange: ({ id, name, configChanged, inputValue }) => event => {
+    onChange: ({ fieldId, name, configChanged, inputValue }) => event => {
       const value = existing(inputValue)
         ? inputValue
         : event.currentTarget.value
-      configChanged({ name, value, id })
+      configChanged({ name, value, id: fieldId })
     },
   })
 )
 
-const filterTakeRight = (predicate, length) => array => {
+const filterTakeRight = (predicate, length) => (array = []) => {
   const memo = []
 
   for (
@@ -51,23 +51,31 @@ const filterTakeRight = (predicate, length) => array => {
   return memo
 }
 
-const dataFilterPredicate = ({
-  topicKey,
-  dimensionKey: { groupKey, key } = {},
-}) => object => propertyExisting(topicKey)(object) && object[groupKey] === key
+const equalsPropFrom = object => ([key, value]) => {
+  return object[key] === value
+}
+
+const dataFilterPredicate = ({ topicKey, dimensionKeys = {} }) => entry => {
+  const matchesTopicKey = propertyExisting(topicKey)(entry)
+  const matchesDimensions = Object.entries(dimensionKeys).every(
+    equalsPropFrom(entry)
+  )
+
+  return matchesTopicKey && matchesDimensions
+}
 
 const propertyExisting = key => object => existing(object[key])
 
 const filterDataset = (
   state,
-  { periodType, periodLength, topicKey, dimensionKey }
+  { periodType, periodLength, topicKey, dimensionKeys }
 ) => {
   const { data: dataByPeriodType } = getFromActiveDataset({
     data: ['data', periodType],
   })(state) || []
 
   const data = filterTakeRight(
-    dataFilterPredicate({ topicKey, dimensionKey }),
+    dataFilterPredicate({ topicKey, dimensionKeys }),
     periodLength
   )(dataByPeriodType)
 

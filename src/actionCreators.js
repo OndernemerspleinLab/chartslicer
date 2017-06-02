@@ -1,12 +1,11 @@
 import {
   getTableInfoUrl,
   getDataPropertiesUrl,
-  getDatasetCountUrl,
   getFilteredDatasetUrl,
   getDimensionGroupsUrl,
   getDimensionUrl,
 } from './config'
-import { groupBy, zipObject } from 'lodash/fp'
+import { groupBy, zipObject, flatten } from 'lodash/fp'
 import {
   DATASET_ID_SELECTED,
   DATASET_LOAD_SUCCESS,
@@ -15,7 +14,7 @@ import {
   CONFIG_CHANGED,
 } from './actions'
 import { cbsIdExtractor } from './cbsIdExtractor'
-import { fetchJson, fetchText } from './fetch'
+import { fetchJson } from './fetch'
 import { get, getIn, merge, set, update } from './getset'
 import { shouldFetchForId } from './reducers/networkStateReducer'
 import { getCbsPeriodType } from './cbsPeriod'
@@ -114,18 +113,32 @@ const fetchDataProperstiesAndDimensionInfo = id =>
     }))
   })
 
-const fetchDataset = id =>
-  fetchText(getDatasetCountUrl(id))
-    .then(Number)
-    .then(datasetSize => fetchJson(getFilteredDatasetUrl({ id, datasetSize })))
-    .then(get('value'))
+const fetchDataset = id => fetchJson(getFilteredDatasetUrl(id))
+
+const fetchNextDataset = (datasetList = []) => dataResponse => {
+  const partialDataset = get('value')(dataResponse)
+  const nextLink = get('odata.nextLink')(dataResponse)
+  datasetList.push(partialDataset)
+
+  if (nextLink) {
+    const httpsNextLink = nextLink.replace(/^http:/, 'https:')
+    return fetchJson(httpsNextLink).then(fetchNextDataset(datasetList))
+  }
+
+  return datasetList
+}
+
+const fetchFullDataset = id =>
+  fetchDataset(id)
+    .then(fetchNextDataset([]))
+    .then(flatten)
     .then(groupByPeriodType)
 
 const fetchTableData = ({ id }) =>
   allPromises(
     fetchTableInfo(id),
     fetchDataProperstiesAndDimensionInfo(id),
-    fetchDataset(id)
+    fetchFullDataset(id)
   ).then(
     ([tableInfo, { dataProperties, dimensions, dimensionGroups }, data]) => ({
       tableInfo,
@@ -153,9 +166,10 @@ export const tableSelectionChanged = ({
 
   dispatch(datasetIdSelected(maybeExtracted))
 
-  fetchTableData(maybeExtracted)
-    .then(data => dispatch(datasetLoadSuccess(merge(data)(maybeExtracted))))
-    .catch(error => {
+  fetchTableData(maybeExtracted).then(
+    data => dispatch(datasetLoadSuccess(merge(data)(maybeExtracted))),
+    error => {
       return dispatch(datasetLoadError(merge({ error })(maybeExtracted)))
-    })
+    }
+  )
 }

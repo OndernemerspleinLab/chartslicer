@@ -1,13 +1,8 @@
-import { minimalZero } from './helpers'
-const dataSetMaxSize = 2000
+const fromYear = 2000
 
-const fromYear = 2005
 
 const getPeriodFilter = (propName = 'Perioden') =>
   `$filter=substring(${propName},0,4) ge '${fromYear}'`
-
-export const getDatasetFilter = datasetSize =>
-  `$top=${dataSetMaxSize}&$skip=${minimalZero(datasetSize - dataSetMaxSize)}&${getPeriodFilter()}`
 
 export const apiOrigin = `https://opendata.cbs.nl`
 
@@ -23,8 +18,8 @@ export const getDimensionGroupsUrl = id => `${feedBaseUrl}/${id}/CategoryGroups`
 export const getDimensionUrl = ({ id, dimensionKey }) =>
   `${feedBaseUrl}/${id}/${dimensionKey}`
 
-export const getFilteredDatasetUrl = ({ datasetSize, id }) =>
-  `${getDatasetUrl(id)}?${getDatasetFilter(datasetSize)}`
+export const getFilteredDatasetUrl = id =>
+  `${getDatasetUrl(id)}?${getPeriodFilter()}`
 
 export const getDatasetCountUrl = id => `${getDatasetUrl(id)}/$count`
 
