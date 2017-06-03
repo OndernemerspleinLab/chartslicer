@@ -10,7 +10,7 @@ import { hemelblauw } from './colors'
 import {
   connectActiveDatasetsNetworkState,
 } from './reducers/networkStateReducer'
-import Color from 'color'
+import { Placeholder } from './Placeholder'
 
 css.global('*', {
   boxSizing: 'border-box',
@@ -33,38 +33,11 @@ const Sidebar = glamorous.div({
   flex: 'none',
 })
 
-const pulseAnimation = css.keyframes({
-  from: {
-    backgroundSize: '100%',
-  },
-  to: {
-    backgroundSize: '200%',
-  },
+const MainComp = glamorous.div({
+  flex: 'auto',
+  position: 'relative',
+  backgroundColor: hemelblauw.lighter,
 })
-
-const mainBackgroundColor = hemelblauw.lighter
-const maskGapColor = Color(mainBackgroundColor).alpha(0.3)
-
-const pulseAnimationPropValue = `1200ms ease-in-out infinite alternate ${pulseAnimation}`
-const MainComp = glamorous.div(
-  {
-    flex: 'auto',
-    backgroundImage: `radial-gradient(circle, ${maskGapColor}, ${mainBackgroundColor} 20%)`,
-    backgroundRepeat: 'no-repeat',
-    backgroundPosition: '50%',
-    backgroundColor: mainBackgroundColor,
-    transition: 'background-color 300ms ease-in-out',
-    backgroundAttachment: 'fixed',
-    animation: `${pulseAnimationPropValue}`,
-  },
-  ({ loading }) =>
-    loading
-      ? {
-          backgroundColor: hemelblauw.light,
-          transitionDelay: '200ms',
-        }
-      : null
-)
 
 const Main = connectActiveDatasetsNetworkState('loading')(MainComp)
 
@@ -74,6 +47,7 @@ export const App = () => (
       <GraphPicker />
     </Sidebar>
     <Main>
+      <Placeholder />
       <DataInfo />
       <Chart />
       <DataTable />

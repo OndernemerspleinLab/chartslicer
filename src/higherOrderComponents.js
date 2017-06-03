@@ -22,6 +22,11 @@ export const onlyWhenLoaded = compose(
   branch(({ loaded }) => !loaded, renderNothing)
 )
 
+export const onlyWhenNotLoaded = compose(
+  connectActiveDatasetsNetworkState('loaded'),
+  branch(({ loaded }) => loaded, renderNothing)
+)
+
 export const connectConfigChange = compose(
   connectActions,
   connectActiveDataset({ fieldId: ['id'] }),

@@ -45,6 +45,7 @@ const CallToActionIcon = glamorous(ChevronRight, {
           animationName: rotateKeyframes,
           animationDuration: '600ms',
           animationIterationCount: 'infinite',
+          animationTimingFunction: 'linear',
         }
       : null
 )
