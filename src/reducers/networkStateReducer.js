@@ -9,6 +9,7 @@ import { reduceFor, reduceIn, defaultState, reduceWhen } from './reducerHelpers'
 import { compose } from 'redux'
 import { update, merge, get } from '../getset'
 import { connect } from 'react-redux'
+import { existing } from '../helpers'
 
 export const invalidIdError = new Error('Invalid dataset ID')
 
@@ -87,4 +88,4 @@ const shouldFetch = itemNetworkState =>
   (!get('loading')(itemNetworkState) && !get('loaded')(itemNetworkState))
 
 export const shouldFetchForId = ({ id }) => networkState =>
-  shouldFetch(get(id)(networkState))
+  existing(id) && shouldFetch(get(id)(networkState))

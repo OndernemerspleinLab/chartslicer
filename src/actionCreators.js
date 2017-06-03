@@ -8,6 +8,7 @@ import {
 import { groupBy, zipObject, flatten } from 'lodash/fp'
 import {
   DATASET_ID_SELECTED,
+  DATASET_ID_CLEARED,
   DATASET_LOAD_SUCCESS,
   DATASET_LOAD_ERROR,
   INVALID_DATASET_ID_SELECTED,
@@ -37,6 +38,8 @@ export const configChanged = createSimpleAction(
   'name',
   'value'
 )
+
+export const datasetIdCleared = createSimpleAction(DATASET_ID_CLEARED)
 
 export const datasetIdSelected = createSimpleAction(
   DATASET_ID_SELECTED,
@@ -152,6 +155,10 @@ export const tableSelectionChanged = ({
   input,
   datasetsNetworkState,
 }) => dispatch => {
+  if (!input) {
+    dispatch(datasetIdCleared())
+    return
+  }
   const maybeExtracted = cbsIdExtractor(input)
 
   if (!maybeExtracted) {

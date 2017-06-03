@@ -5,8 +5,8 @@ import {
   bindActionCreators,
 } from 'redux'
 import thunk from 'redux-thunk'
-import * as actionCreators from './actionCreators'
 import { tableSelectionChanged } from './actionCreators'
+import * as actionCreators from './actionCreators'
 import { connect } from 'react-redux'
 import { composeReducers } from './reducers/reducerHelpers'
 import {
@@ -17,6 +17,7 @@ import {
 } from './reducers/networkStateReducer'
 import {
   reduceActiveDataset,
+  reduceClearedActiveDataset,
   reduceInvalidActiveId,
 } from './reducers/activeDatasetReducer'
 import { reduceDatasets } from './reducers/datasetsReducer'
@@ -41,6 +42,7 @@ export const addReducers = () => {
     reduceInvalidId,
     reduceActiveDataset,
     reduceDatasets,
+    reduceClearedActiveDataset,
     reduceInvalidActiveId,
     reduceNewDatasetConfig,
     reduceConfig
@@ -74,7 +76,7 @@ const handleUrlChange = ({ dispatch, getState }) => () => {
   const activeDatasetId = get('activeDatasetId')(getState())
   const locationActiveDatasetId = window.location.hash.replace(/^#/, '')
 
-  if (locationActiveDatasetId !== activeDatasetId && locationActiveDatasetId) {
+  if (locationActiveDatasetId !== activeDatasetId) {
     const datasetsNetworkState = get('datasetsNetworkState')(getState())
     dispatch(
       tableSelectionChanged({
