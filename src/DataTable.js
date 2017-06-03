@@ -24,9 +24,7 @@ const DataTableComp = glamorous.div({
   animation: fadeInAnimation,
 })
 
-const Table = glamorous.table({
-  minWidth: '30rem',
-})
+const Table = glamorous.table({})
 
 const TableHead = glamorous.thead()
 const Tablebody = glamorous.tbody()
@@ -44,7 +42,7 @@ const HeadingRow = glamorous.tr({
 })
 
 const cellStyle = {
-  padding: '0.2rem 0.8rem',
+  padding: '0.2rem 1.2rem',
 }
 const Cell = glamorous.td(cellStyle)
 

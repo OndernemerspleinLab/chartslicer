@@ -79,6 +79,7 @@ const ChartContainer = ({
           style={{
             tickLabels: {
               fontSize: '7px',
+              padding: 5,
             },
             axisLabel: {
               fontSize: '7px',
@@ -94,6 +95,7 @@ const ChartContainer = ({
           style={{
             tickLabels: {
               fontSize: '7px',
+              padding: 5,
             },
             axisLabel: {
               fontSize: '7px',
