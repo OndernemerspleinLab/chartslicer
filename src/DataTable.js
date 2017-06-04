@@ -4,6 +4,7 @@ import {
   onlyWhenLoaded,
   connectFilteredDataset,
   connectDataInfo,
+  onlyWhenData,
 } from './higherOrderComponents'
 import glamorous from 'glamorous'
 import { hemelblauw, wit } from './colors'
@@ -15,7 +16,8 @@ const enhancer = compose(
   onlyWhenLoaded,
   connectDataInfo,
   connectPeriodFormatter,
-  connectFilteredDataset
+  connectFilteredDataset,
+  onlyWhenData
 )
 
 const DataTableComp = glamorous.div({
@@ -54,7 +56,7 @@ const DataTableContainer = ({
   data,
   formatPeriod,
   periodType,
-}) => (
+}) =>
   <DataTableComp>
     <InsideMargin top="2rem" bottom="2rem">
       <Table>
@@ -69,7 +71,7 @@ const DataTableContainer = ({
           </HeadingRow>
         </TableHead>
         <Tablebody>
-          {data.map(entry => (
+          {data.map(entry =>
             <Row key={entry.ID}>
               <Cell>
                 {formatPeriod(entry.Perioden)}
@@ -78,11 +80,10 @@ const DataTableContainer = ({
                 {entry[topicKey]}
               </Cell>
             </Row>
-          ))}
+          )}
         </Tablebody>
       </Table>
     </InsideMargin>
   </DataTableComp>
-)
 
 export const DataTable = enhancer(DataTableContainer)

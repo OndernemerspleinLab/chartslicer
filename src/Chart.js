@@ -4,6 +4,7 @@ import {
   onlyWhenLoaded,
   connectFilteredDataset,
   connectDataInfo,
+  onlyWhenData,
 } from './higherOrderComponents'
 import {
   VictoryTheme,
@@ -27,7 +28,8 @@ const enhancer = compose(
   onlyWhenLoaded,
   connectPeriodFormatter,
   connectDataInfo,
-  connectFilteredDataset
+  connectFilteredDataset,
+  onlyWhenData
 )
 
 const chartParentStyle = {
@@ -56,13 +58,7 @@ const ChartComp = glamorous.div({
   padding: '0 3rem',
   maxWidth: '60rem',
 })
-const ChartContainer = ({
-  topicKey,
-  data,
-  formatPeriod,
-  topic,
-  periodType,
-}) => (
+const ChartContainer = ({ topicKey, data, formatPeriod, topic, periodType }) =>
   <ChartComp>
     <Rectangle>
       <VictoryChart
@@ -120,6 +116,5 @@ const ChartContainer = ({
     </Rectangle>
 
   </ChartComp>
-)
 
 export const Chart = enhancer(ChartContainer)

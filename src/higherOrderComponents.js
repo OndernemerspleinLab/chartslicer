@@ -1,8 +1,6 @@
 import { branch, renderNothing, withHandlers } from 'recompose'
 import { compose } from 'redux'
-import {
-  connectActiveDatasetsNetworkState,
-} from './reducers/networkStateReducer'
+import { connectActiveDatasetsNetworkState } from './reducers/networkStateReducer'
 import { connectActions } from './store'
 import {
   connectActiveDataset,
@@ -20,6 +18,10 @@ import { getConfigValues } from './reducers/configReducer'
 export const onlyWhenLoaded = compose(
   connectActiveDatasetsNetworkState('loaded'),
   branch(({ loaded }) => !loaded, renderNothing)
+)
+
+export const onlyWhenData = compose(
+  branch(({ data }) => data.length <= 0, renderNothing)
 )
 
 export const onlyWhenNotLoaded = compose(
@@ -77,9 +79,10 @@ const filterDataset = (
   state,
   { periodType, periodLength, topicKey, dimensionKeys }
 ) => {
-  const { data: dataByPeriodType } = getFromActiveDataset({
-    data: ['data', periodType],
-  })(state) || []
+  const { data: dataByPeriodType } =
+    getFromActiveDataset({
+      data: ['data', periodType],
+    })(state) || []
 
   const data = filterTakeRight(
     dataFilterPredicate({ topicKey, dimensionKeys }),
@@ -104,9 +107,8 @@ export const connectDataInfo = connect(state => {
   const { periodType } = getConfigValues(['periodType'])(state)
 
   const findTopic = topicKey => find(({ Key }) => Key === topicKey)
-  const topic = compose(findTopic(topicKey), flatten, Object.values)(
-    topics
-  ) || {}
+  const topic =
+    compose(findTopic(topicKey), flatten, Object.values)(topics) || {}
 
   return { topic, periodType }
 })
