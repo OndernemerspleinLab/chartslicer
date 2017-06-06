@@ -16,7 +16,7 @@ const mapCbsTableInfo = (id: DatasetId) => (
 ): TableInfo => ({
   id,
   title: Title,
-  graphTypes: split(GraphTypes),
+  graphTypes: split(',')(GraphTypes),
   periodTypes: getPeriodTypes(cbsPeriods),
 })
 
