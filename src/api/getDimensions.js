@@ -22,6 +22,7 @@ export const getDimensions = (id: DatasetId) => ({
 }: CbsDataProperties): Dimensions => {
   return {
     id,
+    order: [...Dimension, ...GeoDimension].map(({ Key }) => Key),
     ...reduceDimensions([...Dimension, ...GeoDimension]),
   }
 }
