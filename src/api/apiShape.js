@@ -77,10 +77,10 @@ export type CbsCategoriesPromise = Promise<CbsCategories>
 ///////// CategoryGroups /////////
 
 export type CbsCategoryGroup = {
-  ID: CategoryGroupId,
+  ID: CategoryGroupId | 'root',
   DimensionKey: DimensionKey,
-  Title: string,
-  ParentID: Id,
+  Title?: string,
+  ParentID?: Id,
 }
 
 export type CbsCategoryGroups = CbsCategoryGroup[]

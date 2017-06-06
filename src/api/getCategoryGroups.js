@@ -17,7 +17,7 @@ const groupByDimensionKey = groupBy(({ DimensionKey }) =>
   defaultToRoot(DimensionKey)
 )
 
-const getArrayFromMap = id => map => get(defaultToRoot(id))(map) || []
+const getArrayFromMap = id => map => get(id)(map) || []
 
 const groupByParentID = groupBy(({ ParentID }) => defaultToRoot(ParentID))
 const groupByCategoryGroupID = groupBy(({ CategoryGroupID }) => CategoryGroupID)
@@ -58,13 +58,19 @@ const cbsCategoryGroupsByDimensionReducer = (
   )
   const cbsCategoryGroupsByParentId = groupByParentID(cbsCategoryGroups)
 
-  const categoryGroupsForDimension = cbsCategoryGroups.reduce(
-    cbsCategoryGroupsByParentIdReducer({
+  const categoryGroupsForDimension = {
+    root: mapCategoryGroup({
       cbsCategoriesByGroupID,
       cbsCategoryGroupsByParentId,
-    }),
-    {}
-  )
+    })({ ID: 'root', DimensionKey: dimensionKey }),
+    ...cbsCategoryGroups.reduce(
+      cbsCategoryGroupsByParentIdReducer({
+        cbsCategoriesByGroupID,
+        cbsCategoryGroupsByParentId,
+      }),
+      {}
+    ),
+  }
 
   return set(dimensionKey, categoryGroupsForDimension)(memo)
 }

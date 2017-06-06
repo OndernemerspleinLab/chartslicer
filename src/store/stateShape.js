@@ -29,9 +29,9 @@ export type TableInfo = {
 
 ///////// Topics /////////
 
-export type TopicKey = Key
+export type TopicKey = Key | 'root'
 
-export type TopicGroupId = Id
+export type TopicGroupId = Id | 'root'
 
 export type TopicGroupRoot = {
   id: TopicGroupId,
@@ -40,7 +40,7 @@ export type TopicGroupRoot = {
 }
 
 export type TopicGroup = TopicGroupRoot & {
-  title: string,
+  title?: string,
 }
 
 export type TopicGroups = {
@@ -70,14 +70,14 @@ export type DimensionKey = Key
 export type CategoryGroupKeyPath = [DimensionKey, CategoryGroupId]
 
 export type CategoryGroupRoot = {
-  id: CategoryGroupId,
+  id: CategoryGroupId | 'root',
   dimensionKey: DimensionKey,
   categories: CategoryKey[],
   categoryGroups: CategoryGroupId[],
 }
 
 export type CategoryGroup = CategoryGroupRoot & {
-  title: string,
+  title?: string,
 }
 
 export type CategoryGroups = {
@@ -113,6 +113,7 @@ export type Dimension = {
 
 export type Dimensions = {
   id: DatasetId,
+  order: DimensionKey[],
   [DimensionKey]: Dimension,
 }
 
