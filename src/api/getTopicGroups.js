@@ -17,7 +17,7 @@ const defaultToRoot = id => (existing(id) ? id : 'root')
 
 const groupByParentID = groupBy(({ ParentID }) => defaultToRoot(ParentID))
 
-const getArrayFromMap = ID => map => get(defaultToRoot(ID))(map) || []
+const getArrayFromMap = ID => map => get(ID)(map) || []
 
 type KeyMap = { [string]: Key[] }
 type IdMap = { [string]: Id[] }
@@ -53,7 +53,10 @@ const topicGroupReducer = ({
     })
   )(memo)
 
-const reduceCbsTopicGroups = ({ Topic, TopicGroup }: CbsDataProperties) => {
+const reduceCbsTopicGroups = ({
+  Topic = [],
+  TopicGroup = [],
+}: CbsDataProperties) => {
   const topicMap: KeyMap = groupByParentID(Topic)
   const topicGroupMap: IdMap = groupByParentID(TopicGroup)
 
