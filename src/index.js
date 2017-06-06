@@ -6,7 +6,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import 'glamor-reset'
 
-import { startStore } from './store'
+import { startStore } from './store/store'
 
 import { App } from './App'
 import { Provider } from 'react-redux'

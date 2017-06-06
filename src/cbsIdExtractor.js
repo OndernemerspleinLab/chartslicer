@@ -20,18 +20,10 @@ const extractFromUrl = parsedUrl => {
 
   const id = pathComponents[index + 1]
 
-  return isValidId(id)
-    ? {
-        id: pathComponents[index + 1],
-        url: parsedUrl.href,
-      }
-    : false
+  return isValidId(id) ? toUpper(id) : false
 }
 
-const extractFromId = input => ({
-  id: toUpper(input),
-  url: getStatlineUrl(input),
-})
+const extractFromId = input => toUpper(input)
 
 export const cbsIdExtractor = input => {
   const trimmedInput = trim(input)

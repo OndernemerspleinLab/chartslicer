@@ -1,20 +1,63 @@
-import { CONFIG_CHANGED, DATASET_LOAD_SUCCESS } from '../actions'
-import { reduceFor, reduceIn, defaultState } from './reducerHelpers'
+import { CONFIG_CHANGED, DATASET_LOAD_SUCCESS } from '../actions/actions'
+import {
+  reduceFor,
+  reduceIn,
+  defaultState,
+  composeReducers,
+} from './reducerHelpers'
 import { compose } from 'redux'
 import { reduce, first, mapValues } from 'lodash/fp'
-import { set, setIn, get, getIn, update, addDefaults } from '../getset'
+import {
+  set,
+  setIn,
+  get,
+  getIn,
+  update,
+  addDefaults,
+  updateIn,
+  addLast,
+} from '../getset'
 import { connect } from 'react-redux'
 import { defaultPeriodLength } from '../config'
+import { existing } from '../helpers'
 
-const configReducerSelector = compose(reduceIn('config'), defaultState({}))
+///////// Selector /////////
 
-const configReducer = (state = {}, { id, name, value }) =>
-  setIn([id, name], value)(state)
+const configSelector = compose(reduceIn('config'), defaultState({}))
 
-export const reduceConfig = compose(
-  configReducerSelector,
+///////// Set Config Reducer /////////
+
+const setConfigEntry = (state = {}, { id, keyPath, value }) =>
+  setIn([id, ...keyPath], value)(state)
+
+const addUniqueValue = value => (valueList = []) =>
+  valueList.includes(value) ? valueList : addLast(value)(valueList)
+
+const pushConfigEntry = (state = {}, { id, keyPath, value }) =>
+  updateIn([id, ...keyPath], addUniqueValue)(state)
+
+const replaceConfigEntry = (state = {}, { id, keyPath, value }) =>
+  setIn([id, ...keyPath], [value])(state)
+
+const setConfigMultiValueEntry = (state, action) =>
+  action.replaceValue
+    ? replaceConfigEntry(state, action)
+    : pushConfigEntry(state, action)
+
+const addKeyPath = (state, action) =>
+  existing(action.keyPath) ? action : set('keyPath', action.name)(action)
+
+const setConfig = (state, action) =>
+  action.multiValue
+    ? setConfigMultiValueEntry(state, action)
+    : setConfigEntry(state, action)
+
+export const setConfigReducer = compose(
+  configSelector,
   reduceFor(CONFIG_CHANGED)
-)(configReducer)
+)(compose(setConfig, addKeyPath))
+
+///////// Add initial config /////////
 
 const getFirstKey = getIn([0, 'Key'])
 
@@ -70,13 +113,17 @@ const initConfig = ({ id, data, dataProperties, dimensions }) => (
     dimensionKeys: findDefaultDimensions({ dataProperties, dimensions }),
   })(config)
 
-const newDatasetConfigReducer = (state = {}, action) =>
+const addInitialConfig = (state = {}, action) =>
   update(action.id, initConfig(action))(state)
 
-export const reduceNewDatasetConfig = compose(
-  configReducerSelector,
+const initialConfigForDatasetReducer = compose(
+  configSelector,
   reduceFor(DATASET_LOAD_SUCCESS)
-)(newDatasetConfigReducer)
+)(addInitialConfig)
+
+///////// Config Reducer /////////
+
+export const configReducer = composeReducers(initialConfigForDatasetReducer)
 
 // GETTERS
 

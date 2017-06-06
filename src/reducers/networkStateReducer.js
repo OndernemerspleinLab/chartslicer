@@ -3,7 +3,7 @@ import {
   DATASET_LOAD_SUCCESS,
   DATASET_LOAD_ERROR,
   INVALID_DATASET_ID_SELECTED,
-} from '../actions'
+} from '../actions/actions'
 import { pick } from 'lodash/fp'
 import { reduceFor, reduceIn, defaultState, reduceWhen } from './reducerHelpers'
 import { compose } from 'redux'
@@ -87,5 +87,5 @@ const shouldFetch = itemNetworkState =>
   get('error')(itemNetworkState) ||
   (!get('loading')(itemNetworkState) && !get('loaded')(itemNetworkState))
 
-export const shouldFetchForId = ({ id }) => networkState =>
+export const shouldFetchForId = id => networkState =>
   existing(id) && shouldFetch(get(id)(networkState))

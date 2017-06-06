@@ -1,7 +1,7 @@
 import { branch, renderNothing, withHandlers } from 'recompose'
 import { compose } from 'redux'
 import { connectActiveDatasetsNetworkState } from './reducers/networkStateReducer'
-import { connectActions } from './store'
+import { connectActions } from './connectors/actionsConnector'
 import {
   connectActiveDataset,
   getFromActiveDataset,

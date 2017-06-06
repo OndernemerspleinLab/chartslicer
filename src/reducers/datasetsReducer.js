@@ -1,4 +1,4 @@
-import { DATASET_LOAD_SUCCESS } from '../actions'
+import { DATASET_LOAD_SUCCESS } from '../actions/actions'
 import { reduceFor, reduceIn, defaultState } from './reducerHelpers'
 import { compose } from 'redux'
 import { mapValues } from 'lodash/fp'

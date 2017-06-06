@@ -6,7 +6,7 @@ import { Media, MediaText, MediaFigure } from '../Media'
 import { marginBottomHalfStyle } from '../marginStyle'
 import { afterPaste } from '../domHelpers'
 import { borderRadiusOnlyLeft } from '../styles'
-import { connectActions } from '../store'
+import { connectActions } from '../connectors/actionsConnector'
 import {
   connectDatasetsNetworkState,
   connectActiveDatasetsNetworkState,
@@ -38,7 +38,7 @@ const enhancer = compose(
   })
 )
 export const TablePickerInput = enhancer(
-  ({ onChange, onSubmit, onPaste, updateValue, loading }) => (
+  ({ onChange, onSubmit, onPaste, updateValue, loading }) =>
     <form onSubmit={onSubmit}>
       <Label htmlFor="tableIdInput" css={marginBottomHalfStyle}>
         Dataset URL of ID
@@ -58,5 +58,4 @@ export const TablePickerInput = enhancer(
         </MediaFigure>
       </Media>
     </form>
-  )
 )
