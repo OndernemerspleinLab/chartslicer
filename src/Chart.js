@@ -66,10 +66,10 @@ const ChartContainer = ({ topicKey, data, formatPeriod, topic, periodType }) =>
         height={chartHeight}
         style={{ parent: chartParentStyle }}
         theme={VictoryTheme.material}
-        domainPadding={0}
       >
         <VictoryAxis
           dependentAxis
+          domain={[0]}
           fixLabelOverlap
           label={`${topic.Title} (${topic.Unit})`}
           style={{
