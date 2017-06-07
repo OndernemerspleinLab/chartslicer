@@ -72,6 +72,7 @@ const ChartContainer = ({ topicKey, data, formatPeriod, topic, periodType }) =>
           dependentAxis
           fixLabelOverlap
           label={`${topic.Title} (${topic.Unit})`}
+          domain={[0]}
           style={{
             tickLabels: {
               fontSize: '7px',

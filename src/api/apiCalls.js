@@ -1,7 +1,7 @@
 // @flow
 
 import { fetchJson } from './fetch'
-import { get, getIn } from '../getset'
+import { get, getIn } from '../helpers/getset'
 import type { DatasetId, DimensionKey } from '../store/stateShape'
 import type {
   CbsDataPropertiesPromise,
@@ -11,8 +11,8 @@ import type {
   CbsPeriodsPromise,
 } from './apiShape'
 
-const getOnlyValue = getIn(['value', 0])
-const getValues = get('value')
+const getOnlyValue = responseBody => getIn(['value', 0])(responseBody) || {}
+const getValues = responseBody => get('value')(responseBody) || []
 
 const select = (keys: string[]) => `$select=${keys.join(',')}`
 

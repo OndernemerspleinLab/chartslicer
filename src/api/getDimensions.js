@@ -2,7 +2,7 @@
 
 import type { Dimensions, Dimension, DatasetId } from '../store/stateShape'
 import type { CbsDimensions, CbsDimension } from './apiShape'
-import { set } from '../getset'
+import { set } from '../helpers/getset'
 import type { CbsDataProperties } from './getCbsDataPropertiesPromise'
 
 const mapDimension = ({ Key, Title, Type }: CbsDimension): Dimension => ({

@@ -3,7 +3,7 @@
 import type { DatasetId, Topics, Topic } from '../store/stateShape'
 import type { CbsDataProperties } from './getCbsDataPropertiesPromise'
 import type { CbsTopic } from './apiShape'
-import { set } from '../getset'
+import { set } from '../helpers/getset'
 
 const topicMapper = ({ Key, Title, Unit, Decimals }: CbsTopic): Topic => ({
   key: Key,

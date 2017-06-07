@@ -1,15 +1,19 @@
 // @flow
-import { groupBy, reduce } from 'lodash/fp'
+import { groupBy, reduce, pickBy } from 'lodash/fp'
 import type {
   DatasetId,
   DimensionKey,
   CategoryGroups,
   CategoryGroup,
 } from '../store/stateShape'
-import type { CbsCategoryGroups, CbsCategoryGroup } from './apiShape'
-import { set, get } from '../getset'
+import type {
+  CbsCategoryGroups,
+  CbsCategoryGroup,
+  CbsCategories,
+} from './apiShape'
+import { set, get } from '../helpers/getset'
 import type { CbsCategoriesByDimension } from './getCbsCategoriesByDimensionPromise'
-import { existing } from '../helpers'
+import { existing } from '../helpers/helpers'
 
 const defaultToRoot = id => (existing(id) ? id : 'root')
 
@@ -20,7 +24,9 @@ const groupByDimensionKey = groupBy(({ DimensionKey }) =>
 const getArrayFromMap = id => map => get(id)(map) || []
 
 const groupByParentID = groupBy(({ ParentID }) => defaultToRoot(ParentID))
-const groupByCategoryGroupID = groupBy(({ CategoryGroupID }) => CategoryGroupID)
+const groupByCategoryGroupID = groupBy(({ CategoryGroupID }) =>
+  defaultToRoot(CategoryGroupID)
+)
 
 const mapCategoryGroup = ({
   cbsCategoriesByGroupID,
@@ -47,22 +53,24 @@ const cbsCategoryGroupsByParentIdReducer = ({
   return set(cbsCategoryGroup.ID, categoryGroup)(memo)
 }
 
+export type CbsCategoryGroupsByDimension = {
+  [DimensionKey]: CbsCategoryGroups,
+}
+
 const cbsCategoryGroupsByDimensionReducer = (
-  cbsCategoriesByDimension: CbsCategoriesByDimension
-) => (
-  memo,
-  [dimensionKey, cbsCategoryGroups]: [DimensionKey, CbsCategoryGroups]
-) => {
-  const cbsCategoriesByGroupID = groupByCategoryGroupID(
-    cbsCategoriesByDimension[dimensionKey]
-  )
+  cbsCategoryGroupsByDimension: CbsCategoryGroupsByDimension
+) => (memo, [dimensionKey, cbsCategories]: [DimensionKey, CbsCategories]) => {
+  const cbsCategoriesByGroupID = groupByCategoryGroupID(cbsCategories)
+  const cbsCategoryGroups = cbsCategoryGroupsByDimension[dimensionKey] || []
   const cbsCategoryGroupsByParentId = groupByParentID(cbsCategoryGroups)
 
   const categoryGroupsForDimension = {
-    root: mapCategoryGroup({
-      cbsCategoriesByGroupID,
-      cbsCategoryGroupsByParentId,
-    })({ ID: 'root', DimensionKey: dimensionKey }),
+    root: pickBy(existing)(
+      mapCategoryGroup({
+        cbsCategoriesByGroupID,
+        cbsCategoryGroupsByParentId,
+      })({ ID: 'root', DimensionKey: dimensionKey })
+    ),
     ...cbsCategoryGroups.reduce(
       cbsCategoryGroupsByParentIdReducer({
         cbsCategoriesByGroupID,
@@ -79,14 +87,12 @@ const reduceCbsCategoryGroups = ({
   cbsCategoryGroups,
   cbsCategoriesByDimension,
 }) => {
-  const cbsCategoryGroupsByDimension = Object.entries(
-    groupByDimensionKey(cbsCategoryGroups)
-  )
+  const cbsCategoryGroupsByDimension = groupByDimensionKey(cbsCategoryGroups)
 
   return reduce(
-    cbsCategoryGroupsByDimensionReducer(cbsCategoriesByDimension),
+    cbsCategoryGroupsByDimensionReducer(cbsCategoryGroupsByDimension),
     {}
-  )(cbsCategoryGroupsByDimension)
+  )(Object.entries(cbsCategoriesByDimension))
 }
 
 export const getCategoryGroups = (id: DatasetId) => ({
@@ -95,7 +101,9 @@ export const getCategoryGroups = (id: DatasetId) => ({
 }: {
   cbsCategoryGroups: CbsCategoryGroups,
   cbsCategoriesByDimension: CbsCategoriesByDimension,
-}): CategoryGroups => ({
-  id,
-  ...reduceCbsCategoryGroups({ cbsCategoryGroups, cbsCategoriesByDimension }),
-})
+}): CategoryGroups => {
+  return {
+    id,
+    ...reduceCbsCategoryGroups({ cbsCategoryGroups, cbsCategoriesByDimension }),
+  }
+}

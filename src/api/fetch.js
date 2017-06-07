@@ -1,4 +1,4 @@
-import { setIn } from '../getset'
+import { setIn } from '../helpers/getset'
 // @flow
 
 type PromiseAny = Promise<any>

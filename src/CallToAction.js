@@ -4,7 +4,7 @@ import { violet, wit } from './colors'
 import { ChevronRight } from './svg/ChevronRight'
 import React from 'react'
 import { InlineMedia, MediaText, MediaFigure } from './Media'
-import { square } from './styleHelpers'
+import { square } from './helpers/styleHelpers'
 import { Hidden } from './graphPickerSteps/Elements'
 import { borderRadius, borderRadiusOnlyRight } from './styles'
 
@@ -50,44 +50,40 @@ const CallToActionIcon = glamorous(ChevronRight, {
       : null
 )
 
-const CallToActionInner = props => (
+const CallToActionInner = props =>
   <InlineMedia {...props}>
     <MediaText>{props.children}</MediaText>
     <MediaFigure><CallToActionIcon loading={props.loading} /></MediaFigure>
   </InlineMedia>
-)
 const CallToActionButton = glamorous.button({})
 const CallToActionLinkComp = glamorous.a({})
 
 export const CallToAction = glamorous(
-  props => (
+  props =>
     <CallToActionButton {...props}>
       <CallToActionInner loading={props.loading}>
         {props.children}
       </CallToActionInner>
-    </CallToActionButton>
-  ),
+    </CallToActionButton>,
   { displayName: 'CallToAction' }
 )(callToActionStyle)
 
 export const CallToActionLink = glamorous(
-  props => (
+  props =>
     <CallToActionLinkComp {...props}>
       <CallToActionInner loading={props.loading}>
         {props.children}
       </CallToActionInner>
-    </CallToActionLinkComp>
-  ),
+    </CallToActionLinkComp>,
   { displayName: 'CallToActionLink' }
 )(callToActionStyle)
 
 export const Submit = glamorous(
-  props => (
+  props =>
     <CallToActionButton type="submit" {...props}>
       <Hidden>{props.children}</Hidden>
       <CallToActionIcon loading={props.loading} />
-    </CallToActionButton>
-  ),
+    </CallToActionButton>,
   { displayName: 'Submit' }
 )(callToActionStyle, borderRadiusOnlyRight, {
   paddingLeft: '0.3em',

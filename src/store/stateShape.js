@@ -1,6 +1,7 @@
 // @flow
 
 export type Key = string
+export type KeyPath = Key[]
 
 export type Id = number
 

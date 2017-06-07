@@ -1,4 +1,4 @@
-import { update } from '../getset'
+import { update } from '../helpers/getset'
 
 export const composeReducers = (...reducers) =>
   reducers.length === 0

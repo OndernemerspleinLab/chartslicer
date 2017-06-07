@@ -5,9 +5,7 @@ import { onlyWhenNotLoaded } from './higherOrderComponents'
 import imageSrc from './George_Bernard_Shaw_1925.jpg'
 import Color from 'color'
 import { hemelblauw } from './colors'
-import {
-  connectActiveDatasetsNetworkState,
-} from './reducers/networkStateReducer'
+import { connectActiveDatasetsLoadingState } from './reducers/loadingStateReducer'
 import { compose } from 'recompose'
 import { css } from 'glamor'
 
@@ -76,7 +74,9 @@ const FigureComp = glamorous.figure(
       bottom: 0,
       top: 0,
       right: 0,
-      backgroundImage: `radial-gradient(closest-side, ${Color(hemelblauw.lighter).alpha(0.3)}, ${hemelblauw.lighter})`,
+      backgroundImage: `radial-gradient(closest-side, ${Color(
+        hemelblauw.lighter
+      ).alpha(0.3)}, ${hemelblauw.lighter})`,
     },
   },
   ({ loading }) =>
@@ -87,7 +87,7 @@ const FigureComp = glamorous.figure(
       : null
 )
 
-const Figure = connectActiveDatasetsNetworkState('loading')(FigureComp)
+const Figure = connectActiveDatasetsLoadingState('loading')(FigureComp)
 
 const Image = glamorous.img({
   display: 'block',
@@ -95,7 +95,7 @@ const Image = glamorous.img({
   height: `${imageHeight}rem`,
 })
 
-const PlaceholderContainer = () => (
+const PlaceholderContainer = () =>
   <Center>
     <PlaceholderComp>
       <Figure>
@@ -107,6 +107,5 @@ const PlaceholderContainer = () => (
       </BlockQuote>
     </PlaceholderComp>
   </Center>
-)
 
 export const Placeholder = compose(onlyWhenNotLoaded)(PlaceholderContainer)

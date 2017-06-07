@@ -1,15 +1,13 @@
 import {
   DATASET_ID_SELECTED,
   DATASET_ID_CLEARED,
-  DATASET_LOAD_SUCCESS,
-  DATASET_LOAD_ERROR,
+  METADATA_LOAD_SUCCESS,
+  METADATA_LOAD_ERROR,
   INVALID_DATASET_ID_SELECTED,
   CONFIG_CHANGED,
 } from './actions'
-import { cbsIdExtractor } from '../cbsIdExtractor'
-import { merge, set } from '../getset'
-import { shouldFetchForId } from '../reducers/networkStateReducer'
-import { getMetadataPromise } from '../api/getMetadataPromise'
+
+export { datasetSelectionChanged } from './datasetSelectionChangedActionCreator'
 
 const plucker = source => (memo, propName) => {
   memo[propName] = source[propName]
@@ -21,9 +19,11 @@ const createSimpleAction = (type, ...propNames) => props =>
 
 export const configChanged = createSimpleAction(
   CONFIG_CHANGED,
-  'id',
-  'name',
-  'value'
+  'activeDatasetId',
+  'keyPath',
+  'value',
+  'replaceValue',
+  'multiValue'
 )
 
 export const datasetIdCleared = createSimpleAction(DATASET_ID_CLEARED)
@@ -39,47 +39,19 @@ export const invalidDatasetIdSelected = createSimpleAction(
   'input'
 )
 
-export const datasetLoadSuccess = createSimpleAction(
-  DATASET_LOAD_SUCCESS,
+export const metadataLoadSuccess = createSimpleAction(
+  METADATA_LOAD_SUCCESS,
   'id',
-  'dataProperties',
-  'dimensions',
-  'dimensionGroups',
   'tableInfo',
   'topicGroups',
   'topics',
+  'dimensions',
   'categoryGroups',
   'categories'
 )
 
-export const datasetLoadError = createSimpleAction(
-  DATASET_LOAD_ERROR,
+export const metadataLoadError = createSimpleAction(
+  METADATA_LOAD_ERROR,
   'id',
   'error'
 )
-
-export const tableSelectionChanged = ({
-  input,
-  datasetsNetworkState,
-}) => dispatch => {
-  if (!input) {
-    dispatch(datasetIdCleared())
-    return
-  }
-
-  const maybeId = cbsIdExtractor(input)
-
-  if (!maybeId) {
-    dispatch(invalidDatasetIdSelected({ input }))
-    return
-  }
-
-  if (!shouldFetchForId(maybeId)(datasetsNetworkState)) {
-    dispatch(datasetIdSelected({ loaded: true, id: maybeId }))
-    return
-  }
-
-  dispatch(datasetIdSelected({ id: maybeId }))
-
-  getMetadataPromise(maybeId).then(data => dispatch(datasetLoadSuccess(data)))
-}

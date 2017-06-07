@@ -8,7 +8,7 @@ import type {
 } from '../store/stateShape'
 import type { CbsCategoriesByDimension } from './getCbsCategoriesByDimensionPromise'
 import type { CbsCategory, CbsCategories } from './apiShape'
-import { set } from '../getset'
+import { set } from '../helpers/getset'
 
 const mapCategory = (dimensionKey: DimensionKey) => ({
   Key,

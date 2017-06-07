@@ -7,8 +7,7 @@ import {
   format,
 } from 'date-fns'
 import nlLocale from 'date-fns/locale/nl'
-import { getConfigValues } from './reducers/configReducer'
-import { get } from './getset'
+import { get } from './helpers/getset'
 import { connect } from 'react-redux'
 
 const formatDate = (date, formatTemplate) =>
@@ -125,7 +124,9 @@ const perHalfYear = {
       startDate,
       endDate,
       format: () =>
-        `${formatDate(startDate, 'YYYY')} ${part2 === '01' ? 'eerste helft' : 'tweede helft'}`,
+        `${formatDate(startDate, 'YYYY')} ${part2 === '01'
+          ? 'eerste helft'
+          : 'tweede helft'}`,
     }
   },
 }
@@ -251,16 +252,3 @@ const createFormatPeriod = parser => cbsPeriodString => {
 
   return format()
 }
-
-export const connectPeriodFormatter = connect(state => {
-  const { periodType } = getConfigValues(['periodType'])(state)
-
-  const periodParser =
-    get('parse')(getParserForType(periodType)) || (value => value)
-
-  const formatPeriod = createFormatPeriod(periodParser)
-  return {
-    periodType,
-    formatPeriod,
-  }
-})

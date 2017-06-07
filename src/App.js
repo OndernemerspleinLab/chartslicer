@@ -1,16 +1,13 @@
 import React from 'react'
 import { GraphPicker } from './GraphPicker'
 import { css } from 'glamor'
-import { Chart } from './Chart'
-import { DataInfo } from './DataInfo'
-import { DataTable } from './DataTable'
+// import { Chart } from './Chart'
+// import { DataInfo } from './DataInfo'
+// import { DataTable } from './DataTable'
 import glamorous from 'glamorous'
 import { mqBig } from './config'
 import { hemelblauw } from './colors'
-import {
-  connectActiveDatasetsNetworkState,
-} from './reducers/networkStateReducer'
-import { Placeholder } from './Placeholder'
+// import { Placeholder } from './Placeholder'
 
 css.global('*', {
   boxSizing: 'border-box',
@@ -33,24 +30,21 @@ const Sidebar = glamorous.div({
   flex: 'none',
 })
 
-const MainComp = glamorous.div({
+const Main = glamorous.div({
   flex: 'auto',
   position: 'relative',
   backgroundColor: hemelblauw.lighter,
 })
 
-const Main = connectActiveDatasetsNetworkState('loading')(MainComp)
-
-export const App = () => (
+export const App = () =>
   <Layout>
     <Sidebar>
       <GraphPicker />
     </Sidebar>
-    <Main>
+    {/*<Main>
       <Placeholder />
       <DataInfo />
       <Chart />
       <DataTable />
-    </Main>
+    </Main>*/}
   </Layout>
-)

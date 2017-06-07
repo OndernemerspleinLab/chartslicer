@@ -1,7 +1,7 @@
-import { existing } from '../helpers'
-import { get } from '../getset'
-import { tableSelectionChanged } from '../actions/actionCreators'
-import { listenOn } from '../domHelpers'
+import { existing } from '../helpers/helpers'
+import { get } from '../helpers/getset'
+import { datasetSelectionChanged } from '../actions/actionCreators'
+import { listenOn } from '../helpers/domHelpers'
 
 export const localStorageKey = 'redux/chartslicer'
 
@@ -33,11 +33,9 @@ const handleUrlChange = ({ dispatch, getState }) => () => {
   const locationActiveDatasetId = window.location.hash.replace(/^#/, '')
 
   if (locationActiveDatasetId !== activeDatasetId) {
-    const datasetsNetworkState = get('datasetsNetworkState')(getState())
     dispatch(
-      tableSelectionChanged({
+      datasetSelectionChanged({
         input: locationActiveDatasetId,
-        datasetsNetworkState,
       })
     )
   }

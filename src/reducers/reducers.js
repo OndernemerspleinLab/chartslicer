@@ -1,20 +1,12 @@
 import { composeReducers } from './reducerHelpers'
-import {
-  reduceLoading,
-  reduceLoadSuccess,
-  reduceLoadError,
-  reduceInvalidId,
-} from './networkStateReducer'
+import { metadataLoadingStateReducer } from './metadataLoadingStateReducer'
 import { activeDatasetReducer } from './activeDatasetReducer'
-import { reduceDatasets } from './datasetsReducer'
 import { configReducer } from './configReducer'
+import { metadataReducer } from './metadataReducer'
 
 export const reducers = composeReducers(
-  reduceLoading,
-  reduceLoadSuccess,
-  reduceLoadError,
-  reduceInvalidId,
+  metadataReducer,
+  metadataLoadingStateReducer,
   activeDatasetReducer,
-  reduceDatasets,
   configReducer
 )

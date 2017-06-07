@@ -1,4 +1,3 @@
-import { getStatlineUrl } from './config'
 import { trim, toUpper } from 'lodash/fp'
 
 export const parseUrl = maybeUrl => {

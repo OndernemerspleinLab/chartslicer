@@ -9,9 +9,9 @@ import type {
 } from '../store/stateShape'
 import type { CbsDataProperties } from './getCbsDataPropertiesPromise'
 import type { CbsTopicGroup } from './apiShape'
-import { groupBy } from 'lodash/fp'
-import { get, set } from '../getset'
-import { existing } from '../helpers'
+import { groupBy, pickBy } from 'lodash/fp'
+import { get, set } from '../helpers/getset'
+import { existing } from '../helpers/helpers'
 
 const defaultToRoot = id => (existing(id) ? id : 'root')
 
@@ -61,14 +61,16 @@ const reduceCbsTopicGroups = ({
   const topicGroupMap: IdMap = groupByParentID(TopicGroup)
 
   return {
-    root: topicGroupMapper({
-      topicMap,
-      topicGroupMap,
-      cbsTopicGroup: {
-        ID: 'root',
-        Type: 'TopicGroup',
-      },
-    }),
+    root: pickBy(existing)(
+      topicGroupMapper({
+        topicMap,
+        topicGroupMap,
+        cbsTopicGroup: {
+          ID: 'root',
+          Type: 'TopicGroup',
+        },
+      })
+    ),
     ...TopicGroup.reduce(topicGroupReducer({ topicMap, topicGroupMap }), {}),
   }
 }

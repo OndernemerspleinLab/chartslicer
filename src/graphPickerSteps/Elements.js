@@ -2,7 +2,7 @@ import React from 'react'
 import glamorous from 'glamorous'
 import { getCounterStyle } from './counterStyle'
 import { violet, wit } from '../colors'
-import { square } from '../styleHelpers'
+import { square } from '../helpers/styleHelpers'
 import { resetMarginStyle, marginBottomStyle } from '../marginStyle'
 import { css } from 'glamor'
 import { withProps, nest } from 'recompose'
@@ -103,53 +103,36 @@ export const FormRow = glamorous.div({
 
 const arrowThickness = 8
 
-const arrowUpStyle = css({
-  ':after': {
-    content: '""',
-    border: `${arrowThickness}px solid transparent`,
-    borderBottomColor: violet.default,
-    position: 'absolute',
-    left: '50%',
-    marginLeft: -arrowThickness,
-    bottom: '100%',
-  },
+const MessageComp = glamorous.section(commonStepStyle, {
+  backgroundColor: violet.default,
+  color: wit,
+  ':before': css(commonStepIconStyle, {
+    content: '"✔"',
+    color: violet.default,
+    backgroundColor: wit,
+  }),
 })
-const MessageComp = glamorous.section(
-  commonStepStyle,
-  {
-    backgroundColor: violet.default,
-    color: wit,
-    ':before': css(commonStepIconStyle, {
-      content: '"✔"',
-      color: violet.default,
-      backgroundColor: wit,
-    }),
-  },
-  arrowUpStyle
-)
 
 export const Message = nest(MessageComp, StepInsideMargin)
 
 const stripeWidth = 6
 
-export const ErrorMessageComp = glamorous.section(
-  commonStepStyle,
-  {
-    backgroundColor: violet.default,
-    color: wit,
-    ':before': css({
-      content: '""',
-      position: 'absolute',
-      top: 0,
-      bottom: 0,
-      left: 0,
-      backgroundColor: violet.lightest,
-      width: '2.5rem',
-      backgroundImage: `repeating-linear-gradient(-45deg, ${violet.lightest}, ${violet.lightest} ${stripeWidth}px, ${violet.default} ${stripeWidth}px, ${violet.default} ${stripeWidth * 2 + 1}px)`,
-    }),
-  },
-  arrowUpStyle
-)
+export const ErrorMessageComp = glamorous.section(commonStepStyle, {
+  backgroundColor: violet.default,
+  color: wit,
+  ':before': css({
+    content: '""',
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    backgroundColor: violet.lightest,
+    width: '2.5rem',
+    backgroundImage: `repeating-linear-gradient(-45deg, ${violet.lightest}, ${violet.lightest} ${stripeWidth}px, ${violet.default} ${stripeWidth}px, ${violet.default} ${stripeWidth *
+      2 +
+      1}px)`,
+  }),
+})
 
 export const ErrorMessage = nest(ErrorMessageComp, StepInsideMargin)
 
@@ -248,7 +231,7 @@ export const Radio = ({
   value = '',
   onChange,
   checked,
-}) => (
+}) =>
   <RadioComp>
     <RadioInput
       id={id}
@@ -259,4 +242,3 @@ export const Radio = ({
     />
     <RadioLabel htmlFor={id} checked={checked}>{children}</RadioLabel>
   </RadioComp>
-)
