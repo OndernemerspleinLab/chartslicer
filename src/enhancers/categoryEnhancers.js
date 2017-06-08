@@ -11,11 +11,13 @@ export const categoryEnhancer = connect(
     const category = categoriesGetInConnector([dimensionKey, categoryKey])(
       state
     )
-    const value = configGetInConnector(['categoryKeys', dimensionKey])(state)
+    const value = configGetInConnector(['categoryKeys', dimensionKey, 0])(state)
 
     return merge(category)({
       inputValue: category.key,
       name: `${dimensionKey}-categoryKey`,
+      multiValue: true,
+      replaceValue: true,
       keyPath: ['categoryKeys', dimensionKey],
       value,
     })

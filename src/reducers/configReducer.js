@@ -47,11 +47,13 @@ const setConfigReducer = compose(configSelector, reduceFor(CONFIG_CHANGED))(
 
 const initCategoryKeys = ({ dimensionList = [], categoryGroups }) => {
   return dimensionList.reduce((memo, dimensionKey) => {
-    memo[dimensionKey] = findFirstEntryInGroups({
-      groups: get(dimensionKey)(categoryGroups),
-      groupsPropName: 'categoryGroups',
-      entriesPropName: 'categories',
-    })
+    memo[dimensionKey] = [
+      findFirstEntryInGroups({
+        groups: get(dimensionKey)(categoryGroups),
+        groupsPropName: 'categoryGroups',
+        entriesPropName: 'categories',
+      }),
+    ]
     return memo
   }, {})
 }
@@ -67,11 +69,13 @@ const initConfig = ({
     id,
     periodType: getIn(['periodTypes', 0])(tableInfo),
     periodLength: defaultPeriodLength,
-    topicKey: findFirstEntryInGroups({
-      groups: topicGroups,
-      groupsPropName: 'topicGroups',
-      entriesPropName: 'topics',
-    }),
+    topicKey: [
+      findFirstEntryInGroups({
+        groups: topicGroups,
+        groupsPropName: 'topicGroups',
+        entriesPropName: 'topics',
+      }),
+    ],
     categoryKeys: initCategoryKeys({
       dimensionList: dimensions.order,
       categoryGroups,

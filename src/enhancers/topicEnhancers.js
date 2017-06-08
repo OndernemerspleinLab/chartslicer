@@ -4,13 +4,15 @@ import {
   topicsGetConnector,
   topicGroupsGetConnector,
 } from '../connectors/topicConnectors'
-import { configGetConnector } from '../connectors/configConnectors'
+import { configGetInConnector } from '../connectors/configConnectors'
 
 export const topicEnhancer = connect((state, { topicKey }) => {
   const topic = topicsGetConnector(topicKey)(state)
-  const value = configGetConnector('topicKey')(state)
+  const value = configGetInConnector(['topicKey', 0])(state)
 
   return merge(topic)({
+    replaceValue: true,
+    multiValue: true,
     inputValue: topic.key,
     name: 'topicKey',
     keyPath: ['topicKey'],
