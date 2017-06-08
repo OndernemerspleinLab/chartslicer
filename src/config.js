@@ -9,3 +9,5 @@ export const chartAspectRatio = 3 / 2
 export const chartWidth = 350
 export const chartHeight = chartWidth / chartAspectRatio
 export const chartMaxWidth = `${100 * chartAspectRatio}vh`
+
+export const sidebarWidth = '25rem'

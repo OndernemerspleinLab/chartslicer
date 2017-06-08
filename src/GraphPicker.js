@@ -7,7 +7,7 @@ import { TablePickerResult } from './graphPickerSteps/TablePickerResult'
 import { XAxis } from './graphPickerSteps/XAxis'
 import { TopicPicker } from './graphPickerSteps/TopicPicker'
 import { violet } from './colors'
-import { mqBig } from './config'
+import { mqBig, sidebarWidth } from './config'
 import { connect } from 'react-redux'
 import { orderedDimensionsConnector } from './connectors/dimensionConnectors'
 import { CategoryPicker } from './graphPickerSteps/CategoryPicker'
@@ -17,10 +17,9 @@ const GraphPickerComp = glamorous.div(counterResetStyle, {
   borderBottom: `2px solid ${violet.default}`,
   flex: '0 0 auto',
   [mqBig]: {
-    maxWidth: '25rem',
+    width: sidebarWidth,
     minHeight: '100vh',
     height: '100%',
-    borderRight: `2px solid ${violet.default}`,
   },
 })
 

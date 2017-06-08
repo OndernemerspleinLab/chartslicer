@@ -1,13 +1,13 @@
 import React from 'react'
 import glamorous from 'glamorous'
-import { onlyWhenNotLoaded } from './higherOrderComponents'
 // Source of image: https://commons.wikimedia.org/wiki/File:George_Bernard_Shaw_1925.jpg
 import imageSrc from './George_Bernard_Shaw_1925.jpg'
 import Color from 'color'
 import { hemelblauw } from './colors'
-import { connectActiveDatasetsLoadingState } from './reducers/loadingStateReducer'
 import { compose } from 'recompose'
 import { css } from 'glamor'
+import { metadataLoadingStatePickConnector } from './connectors/metadataLoadingStateConnectors'
+import { connect } from 'react-redux'
 
 const imageWidth = 7
 const imageAspectRatio = 280 / 396
@@ -87,7 +87,7 @@ const FigureComp = glamorous.figure(
       : null
 )
 
-const Figure = connectActiveDatasetsLoadingState('loading')(FigureComp)
+const Figure = connect(metadataLoadingStatePickConnector('loading'))(FigureComp)
 
 const Image = glamorous.img({
   display: 'block',
@@ -108,4 +108,4 @@ const PlaceholderContainer = () =>
     </PlaceholderComp>
   </Center>
 
-export const Placeholder = compose(onlyWhenNotLoaded)(PlaceholderContainer)
+export const Placeholder = compose()(PlaceholderContainer)

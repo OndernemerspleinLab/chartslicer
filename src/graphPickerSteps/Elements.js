@@ -7,7 +7,7 @@ import { resetMarginStyle, marginBottomStyle } from '../marginStyle'
 import { css } from 'glamor'
 import { withProps, nest } from 'recompose'
 import { borderRadius, fadeInAnimation } from '../styles'
-import { mqSmall } from '../config'
+import { mqSmall, mqBig } from '../config'
 
 const hiddenStyle = {
   position: 'absolute',
@@ -52,6 +52,9 @@ const commonStepStyle = css({
     '&:last-child': {
       borderBottom: 'none',
     },
+  },
+  [mqBig]: {
+    paddingRight: '2rem',
   },
 })
 const commonStepIconStyle = css(square(counterSize), {
