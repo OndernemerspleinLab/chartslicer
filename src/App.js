@@ -2,14 +2,12 @@ import React from 'react'
 import { GraphPicker } from './GraphPicker'
 import { css } from 'glamor'
 import { Chart } from './Chart'
-import { DataInfo } from './DataInfo'
+import { DataInfo, DataSource } from './DataInfo'
 import { DataTable } from './DataTable'
 import glamorous from 'glamorous'
 import { mqBig } from './config'
 import { hemelblauw } from './colors'
-import {
-  connectActiveDatasetsNetworkState,
-} from './reducers/networkStateReducer'
+import { connectActiveDatasetsNetworkState } from './reducers/networkStateReducer'
 import { Placeholder } from './Placeholder'
 
 css.global('*', {
@@ -41,7 +39,7 @@ const MainComp = glamorous.div({
 
 const Main = connectActiveDatasetsNetworkState('loading')(MainComp)
 
-export const App = () => (
+export const App = () =>
   <Layout>
     <Sidebar>
       <GraphPicker />
@@ -50,7 +48,7 @@ export const App = () => (
       <Placeholder />
       <DataInfo />
       <Chart />
+      <DataSource />
       <DataTable />
     </Main>
   </Layout>
-)

@@ -25,7 +25,6 @@ const enhancer = compose(onlyWhenLoaded, connectDataInfo)
 
 const DataInfoComp = glamorous.div({
   padding: '0 3rem',
-  backgroundColor: hemelblauw.lighter,
   animation: fadeInAnimation,
   maxWidth: '60rem',
 })
@@ -37,12 +36,44 @@ const TitleComp = glamorous.h1({
   margin: '0 0 1rem 0',
 })
 
-const DataTableContainer = ({ Title }) => (
+const DataTableContainer = ({ Title }) =>
   <DataInfoComp>
     <InsideMargin top="1.4rem" bottom="2rem">
       <TitleComp>{Title}</TitleComp>
     </InsideMargin>
   </DataInfoComp>
-)
 
 export const DataInfo = enhancer(DataTableContainer)
+
+const Link = glamorous.a({
+  color: hemelblauw.default,
+})
+
+const CreativeCommonsLink = () =>
+  <Link
+    target="_blank"
+    href="https://creativecommons.org/licenses/by/3.0/nl/"
+    title="Create Commons Naamsvermelding 3.0 Nederland"
+  >
+    CC BY 3.0 NL
+  </Link>
+
+const CbsLink = ({ id }) =>
+  <Link
+    target="_blank"
+    href={`https://opendata.cbs.nl/#/CBS/nl/dataset/${id}/table`}
+  >
+    CBS
+  </Link>
+
+const DataSourceContainer = ({ activeDatasetId }) =>
+  <DataInfoComp css={{ marginTop: '2rem' }}>
+    Data afkomstig van <CbsLink id={activeDatasetId} /> (<CreativeCommonsLink />)
+  </DataInfoComp>
+
+export const DataSource = compose(
+  onlyWhenLoaded,
+  connect(({ activeDatasetId }) => ({
+    activeDatasetId,
+  }))
+)(DataSourceContainer)
