@@ -4,7 +4,6 @@ import {
   getActiveSubstate,
   pickFromActiveSubstate,
   mapFromActiveSubstate,
-  getFromActiveSubstate,
 } from './connectorHelpers'
 import { get } from '../helpers/getset'
 

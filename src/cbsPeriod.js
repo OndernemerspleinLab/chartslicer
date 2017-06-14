@@ -1,14 +1,5 @@
-import {
-  addYears,
-  addMonths,
-  endOfYear,
-  endOfMonth,
-  endOfDay,
-  format,
-} from 'date-fns'
+import { format } from 'date-fns'
 import nlLocale from 'date-fns/locale/nl'
-import { get } from './helpers/getset'
-import { connect } from 'react-redux'
 
 const formatDate = (date, formatTemplate) =>
   format(date, formatTemplate, { locale: nlLocale })

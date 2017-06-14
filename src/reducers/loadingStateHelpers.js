@@ -1,4 +1,4 @@
-import { update, merge, get } from '../helpers/getset'
+import { update, merge } from '../helpers/getset'
 
 export const invalidIdError = new Error('Invalid dataset ID')
 

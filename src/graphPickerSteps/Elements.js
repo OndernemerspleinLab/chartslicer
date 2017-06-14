@@ -104,8 +104,6 @@ export const FormRow = glamorous.div({
   margin: '0 0 1rem 0',
 })
 
-const arrowThickness = 8
-
 const MessageComp = glamorous.section(commonStepStyle, {
   backgroundColor: violet.default,
   color: wit,
