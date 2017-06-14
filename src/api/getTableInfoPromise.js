@@ -1,14 +1,20 @@
+import { compose } from 'recompose'
 // @flow
-
+import { supportedPeriodTypes } from './../config'
 import { getCbsPeriodType } from '../cbsPeriod'
-import { reduce, union, split } from 'lodash/fp'
+import { reduce, union, split, intersection } from 'lodash/fp'
 import type { DatasetId, TableInfo } from '../store/stateShape'
 import { fetchTableInfo, fetchPeriods } from './apiCalls'
 import type { CbsTableInfo, CbsPeriods } from './apiShape'
 
-const getPeriodTypes = reduce(
-  (periodTypes, { Key }) => union([getCbsPeriodType(Key)])(periodTypes),
-  []
+const onlySupportedPeriodTypes = intersection(supportedPeriodTypes)
+
+const getPeriodTypes = compose(
+  onlySupportedPeriodTypes,
+  reduce(
+    (periodTypes, { Key }) => union([getCbsPeriodType(Key)])(periodTypes),
+    []
+  )
 )
 
 const mapCbsTableInfo = (id: DatasetId) => (

@@ -11,3 +11,5 @@ export const chartHeight = chartWidth / chartAspectRatio
 export const chartMaxWidth = `${100 * chartAspectRatio}vh`
 
 export const sidebarWidth = '25rem'
+
+export const supportedPeriodTypes = ['Jaar', 'Maanden', 'Kwartalen']

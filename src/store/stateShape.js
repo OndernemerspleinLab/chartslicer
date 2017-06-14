@@ -19,7 +19,7 @@ export type NetworkState = {
 
 ///////// Table info /////////
 
-export type PeriodType = string
+export type PeriodType = 'Jaar' | 'Maanden' | 'Kwartalen'
 
 export type TableInfo = {
   title: string,
