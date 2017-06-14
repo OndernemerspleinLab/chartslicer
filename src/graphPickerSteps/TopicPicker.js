@@ -7,7 +7,11 @@ import { onlyWhenMetadataLoaded } from '../enhancers/metadataEnhancers'
 import { compose } from 'recompose'
 import { topicEnhancer, topicGroupEnhancer } from '../enhancers/topicEnhancers'
 
-const TopicRadioComp = ({ title, inputValue, onChange, name, value }) =>
+const RadioTopicUnit = glamorous.span({
+  fontSize: '0.8rem',
+})
+
+const TopicRadioComp = ({ title, unit, inputValue, onChange, name, value }) =>
   <Radio
     id={`topic-${inputValue}`}
     name={name}
@@ -15,7 +19,7 @@ const TopicRadioComp = ({ title, inputValue, onChange, name, value }) =>
     onChange={onChange}
     checked={value === inputValue}
   >
-    {title}
+    {title} <RadioTopicUnit>({unit})</RadioTopicUnit>
   </Radio>
 
 const TopicRadio = compose(topicEnhancer, configChangeEnhancer)(TopicRadioComp)
