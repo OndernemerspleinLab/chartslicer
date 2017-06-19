@@ -106,7 +106,7 @@ const getDatasetSelection = (topicKeys: TopicKey[]) =>
 const getDatasetPeriodenFilter: (string[]) => string = compose(
   bracketize,
   join(' or '),
-  map((cbsPeriod: string) => `(Perioden eq ${cbsPeriod})`)
+  map((cbsPeriod: string) => `(Perioden eq '${cbsPeriod})'`)
 )
 
 const getDatasetDimensionFilter = (
@@ -115,7 +115,7 @@ const getDatasetDimensionFilter = (
   compose(
     bracketize,
     join(' or '),
-    map((categoryKey: CategoryKey) => `${dimensionKey} eq ${categoryKey}`)
+    map((categoryKey: CategoryKey) => `${dimensionKey} eq '${categoryKey}'`)
   )(categoryKeysForDimension)
 
 const getDatasetDimensionsFilter: (categoryKeys: {
@@ -132,23 +132,23 @@ const getDatasetFilter = ({ cbsPeriodKeys, categoryKeys }): string =>
     cbsPeriodKeys
   )} and ${getDatasetDimensionsFilter(categoryKeys)}`
 
-export const getFilteredDatasetUrl = ({
+export const getFilteredDatasetUrl = (window.getFilteredDatasetUrl = ({
   id,
   cbsPeriodKeys,
-  topicKeys,
+  topicKey,
   categoryKeys,
 }: {
   id: DatasetId,
   cbsPeriodKeys: string[],
-  topicKeys: TopicKey[],
+  topicKey: TopicKey[],
   categoryKeys: {
     [DimensionKey]: CategoryKey[],
   },
 }): string =>
-  `${getDatasetUrl(id)}${getDatasetFilter({
+  `${getDatasetUrl(id)}?${getDatasetFilter({
     cbsPeriodKeys,
     categoryKeys,
-  })}${select(getDatasetSelection(topicKeys))}`
+  })}&${select(getDatasetSelection(topicKey))}`)
 
 ///////// Statline /////////
 
