@@ -8,6 +8,8 @@ export type Id = number
 export type DatasetId = string
 export type MaybeDatasetId = ?DatasetId
 
+export type DatasetQuery = string
+
 ///////// Network state /////////
 
 export type NetworkState = {
@@ -146,6 +148,8 @@ export type Dataset = {
 
 export type State = {
   activeDatasetId: MaybeDatasetId,
+  activeDatasetQuery: ?DatasetQuery,
+  visibleDatasetQuery: ?DatasetQuery,
   config: {
     [DatasetId]: ConfigState,
   },
