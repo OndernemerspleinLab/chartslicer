@@ -5,6 +5,8 @@ import {
   METADATA_LOAD_ERROR,
   INVALID_DATASET_ID_SELECTED,
   CONFIG_CHANGED,
+  DATA_LOAD_SUCCESS,
+  DATA_LOAD_ERROR,
 } from './actions'
 
 export { datasetSelectionChanged } from './datasetSelectionChangedActionCreator'
@@ -53,5 +55,13 @@ export const metadataLoadSuccess = createSimpleAction(
 export const metadataLoadError = createSimpleAction(
   METADATA_LOAD_ERROR,
   'id',
+  'error'
+)
+
+export const dataLoadSuccess = createSimpleAction(DATA_LOAD_SUCCESS, 'query')
+
+export const dataLoadError = createSimpleAction(
+  DATA_LOAD_ERROR,
+  'query',
   'error'
 )
