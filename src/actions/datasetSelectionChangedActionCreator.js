@@ -18,21 +18,7 @@ const shouldFetch = itemNetworkState =>
 export const shouldFetchForId = id => networkState =>
   existing(id) && shouldFetch(get(id)(networkState))
 
-export const datasetSelectionChanged = ({ input }) => (dispatch, getState) => {
-  if (!input) {
-    dispatch(datasetIdCleared())
-    return
-  }
-
-  const maybeId = cbsIdExtractor(input)
-
-  if (!maybeId) {
-    dispatch(invalidDatasetIdSelected({ input }))
-    return
-  }
-
-  const id = maybeId
-
+const fetchMetadata = ({ id }) => (dispatch, getState) => {
   const loadingState = allMetadataLoadingStateConnector(getState())
 
   if (!shouldFetchForId(id)(loadingState)) {
@@ -46,4 +32,20 @@ export const datasetSelectionChanged = ({ input }) => (dispatch, getState) => {
     data => dispatch(metadataLoadSuccess(data)),
     error => dispatch(metadataLoadError({ id, error }))
   )
+}
+
+export const datasetSelectionChanged = ({ input }) => (dispatch, getState) => {
+  if (!input) {
+    dispatch(datasetIdCleared())
+    return
+  }
+
+  const maybeId = cbsIdExtractor(input)
+
+  if (!maybeId) {
+    dispatch(invalidDatasetIdSelected({ input }))
+    return
+  }
+
+  fetchMetadata({ id: maybeId })(dispatch, getState)
 }
