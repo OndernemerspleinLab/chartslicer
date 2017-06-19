@@ -1,4 +1,4 @@
-import { format } from 'date-fns'
+import { addYears, addQuarters, addMonths, format, isBefore } from 'date-fns'
 import nlLocale from 'date-fns/locale/nl'
 
 const formatDate = (date, formatTemplate) =>
@@ -60,10 +60,37 @@ export const convertCbsPeriodToDate = type => cbsPeriodString => {
   return cbsPeriodToDateConverters[type](cbsPeriod)
 }
 
-const cbsDataFormatters = {
+const cbsPeriodFormatters = {
   Jaar: date => formatDate(date, 'YYYY'),
   Maanden: date => formatDate(date, 'MMM YYYY'),
   Kwartalen: date => formatDate(date, 'YYYY [Q]Q'),
 }
 
-export const formatCbsDate = type => cbsDate => cbsDataFormatters[type](cbsDate)
+export const formatCbsPeriod = type => cbsPeriod =>
+  cbsPeriodFormatters[type](cbsPeriod)
+
+const cbsPeriodCreators = {
+  Jaar: date => formatDate(date, 'YYYY[YY00]'),
+  Maanden: date => formatDate(date, 'YYYY[MM]MM'),
+  Kwartalen: date => formatDate(date, 'YYYY[KW0]Q'),
+}
+
+const cbsPeriodIncrementers = {
+  Jaar: date => addYears(date, 1),
+  Maanden: date => addMonths(date, 1),
+  Kwartalen: date => addQuarters(date, 1),
+}
+
+export const createCbsPeriods = type => ({ startDate, endDate }) => {
+  const memo = []
+  let date = startDate
+  const createCbsPeriod = cbsPeriodCreators[type]
+  const incrementByCbsPeriod = cbsPeriodIncrementers[type]
+
+  while (isBefore(date, endDate)) {
+    memo.push(createCbsPeriod(date))
+    date = incrementByCbsPeriod(date)
+  }
+
+  return memo
+}

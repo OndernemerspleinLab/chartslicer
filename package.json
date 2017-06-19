@@ -2,7 +2,7 @@
   "name": "chartslicer",
   "version": "0.1.0",
   "private": true,
-  "homepage": "http://ondernemerspleinlab.github.io/chartslicer",
+  "homepage": ".",
   "dependencies": {
     "babel-polyfill": "^6.23.0",
     "color": "^1.0.3",
@@ -18,6 +18,7 @@
     "recompose": "^0.23.1",
     "redux": "^3.6.0",
     "redux-thunk": "^2.2.0",
+    "serve": "^5.2.2",
     "timm": "^1.2.5",
     "url-polyfill": "^1.0.5",
     "victory": "^0.20.0",
@@ -38,6 +39,7 @@
     "lint": "eslint --ignore-path .gitignore .",
     "predeploy": "yarn run build",
     "deploy": "gh-pages -d build",
-    "flow": "flow"
+    "flow": "flow",
+    "serve": "serve -o build"
   }
 }
