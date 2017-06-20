@@ -88,11 +88,24 @@ export type CbsCategoryGroups = CbsCategoryGroup[]
 export type CbsCategoryGroupsPromise = Promise<CbsCategoryGroups>
 
 ///////// CbsPeriods /////////
+export type CbsPeriodKey = string
 
 export type CbsPeriod = {
-  Key: string,
+  Key: CbsPeriodKey,
 }
 
 export type CbsPeriods = CbsPeriod[]
 
 export type CbsPeriodsPromise = Promise<CbsPeriods>
+
+/////////  /////////
+
+export type CbsDataEntry = {
+  ID: Id,
+  Perioden: CbsPeriodKey,
+  [TopicKey]: number,
+}
+
+export type CbsDataEntries = CbsDataEntry[]
+
+export type CbsDataEntriesPromise = Promise<CbsDataEntries>

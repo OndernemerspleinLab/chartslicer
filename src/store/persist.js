@@ -22,10 +22,24 @@ export const persistState = ({ getState }) => () => {
   } catch (error) {}
 }
 
-export const rehydrateState = () => {
+const rehydrateFromLocalStorage = () => {
   try {
     return JSON.parse(localStorage.getItem(localStorageKey))
-  } catch (error) {}
+  } catch (error) {
+    return {}
+  }
+}
+
+export const rehydrateState = () => {
+  const localStorageData = rehydrateFromLocalStorage()
+  const currentDate = new Date()
+
+  return typeof localStorageData === 'object'
+    ? {
+        currentDate,
+        ...localStorageData,
+      }
+    : { currentDate }
 }
 
 const handleUrlChange = ({ dispatch, getState }) => () => {

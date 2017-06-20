@@ -1,6 +1,6 @@
-import { bracketize } from './../helpers/helpers'
 // @flow
 
+import { bracketize } from './../helpers/helpers'
 import { map, join } from 'lodash/fp'
 import { compose } from 'recompose'
 import { fetchJson } from './fetch'
@@ -10,6 +10,7 @@ import type {
   DimensionKey,
   TopicKey,
   CategoryKey,
+  ConfigState,
 } from '../store/stateShape'
 import type {
   CbsDataPropertiesPromise,
@@ -18,11 +19,15 @@ import type {
   CbsCategoriesPromise,
   CbsPeriodsPromise,
 } from '../api/apiShape'
+import { createCbsPeriods } from '../cbsPeriod'
 
 const getOnlyValue = responseBody => getIn(['value', 0])(responseBody) || {}
 const getValues = responseBody => get('value')(responseBody) || []
 
-const select = (keys: string[]) => `$select=${keys.join(',')}`
+const select = (keys: string[]) =>
+  `$select=${encodeURIComponent(keys.join(','))}`
+const filter = (filterString: string) =>
+  `$filter=${encodeURIComponent(filterString)}`
 
 export const apiOrigin = `https://opendata.cbs.nl`
 
@@ -35,6 +40,7 @@ const tableInfoSelection = ['Title', 'GraphTypes']
 
 const getTableInfoUrl = (id: DatasetId) =>
   `${feedBaseUrl}/${id}/TableInfos?${select(tableInfoSelection)}`
+
 export const fetchTableInfo = (id: DatasetId): CbsTableInfoPromise =>
   fetchJson(getTableInfoUrl(id)).then(getOnlyValue)
 
@@ -100,13 +106,13 @@ export const fetchCategory = (id: DatasetId) => (
 export const getDatasetUrl = (id: DatasetId) =>
   `${feedBaseUrl}/${id}/TypedDataSet`
 
-const getDatasetSelection = (topicKeys: TopicKey[]) =>
+const getDatasetSelection = (topicKeys: TopicKey[] = []) =>
   topicKeys.concat(['ID', 'Perioden'])
 
 const getDatasetPeriodenFilter: (string[]) => string = compose(
   bracketize,
   join(' or '),
-  map((cbsPeriod: string) => `(Perioden eq '${cbsPeriod})'`)
+  map((cbsPeriod: string) => `(Perioden eq '${cbsPeriod}')`)
 )
 
 const getDatasetDimensionFilter = (
@@ -128,27 +134,31 @@ const getDatasetDimensionsFilter: (categoryKeys: {
 )
 
 const getDatasetFilter = ({ cbsPeriodKeys, categoryKeys }): string =>
-  `$filter=${getDatasetPeriodenFilter(
-    cbsPeriodKeys
-  )} and ${getDatasetDimensionsFilter(categoryKeys)}`
+  filter(
+    `${getDatasetPeriodenFilter(
+      cbsPeriodKeys
+    )} and ${getDatasetDimensionsFilter(categoryKeys)}`
+  )
 
-export const getFilteredDatasetUrl = (window.getFilteredDatasetUrl = ({
+type FilteredDatasetProps = ConfigState & { now: Date }
+
+const getFilteredDatasetUrl = ({
   id,
-  cbsPeriodKeys,
+  periodLength,
+  periodType,
+  now,
   topicKey,
   categoryKeys,
-}: {
-  id: DatasetId,
-  cbsPeriodKeys: string[],
-  topicKey: TopicKey[],
-  categoryKeys: {
-    [DimensionKey]: CategoryKey[],
-  },
-}): string =>
+}: FilteredDatasetProps): string =>
   `${getDatasetUrl(id)}?${getDatasetFilter({
-    cbsPeriodKeys,
+    cbsPeriodKeys: createCbsPeriods({ endDate: now, periodType, periodLength }),
     categoryKeys,
-  })}&${select(getDatasetSelection(topicKey))}`)
+  })}&${select(getDatasetSelection(topicKey))}`
+
+export const fetchFilteredDataset = (
+  props: FilteredDatasetProps
+): CbsDataEntriesPromise =>
+  fetchJson(getFilteredDatasetUrl(props)).then(getValues)
 
 ///////// Statline /////////
 
