@@ -4,7 +4,7 @@ import {
   datasetIdSelected,
   metadataLoadSuccess,
   metadataLoadError,
-} from './actionCreators'
+} from './simpleActionCreators'
 import { cbsIdExtractor } from '../helpers/cbsIdExtractor'
 import { getMetadataPromise } from '../api/getMetadataPromise'
 import { get } from '../helpers/getset'

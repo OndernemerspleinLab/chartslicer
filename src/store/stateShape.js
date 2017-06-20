@@ -13,10 +13,21 @@ export type DatasetQuery = string
 ///////// Network state /////////
 
 export type NetworkState = {
-  id: DatasetId,
   loading: boolean,
   loaded: boolean,
   error: ?Error,
+}
+
+export type MetadataNetworkState = {
+  id: DatasetId,
+} & NetworkState
+
+export type DatasetQueryNetworkState = {
+  query: DatasetQuery,
+} & NetworkState
+
+export type DatasetNetworkState = {
+  [DatasetQuery]: DatasetQueryNetworkState,
 }
 
 ///////// Table info /////////
@@ -140,13 +151,14 @@ export type DataEntry = {
 }
 
 export type Dataset = {
-  id: DatasetId,
+  query: DatasetQuery,
   data: DataEntry[],
 }
 
 ///////// Full State /////////
 
 export type State = {
+  now: Date,
   activeDatasetId: MaybeDatasetId,
   activeDatasetQuery: ?DatasetQuery,
   visibleDatasetQuery: ?DatasetQuery,
@@ -172,13 +184,13 @@ export type State = {
     [DatasetId]: Categories,
   },
   datasets: {
-    [DatasetId]: Dataset,
+    [DatasetQuery]: Dataset,
   },
-  dataInfoNetworkState: {
-    [DatasetId]: NetworkState,
+  metadataLoadingState: {
+    [DatasetId]: MetadataNetworkState,
   },
-  datasetNetworkState: {
-    [DatasetId]: NetworkState,
+  datasetLoadingState: {
+    [DatasetId]: DatasetNetworkState,
   },
 }
 
@@ -191,4 +203,5 @@ export type Substate =
   | CategoryGroups
   | Categories
   | Dataset
-  | NetworkState
+  | MetadataNetworkState
+  | DatasetNetworkState

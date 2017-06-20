@@ -1,7 +1,7 @@
 // @flow
 
 import { bracketize } from './../helpers/helpers'
-import { map, join } from 'lodash/fp'
+import { map, join, sortBy, identity, concat, defaultTo } from 'lodash/fp'
 import { compose } from 'recompose'
 import { fetchJson } from './fetch'
 import { get, getIn } from '../helpers/getset'
@@ -107,8 +107,11 @@ export const fetchCategory = (id: DatasetId) => (
 export const getDatasetUrl = (id: DatasetId) =>
   `${feedBaseUrl}/${id}/TypedDataSet`
 
-const getDatasetSelection = (topicKeys: TopicKey[] = []) =>
-  topicKeys.concat(['ID', 'Perioden'])
+const getDatasetSelection: (topicKeys: TopicKey[]) => string[] = compose(
+  concat(['ID', 'Perioden']),
+  sortBy(identity),
+  defaultTo([])
+)
 
 const getDatasetPeriodenFilter: (string[]) => string = compose(
   bracketize,
@@ -122,7 +125,8 @@ const getDatasetDimensionFilter = (
   compose(
     bracketize,
     join(' or '),
-    map((categoryKey: CategoryKey) => `${dimensionKey} eq '${categoryKey}'`)
+    map((categoryKey: CategoryKey) => `${dimensionKey} eq '${categoryKey}'`),
+    sortBy(identity)
   )(categoryKeysForDimension)
 
 const getDatasetDimensionsFilter: (categoryKeys: {
@@ -131,6 +135,7 @@ const getDatasetDimensionsFilter: (categoryKeys: {
   bracketize,
   join(' and '),
   map(getDatasetDimensionFilter),
+  sortBy(([dimensionKey]) => dimensionKey),
   Object.entries
 )
 
@@ -141,25 +146,24 @@ const getDatasetFilter = ({ cbsPeriodKeys, categoryKeys }): string =>
     )} and ${getDatasetDimensionsFilter(categoryKeys)}`
   )
 
-type FilteredDatasetProps = ConfigState & { now: Date }
+export type ConfigWithDate = ConfigState & { now: Date }
 
-const getFilteredDatasetUrl = ({
+export const getDatasetQueryString = ({
   id,
   periodLength,
   periodType,
   now,
   topicKey,
   categoryKeys,
-}: FilteredDatasetProps): string =>
-  `${getDatasetUrl(id)}?${getDatasetFilter({
+}: ConfigWithDate): string =>
+  `${getDatasetFilter({
     cbsPeriodKeys: createCbsPeriods({ endDate: now, periodType, periodLength }),
     categoryKeys,
   })}&${select(getDatasetSelection(topicKey))}`
 
 export const fetchFilteredDataset = (
-  props: FilteredDatasetProps
-): CbsDataEntriesPromise =>
-  fetchJson(getFilteredDatasetUrl(props)).then(getValues)
+  props: ConfigWithDate
+): CbsDataEntriesPromise => fetchJson('TODO').then(getValues)
 
 ///////// Statline /////////
 
