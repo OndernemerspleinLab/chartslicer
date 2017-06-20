@@ -18,7 +18,8 @@ import type {
   CbsCategoryGroupsPromise,
   CbsCategoriesPromise,
   CbsPeriodsPromise,
-} from '../api/apiShape'
+  CbsDataEntriesPromise,
+} from './apiShape'
 import { createCbsPeriods } from '../cbsPeriod'
 
 const getOnlyValue = responseBody => getIn(['value', 0])(responseBody) || {}
