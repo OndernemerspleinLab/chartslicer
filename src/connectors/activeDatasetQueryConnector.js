@@ -1,5 +1,10 @@
-import { pick } from 'lodash/fp'
-import { get } from '../helpers/getset'
+import { getIn } from '../helpers/getset'
+import { activeDatasetGetIdConnector } from './activeDatasetIdConnector'
 
-export const activeDatasetQueryConnector = pick(['activeDatasetQuery'])
-export const activeDatasetGetQueryConnector = get('activeDatasetQuery')
+export const activeDatasetGetQueryConnector = state => {
+  const activeDatasetId = activeDatasetGetIdConnector(state)
+  return getIn(['activeDatasetQueries', activeDatasetId])(state)
+}
+export const activeDatasetQueryConnector = state => {
+  return { activeDatasetQuery: activeDatasetGetQueryConnector(state) }
+}

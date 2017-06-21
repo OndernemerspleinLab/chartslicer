@@ -17,11 +17,10 @@ export type NetworkState = {
   loading: boolean,
   loaded: boolean,
   error: ?Error,
+  id: DatasetId,
 }
 
-export type MetadataNetworkState = {
-  id: DatasetId,
-} & NetworkState
+export type MetadataNetworkState = NetworkState
 
 export type DatasetQueryNetworkState = {
   query: DatasetQuery,
@@ -170,13 +169,17 @@ export type DataQueries = {
   [DatasetQuery]: DataQuery,
 }
 
+export type DatasetQueries = {
+  [DatasetId]: ?DatasetQuery,
+}
+
 ///////// Full State /////////
 
 export type State = {
   now: Date,
   activeDatasetId: MaybeDatasetId,
-  activeDatasetQuery: ?DatasetQuery,
-  visibleDatasetQuery: ?DatasetQuery,
+  activeDatasetQueries: DatasetQueries,
+  visibleDatasetQueries: DatasetQueries,
   config: {
     [DatasetId]: ConfigState,
   },
@@ -224,3 +227,4 @@ export type Substate =
   | DataQueryNetworkState
   | DataEntries
   | DataQueries
+  | DatasetQueries

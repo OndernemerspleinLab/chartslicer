@@ -32,14 +32,14 @@ const rehydrateFromLocalStorage = () => {
 
 export const rehydrateState = () => {
   const localStorageData = rehydrateFromLocalStorage()
-  const currentDate = new Date()
+  const now = new Date()
 
   return typeof localStorageData === 'object'
     ? {
-        currentDate,
+        now,
         ...localStorageData,
       }
-    : { currentDate }
+    : { now }
 }
 
 const handleUrlChange = ({ dispatch, getState }) => () => {

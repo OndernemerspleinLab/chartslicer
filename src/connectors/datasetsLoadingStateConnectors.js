@@ -15,7 +15,7 @@ export const dataQueryLoadingStateConnectorFor = ({
   id: Id,
   query: DatasetQuery,
 }) => (state: State) =>
-  compose(getIn([id, query]), allDataQueryLoadingStateConnector(state))
+  compose(getIn([id, query]), allDataQueryLoadingStateConnector)(state)
 
 export const dataQueryLoadingStateConnector = (state: State) => {
   const id = activeDatasetGetIdConnector(state)
