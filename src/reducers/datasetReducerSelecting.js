@@ -1,7 +1,8 @@
 //@flow
 
 import type { State } from '../store/stateShape'
-import { reduceWhen, composeReducers } from './reducerHelpers'
+import { reduceWhen, composeReducers, reduceIn } from './reducerHelpers'
+import type { Reducer } from './reducerHelpers'
 import type { Action } from '../actions/actionTypes'
 import { set, updateIn } from '../helpers/getset'
 import { metadataIsLoadedConnector } from '../connectors/metadataLoadingStateConnectors'
@@ -42,13 +43,16 @@ const setDatasetQueryLoading = (state: State, { queryString }) => {
 const setActiveDatasetQuery = (state, { queryString }) =>
   set('activeDatasetQuery', queryString)(state)
 
-export const datasetsReducer = reduceWhenReselectingDataset(
-  (state: State): State => {
-    const queryString = getDatasetQueryString(getConfigWithDate(state))
+const reduceDatasetReselecting = (state: State): State => {
+  const queryString = getDatasetQueryString(getConfigWithDate(state))
 
-    return composeReducers(
-      setActiveDatasetQuery,
-      setDatasetQueryLoading
-    )(state, { queryString })
-  }
+  return composeReducers(setActiveDatasetQuery, setDatasetQueryLoading)(state, {
+    queryString,
+  })
+}
+
+export const datasetReselectingReducer: Reducer = composeReducers(
+  reduceWhenReselectingDataset(reduceDatasetReselecting),
+  reduceIn('datasetLoadingState')((state = {}) => state),
+  reduceIn('activeDatasetQuery')((state = null) => state)
 )

@@ -1,4 +1,8 @@
 import { update } from '../helpers/getset'
+import type { State } from '../store/stateShape'
+import type { Action } from '../actions/actionTypes'
+
+export type Reducer = (State, Action) => State
 
 export const composeReducers = (...reducers) =>
   reducers.length === 0

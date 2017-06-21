@@ -11,6 +11,7 @@ import type {
   TopicKey,
   CategoryKey,
   ConfigState,
+  DatasetQuery,
 } from '../store/stateShape'
 import type {
   CbsDataPropertiesPromise,
@@ -104,8 +105,13 @@ export const fetchCategory = (id: DatasetId) => (
 
 ///////// Dataset /////////
 
-export const getDatasetUrl = (id: DatasetId) =>
-  `${feedBaseUrl}/${id}/TypedDataSet`
+export const getDatasetUrl = ({
+  id,
+  query,
+}: {
+  id: DatasetId,
+  query: DatasetQuery,
+}) => `${feedBaseUrl}/${id}/TypedDataSet?${query}`
 
 const getDatasetSelection: (topicKeys: TopicKey[]) => string[] = compose(
   concat(['ID', 'Perioden']),
@@ -161,9 +167,14 @@ export const getDatasetQueryString = ({
     categoryKeys,
   })}&${select(getDatasetSelection(topicKey))}`
 
-export const fetchFilteredDataset = (
-  props: ConfigWithDate
-): CbsDataEntriesPromise => fetchJson('TODO').then(getValues)
+export const fetchFilteredDataset = ({
+  id,
+  query,
+}: {
+  id: DatasetId,
+  query: DatasetQuery,
+}): CbsDataEntriesPromise =>
+  fetchJson(getDatasetUrl({ id, query })).then(getValues)
 
 ///////// Statline /////////
 
