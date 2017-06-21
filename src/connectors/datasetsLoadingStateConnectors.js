@@ -3,23 +3,23 @@
 import { get, getIn } from '../helpers/getset'
 import { compose } from 'recompose'
 import type { Id, DatasetQuery, State } from '../store/stateShape'
-import { activeDatasetIdConnector } from './activeDatasetIdConnector'
-import { activeDatasetQueryConnector } from './activeDatasetQueryConnector'
+import { activeDatasetGetIdConnector } from './activeDatasetIdConnector'
+import { activeDatasetGetQueryConnector } from './activeDatasetQueryConnector'
 
-export const allDatasetLoadingStateConnector = get('datasetLoadingState')
+export const allDataQueryLoadingStateConnector = get('dataQueryLoadingState')
 
-export const datasetLoadingStateConnectorFor = ({
+export const dataQueryLoadingStateConnectorFor = ({
   id,
   query,
 }: {
   id: Id,
   query: DatasetQuery,
 }) => (state: State) =>
-  compose(getIn([id, query]), allDatasetLoadingStateConnector(state))
+  compose(getIn([id, query]), allDataQueryLoadingStateConnector(state))
 
-export const datasetLoadingStateConnector = (state: State) => {
-  const id = activeDatasetIdConnector(state)
-  const query = activeDatasetQueryConnector(state)
+export const dataQueryLoadingStateConnector = (state: State) => {
+  const id = activeDatasetGetIdConnector(state)
+  const query = activeDatasetGetQueryConnector(state)
 
-  return datasetLoadingStateConnectorFor({ id, query })(state)
+  return dataQueryLoadingStateConnectorFor({ id, query })(state)
 }

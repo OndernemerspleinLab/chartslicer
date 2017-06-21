@@ -5,6 +5,7 @@ export type KeyPath = Key[]
 
 export type Id = number
 
+export type DataEntryId = Id
 export type DatasetId = string
 export type MaybeDatasetId = ?DatasetId
 
@@ -26,7 +27,7 @@ export type DatasetQueryNetworkState = {
   query: DatasetQuery,
 } & NetworkState
 
-export type DatasetNetworkState = {
+export type DataQueryNetworkState = {
   [DatasetQuery]: DatasetQueryNetworkState,
 }
 
@@ -146,13 +147,27 @@ export type ConfigState = {
 ///////// Dataset /////////
 
 export type DataEntry = {
-  id: Id,
+  id: DataEntryId,
+  periodDate: Date,
+  periodType: PeriodType,
   [TopicKey | DimensionKey]: number | CategoryKey,
 }
 
-export type Dataset = {
+export type DataEntries = {
+  id: DatasetId,
+  [DataEntryId]: DataEntry,
+}
+
+export type DataQuery = {
+  id: DatasetId,
   query: DatasetQuery,
-  data: DataEntry[],
+  dataList: DataEntryId[],
+  periodType: PeriodType,
+}
+export type DataQueries = {
+  id: DatasetId,
+
+  [DatasetQuery]: DataQuery,
 }
 
 ///////// Full State /////////
@@ -183,14 +198,17 @@ export type State = {
   categories: {
     [DatasetId]: Categories,
   },
-  datasets: {
-    [DatasetQuery]: Dataset,
+  dataEntries: {
+    [DatasetId]: DataEntries,
+  },
+  dataQueries: {
+    [DatasetId]: DataQueries,
   },
   metadataLoadingState: {
     [DatasetId]: MetadataNetworkState,
   },
   datasetLoadingState: {
-    [DatasetId]: DatasetNetworkState,
+    [DatasetId]: DataQueryNetworkState,
   },
 }
 
@@ -202,6 +220,7 @@ export type Substate =
   | Dimensions
   | CategoryGroups
   | Categories
-  | Dataset
   | MetadataNetworkState
-  | DatasetNetworkState
+  | DataQueryNetworkState
+  | DataEntries
+  | DataQueries

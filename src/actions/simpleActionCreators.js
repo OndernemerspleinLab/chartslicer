@@ -5,25 +5,19 @@ import {
   METADATA_LOAD_ERROR,
   INVALID_DATASET_ID_SELECTED,
   CONFIG_CHANGED,
-  DATA_LOAD_SUCCESS,
-  DATA_LOAD_ERROR,
 } from './actions'
+import { createSimpleAction } from './actionHelpers'
+import { dataGetterActionEnhancer } from './dataGetterActionEnhancer'
 
-const plucker = source => (memo, propName) => {
-  memo[propName] = source[propName]
-  return memo
-}
-
-const createSimpleAction = (type, ...propNames) => props =>
-  Object.assign({ type }, propNames.reduce(plucker(props), {}))
-
-export const configChanged = createSimpleAction(
-  CONFIG_CHANGED,
-  'activeDatasetId',
-  'keyPath',
-  'value',
-  'replaceValue',
-  'multiValue'
+export const configChanged = dataGetterActionEnhancer(
+  createSimpleAction(
+    CONFIG_CHANGED,
+    'activeDatasetId',
+    'keyPath',
+    'value',
+    'replaceValue',
+    'multiValue'
+  )
 )
 
 export const datasetIdCleared = createSimpleAction(DATASET_ID_CLEARED)
@@ -39,27 +33,21 @@ export const invalidDatasetIdSelected = createSimpleAction(
   'input'
 )
 
-export const metadataLoadSuccess = createSimpleAction(
-  METADATA_LOAD_SUCCESS,
-  'id',
-  'tableInfo',
-  'topicGroups',
-  'topics',
-  'dimensions',
-  'categoryGroups',
-  'categories'
+export const metadataLoadSuccess = dataGetterActionEnhancer(
+  createSimpleAction(
+    METADATA_LOAD_SUCCESS,
+    'id',
+    'tableInfo',
+    'topicGroups',
+    'topics',
+    'dimensions',
+    'categoryGroups',
+    'categories'
+  )
 )
 
 export const metadataLoadError = createSimpleAction(
   METADATA_LOAD_ERROR,
   'id',
-  'error'
-)
-
-export const dataLoadSuccess = createSimpleAction(DATA_LOAD_SUCCESS, 'query')
-
-export const dataLoadError = createSimpleAction(
-  DATA_LOAD_ERROR,
-  'query',
   'error'
 )

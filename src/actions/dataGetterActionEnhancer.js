@@ -1,14 +1,20 @@
 //@flow
 
 import { get } from '../helpers/getset'
-import { fetchFilteredDataset } from '../api/apiCalls'
 import type { State } from '../store/stateShape'
 import type { Action, ActionCreator } from './actionTypes'
-import { datasetLoadingStateConnectorFor } from '../connectors/datasetsLoadingStateConnectors'
-import { activeDatasetIdConnector } from '../connectors/activeDatasetIdConnector'
-import { activeDatasetQueryConnector } from '../connectors/activeDatasetQueryConnector'
+import { dataQueryLoadingStateConnectorFor } from '../connectors/datasetsLoadingStateConnectors'
+import { activeDatasetGetIdConnector } from '../connectors/activeDatasetIdConnector'
+import { activeDatasetGetQueryConnector } from '../connectors/activeDatasetQueryConnector'
+import { getDatasetPromise } from '../api/getDatasetPromise'
+import { configGetConnector } from '../connectors/configConnectors'
+import {
+  datasetLoadSuccess,
+  datasetLoadError,
+} from './dataGetterActionCreators'
 
-const shouldFetch = !get('loaded')
+const shouldFetch = loadingState =>
+  !get('loaded')(loadingState) && !get('loading')(loadingState)
 
 export const dataGetterActionEnhancer = (actionCreator: ActionCreator) => (
   action: Action
@@ -19,11 +25,16 @@ export const dataGetterActionEnhancer = (actionCreator: ActionCreator) => (
 
   const nextState = getState()
 
-  const id = activeDatasetIdConnector(nextState)
-  const query = activeDatasetQueryConnector(nextState)
+  const id = activeDatasetGetIdConnector(nextState)
+  const query = activeDatasetGetQueryConnector(nextState)
+  const periodType = configGetConnector('periodType')(nextState)
 
-  // get loading state before changes were made for id and query in state after changes
-  const loadingState = datasetLoadingStateConnectorFor({ id, query })(
+  if (!id) {
+    return
+  }
+
+  // get loading state before loading state was updated
+  const loadingState = dataQueryLoadingStateConnectorFor({ id, query })(
     previousState
   )
 
@@ -31,8 +42,9 @@ export const dataGetterActionEnhancer = (actionCreator: ActionCreator) => (
     return
   }
 
-  fetchFilteredDataset({ id, query }).then(
-    data => dispatch(datasetLoadSuccess({ id, query, data })),
+  getDatasetPromise({ id, query, periodType }).then(
+    dataEntries =>
+      dispatch(datasetLoadSuccess({ id, query, periodType, dataEntries })),
     error => dispatch(datasetLoadError({ id, query, error }))
   )
 }

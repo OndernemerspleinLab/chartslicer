@@ -23,14 +23,14 @@ const reduceWhenReselectingDataset = reduceWhen(
 )
 
 const setDatasetQueryLoading = (state: State, { queryString }) => {
-  updateIn(
+  return updateIn(
     ['datasetLoadingState', state.activeDatasetId, queryString],
     (loadingState = {}) => {
       if (loadingState.loaded) {
         return loadingState
       } else {
         return {
-          error: undefined,
+          error: null,
           loading: true,
           loaded: false,
           query: queryString,

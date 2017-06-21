@@ -6,6 +6,8 @@ export {
   invalidDatasetIdSelected,
   metadataLoadSuccess,
   metadataLoadError,
-  dataLoadSuccess,
-  dataLoadError,
 } from './simpleActionCreators'
+export {
+  datasetLoadSuccess,
+  datasetLoadError,
+} from './dataGetterActionCreators'

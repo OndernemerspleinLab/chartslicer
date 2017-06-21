@@ -7,6 +7,7 @@ import type {
   CategoryGroupId,
   CategoryKey,
   DimenisionType,
+  DataEntry,
 } from '../store/stateShape'
 
 ///////// CbsTableInfo /////////
@@ -98,7 +99,7 @@ export type CbsPeriods = CbsPeriod[]
 
 export type CbsPeriodsPromise = Promise<CbsPeriods>
 
-/////////  /////////
+///////// DataEntries /////////
 
 export type CbsDataEntry = {
   ID: Id,
@@ -109,3 +110,5 @@ export type CbsDataEntry = {
 export type CbsDataEntries = CbsDataEntry[]
 
 export type CbsDataEntriesPromise = Promise<CbsDataEntries>
+
+export type DataEntriesPromise = Promise<DataEntry[]>
