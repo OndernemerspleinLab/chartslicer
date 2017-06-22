@@ -1,10 +1,7 @@
 import { branch, renderNothing } from 'recompose'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import {
-  metadataIsLoadedConnector,
-  metadataIsLoadingConnector,
-} from '../connectors/metadataLoadingStateConnectors'
+import { metadataIsLoadedConnector } from '../connectors/metadataLoadingStateConnectors'
 
 export const onlyWhenMetadataLoaded = compose(
   connect(metadataIsLoadedConnector),
@@ -12,6 +9,6 @@ export const onlyWhenMetadataLoaded = compose(
 )
 
 export const onlyWhenMetadataNotLoaded = compose(
-  connect(metadataIsLoadingConnector),
+  connect(metadataIsLoadedConnector),
   branch(({ loaded }) => loaded, renderNothing)
 )

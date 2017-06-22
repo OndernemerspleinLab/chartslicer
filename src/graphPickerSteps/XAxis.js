@@ -2,6 +2,7 @@ import React from 'react'
 import {
   Step,
   StepTitle,
+  GroupLabel,
   Label,
   Radio,
   Form,
@@ -36,8 +37,8 @@ const PeriodTypeRadioComp = ({ inputValue, onChange, name, value }) =>
 const PeriodTypeRadio = configChangeEnhancer(PeriodTypeRadioComp)
 
 const PeriodTypePickerContainer = ({ periodTypes, value }) =>
-  <FormRow>
-    <Label>Toon periode per</Label>
+  <FormRow role="radiogroup" aria-labelledby="periodTypeGroupLabel">
+    <GroupLabel id="periodTypeGroupLabel">Toon periode per</GroupLabel>
     {periodTypes.map(periodType =>
       <PeriodTypeRadio
         key={periodType}

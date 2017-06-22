@@ -13,3 +13,8 @@ export const chartMaxWidth = `${100 * chartAspectRatio}vh`
 export const sidebarWidth = '25rem'
 
 export const supportedPeriodTypes = ['Jaar', 'Maanden', 'Kwartalen']
+
+export const accordionFromLength = 5
+
+export const thousandsSeperator = ' '
+export const numberSeperator = ','

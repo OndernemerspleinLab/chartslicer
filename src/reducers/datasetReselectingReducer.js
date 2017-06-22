@@ -4,7 +4,7 @@ import type { State } from '../store/stateShape'
 import { reduceWhen, composeReducers, reduceIn } from './reducerHelpers'
 import type { Reducer } from './reducerHelpers'
 import type { Action } from '../actions/actionTypes'
-import { setIn, updateIn } from '../helpers/getset'
+import { setIn, updateIn, getIn } from '../helpers/getset'
 import { metadataIsLoadedConnector } from '../connectors/metadataLoadingStateConnectors'
 import { getDatasetQueryString } from '../api/apiCalls'
 import { configConnector } from '../connectors/configConnectors'
@@ -23,10 +23,9 @@ const reduceWhenReselectingDataset = reduceWhen(
     reselectDataset && metadataIsLoadedConnector(state)
 )
 
-const setDatasetQueryLoading = (state: State, { queryString }) => {
-  const activeDatasetId = activeDatasetGetIdConnector(state)
+const setDatasetQueryLoading = (state: State, { queryString, id }) => {
   return updateIn(
-    ['dataQueryLoadingState', activeDatasetId, queryString],
+    ['dataQueryLoadingState', id, queryString],
     (loadingState = {}) => {
       if (loadingState.loaded) {
         return loadingState
@@ -36,21 +35,30 @@ const setDatasetQueryLoading = (state: State, { queryString }) => {
           loading: true,
           loaded: false,
           query: queryString,
-          id: activeDatasetId,
+          id,
         }
       }
     }
   )(state)
 }
 
-const setActiveDatasetQuery = (state, { queryString, id }) =>
+const setActiveDatasetQueries = (state, { queryString, id }) =>
   setIn(['activeDatasetQueries', id], queryString)(state)
+
+const setVisibleDatasetQueries = (state, { queryString, id }) =>
+  getIn(['dataQueryLoadingState', id, queryString, 'loaded'])(state)
+    ? setIn(['visibleDatasetQueries', id], queryString)(state)
+    : state
 
 const reduceDatasetReselecting = (state: State): State => {
   const queryString = getDatasetQueryString(getConfigWithDate(state))
   const id = activeDatasetGetIdConnector(state)
 
-  return composeReducers(setActiveDatasetQuery, setDatasetQueryLoading)(state, {
+  return composeReducers(
+    setActiveDatasetQueries,
+    setDatasetQueryLoading,
+    setVisibleDatasetQueries
+  )(state, {
     queryString,
     id,
   })
@@ -59,5 +67,5 @@ const reduceDatasetReselecting = (state: State): State => {
 export const datasetReselectingReducer: Reducer = composeReducers(
   reduceWhenReselectingDataset(reduceDatasetReselecting),
   reduceIn('dataQueryLoadingState')((state = {}) => state),
-  reduceIn('activeDatasetQueries')((state = {}) => state)
+  reduceIn('visibleDatasetQueries')((state = {}) => state)
 )

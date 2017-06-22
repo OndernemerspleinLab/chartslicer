@@ -13,6 +13,7 @@
     "glamorous": "^3.12.1",
     "lodash": "^4.17.4",
     "react": "^15.5.4",
+    "react-addons-perf": "^15.4.2",
     "react-dom": "^15.5.4",
     "react-redux": "^5.0.4",
     "recompose": "^0.23.1",
@@ -40,6 +41,8 @@
     "predeploy": "yarn run build",
     "deploy": "gh-pages -d build",
     "flow": "flow",
-    "serve": "serve -o build"
+    "up": "serve -o build",
+    "preserve": "yarn run build",
+    "serve": "yarn run up"
   }
 }

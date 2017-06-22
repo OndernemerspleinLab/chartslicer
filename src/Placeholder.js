@@ -8,6 +8,7 @@ import { compose } from 'recompose'
 import { css } from 'glamor'
 import { metadataLoadingStatePickConnector } from './connectors/metadataLoadingStateConnectors'
 import { connect } from 'react-redux'
+import { onlyWhenNoVisibleDataset } from './enhancers/datasetEnhancer'
 
 const imageWidth = 7
 const imageAspectRatio = 280 / 396
@@ -108,4 +109,6 @@ const PlaceholderContainer = () =>
     </PlaceholderComp>
   </Center>
 
-export const Placeholder = compose()(PlaceholderContainer)
+export const Placeholder = compose(onlyWhenNoVisibleDataset)(
+  PlaceholderContainer
+)

@@ -6,6 +6,7 @@ import {
   mapFromActiveSubstate,
   getFromActiveSubstate,
 } from './connectorHelpers'
+import type { State, Key } from '../store/stateShape'
 
 export const topicsConnector = getActiveSubstate('topics')
 
@@ -28,3 +29,6 @@ export const topicGroupsPickConnector = pickFromActiveSubstate(
 export const topicGroupsMapConnector = mapFromActiveSubstate(
   topicGroupsConnector
 )
+
+export const topicConnector = (state: State, { topicKey }: { topicKey: Key }) =>
+  topicsGetConnector(topicKey)(state)

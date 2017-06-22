@@ -1,15 +1,25 @@
 import React from 'react'
-import { Step, StepTitle, Label, Radio, Form, FormRow } from './Elements'
+import {
+  Step,
+  StepTitle,
+  GroupLabel,
+  Radio,
+  Form,
+  FormRow,
+  AccordionButton,
+  CloseAccordion,
+} from './Elements'
 import glamorous from 'glamorous'
 import { violet } from '../colors'
 import { configChangeEnhancer } from '../enhancers/configEnhancers'
 import { onlyWhenMetadataLoaded } from '../enhancers/metadataEnhancers'
-import { compose } from 'recompose'
+import { compose, pure } from 'recompose'
 import {
   categoryEnhancer,
   categoryGroupEnhancer,
 } from '../enhancers/categoryEnhancers'
 import { dimensionForKeyEnhancer } from '../enhancers/dimensionEnhancers'
+import { fadeInAnimation } from '../styles'
 
 const CategoryRadioComp = ({
   title,
@@ -19,65 +29,97 @@ const CategoryRadioComp = ({
   name,
   value,
 }) =>
-  <Radio
-    id={`category-${dimensionKey}-${inputValue}`}
-    name={name}
-    value={inputValue}
-    onChange={onChange}
-    checked={value === inputValue}
-  >
-    {title}
-  </Radio>
+  Radio({
+    id: `category-${dimensionKey}-${inputValue}`,
+    name,
+    value: inputValue,
+    onChange,
+    checked: value === inputValue,
+    children: title,
+  })
 
 const CategoryRadio = compose(categoryEnhancer, configChangeEnhancer)(
   CategoryRadioComp
 )
 
 const CategoryGroupComp = glamorous.div(
+  {
+    animation: fadeInAnimation,
+  },
   ({ categoryGroupId }) =>
     categoryGroupId === 'root'
       ? null
       : {
           paddingLeft: '0.3rem',
           borderLeft: `2px solid ${violet.default}`,
+          marginBottom: '1rem',
         }
 )
 
-const CategoryGroupContainer = ({
-  title,
-  dimensionKey,
-  categories = [],
-  categoryGroups = [],
-  categoryGroupId,
-}) =>
-  <CategoryGroupComp categoryGroupId={categoryGroupId}>
-    <Label>{title}</Label>
-    <FormRow>
-      {categories.map(categoryKey =>
-        <CategoryRadio
-          key={categoryKey}
-          categoryKey={categoryKey}
-          dimensionKey={dimensionKey}
-        />
-      )}
-    </FormRow>
-    {categoryGroups.map(categoryGroupId =>
-      <CategoryGroup
-        key={categoryGroupId}
+const CategoryGroupContainer = pure(
+  ({
+    title,
+    dimensionKey,
+    categories = [],
+    categoryGroups = [],
+    categoryGroupId,
+    asAccordion,
+    toggle,
+    close,
+    opened,
+  }) => {
+    const categoryGroupHtmlId = `categoryGroup-${categoryGroupId}`
+
+    return (
+      <CategoryGroupComp
         categoryGroupId={categoryGroupId}
-        dimensionKey={dimensionKey}
-      />
-    )}
-  </CategoryGroupComp>
+        aria-labelledby={categoryGroupHtmlId}
+        role={categoryGroupId === 'root' ? 'radiogroup' : 'group'}
+      >
+        <GroupLabel id={categoryGroupHtmlId}>
+          {asAccordion
+            ? <AccordionButton onClick={toggle} opened={opened}>
+                {title}
+              </AccordionButton>
+            : title}
+        </GroupLabel>
+        {opened || !asAccordion
+          ? <FormRow css={{ animation: fadeInAnimation }}>
+              {categories.map(categoryKey =>
+                <CategoryRadio
+                  key={categoryKey}
+                  categoryKey={categoryKey}
+                  dimensionKey={dimensionKey}
+                />
+              )}
+            </FormRow>
+          : null}
+        {opened || !asAccordion
+          ? categoryGroups.map(categoryGroupId =>
+              <CategoryGroup
+                key={categoryGroupId}
+                categoryGroupId={categoryGroupId}
+                dimensionKey={dimensionKey}
+              />
+            )
+          : null}
+        {asAccordion && opened
+          ? <CloseAccordion onClick={close}>Sluit {title}</CloseAccordion>
+          : null}
+      </CategoryGroupComp>
+    )
+  }
+)
 
 const CategoryGroup = categoryGroupEnhancer(CategoryGroupContainer)
 
 export const CategoryPicker = compose(
+  pure,
   onlyWhenMetadataLoaded,
   dimensionForKeyEnhancer
 )(({ dimensionKey, title }) =>
   <Step>
-    <StepTitle>Filter op ‘{title}’</StepTitle>
+    <StepTitle sticky>Filter op ‘{title}’</StepTitle>
     <Form>
       <CategoryGroup
         categoryGroupId={'root'}

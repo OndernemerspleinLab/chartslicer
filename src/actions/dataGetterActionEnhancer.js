@@ -7,7 +7,7 @@ import { dataQueryLoadingStateConnectorFor } from '../connectors/datasetsLoading
 import { activeDatasetGetIdConnector } from '../connectors/activeDatasetIdConnector'
 import { activeDatasetGetQueryConnector } from '../connectors/activeDatasetQueryConnector'
 import { getDatasetPromise } from '../api/getDatasetPromise'
-import { configGetConnector } from '../connectors/configConnectors'
+import { configConnector } from '../connectors/configConnectors'
 import {
   datasetLoadSuccess,
   datasetLoadError,
@@ -27,7 +27,8 @@ export const dataGetterActionEnhancer = (actionCreator: ActionCreator) => (
 
   const id = activeDatasetGetIdConnector(nextState)
   const query = activeDatasetGetQueryConnector(nextState)
-  const periodType = configGetConnector('periodType')(nextState)
+  const config = configConnector(nextState)
+  const periodType = get('periodType')(config)
 
   if (!id) {
     return
@@ -44,7 +45,7 @@ export const dataGetterActionEnhancer = (actionCreator: ActionCreator) => (
 
   getDatasetPromise({ id, query, periodType }).then(
     dataEntries =>
-      dispatch(datasetLoadSuccess({ id, query, periodType, dataEntries })),
+      dispatch(datasetLoadSuccess({ id, query, config, dataEntries })),
     error => dispatch(datasetLoadError({ id, query, error }))
   )
 }

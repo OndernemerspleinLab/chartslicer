@@ -1,27 +1,33 @@
 import React from 'react'
-import { find, flatten } from 'lodash/fp'
 import { compose } from 'recompose'
-import { onlyWhenLoaded } from './higherOrderComponents'
 import glamorous from 'glamorous'
-import { getFromActiveDataset } from './reducers/datasetsReducer'
 import { hemelblauw } from './colors'
 import { InsideMargin } from './graphPickerSteps/Elements'
 import { fadeInAnimation } from './styles'
-import { getConfigValues } from './reducers/configReducer'
 import { connect } from 'react-redux'
+import { topicsGetConnector } from './connectors/topicConnectors'
+import { onlyWhenVisibleDataset } from './enhancers/datasetEnhancer'
+import { visibleDatasetInfoConnector } from './connectors/visibleDatasetQueryConnector'
+import { getIn } from './helpers/getset'
+import { categoriesGetInConnector } from './connectors/categoryConnectors'
 
-const findTopic = topicKey => find(({ Key }) => Key === topicKey)
-const connectDataInfo = connect(state => {
-  const { topicKey } = getConfigValues('topicKey')(state)
-  const { topics } = getFromActiveDataset({
-    topics: ['dataProperties', 'Topic'],
-  })(state)
+const dataInfoConnector = connect(state => {
+  const visibleDatasetInfo = visibleDatasetInfoConnector(state)
+  const topicKey = getIn(['topicKeys', 0])(visibleDatasetInfo)
+  const categories = Object.entries(
+    visibleDatasetInfo.categoryKeys
+  ).map(([dimensionKey, [categoryKey]]) => {
+    return categoriesGetInConnector([dimensionKey, categoryKey])(state)
+  })
 
-  const topic = compose(findTopic(topicKey), flatten, Object.values)(topics)
-
-  return topic || {}
+  return {
+    visibleDatasetInfo,
+    categories,
+    topic: topicsGetConnector(topicKey)(state),
+  }
 })
-const enhancer = compose(onlyWhenLoaded, connectDataInfo)
+
+const enhancer = compose(onlyWhenVisibleDataset, dataInfoConnector)
 
 const DataInfoComp = glamorous.div({
   padding: '0 3rem',
@@ -37,12 +43,18 @@ const TitleComp = glamorous.h1({
   margin: '0 0 1rem 0',
 })
 
-const DataTableContainer = ({ Title }) => (
+const Categories = glamorous.h2({})
+const Category = glamorous.div({})
+const DataInfoContainer = ({ topic: { title }, categories }) =>
   <DataInfoComp>
     <InsideMargin top="1.4rem" bottom="2rem">
-      <TitleComp>{Title}</TitleComp>
+      <TitleComp>{title}</TitleComp>
+      <Categories>
+        {categories.map(({ key, title }) =>
+          <Category key={key}>{title}</Category>
+        )}
+      </Categories>
     </InsideMargin>
   </DataInfoComp>
-)
 
-export const DataInfo = enhancer(DataTableContainer)
+export const DataInfo = enhancer(DataInfoContainer)

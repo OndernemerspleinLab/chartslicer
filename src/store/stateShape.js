@@ -137,7 +137,7 @@ export type ConfigState = {
   id: DatasetId,
   periodType: PeriodType,
   periodLength: number,
-  topicKey: TopicKey[],
+  topicKeys: TopicKey[],
   categoryKeys: {
     [DimensionKey]: CategoryKey[],
   },
@@ -158,11 +158,10 @@ export type DataEntries = {
 }
 
 export type DataQuery = {
-  id: DatasetId,
   query: DatasetQuery,
   dataList: DataEntryId[],
-  periodType: PeriodType,
-}
+} & ConfigState
+
 export type DataQueries = {
   id: DatasetId,
 

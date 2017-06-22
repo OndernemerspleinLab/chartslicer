@@ -1,4 +1,4 @@
-import { merge } from 'lodash/fp'
+import { merge, pluck } from 'lodash/fp'
 import { DATASET_LOAD_SUCCESS } from '../actions/actions'
 import {
   reduceFor,
@@ -8,6 +8,7 @@ import {
 } from './reducerHelpers'
 import { compose } from 'recompose'
 import { setIn, update } from '../helpers/getset'
+import { activeDatasetGetQueryConnectorFor } from '../connectors/activeDatasetQueryConnector'
 
 const reduceDatasetLoadingStateSuccess = (state, { id, query }) => {
   return setIn([id, query], {
@@ -28,7 +29,7 @@ const datasetLoadingStateSuccessReducer = compose(
 const mergeDataEntry = (entries, dataEntry = {}) =>
   update(dataEntry.id, merge(dataEntry))(entries)
 
-const mergeDataEntries = ({ id, query, periodType, dataEntries = [] }) => (
+const mergeDataEntries = ({ id, query, dataEntries = [] }) => (
   entries = {}
 ) => {
   return dataEntries.reduce(mergeDataEntry, entries)
@@ -44,7 +45,42 @@ const datasetEntriesReducer = compose(
   reduceFor(DATASET_LOAD_SUCCESS)
 )(reduceDataEntries)
 
+const getDataQueryState = ({ query, config, dataEntries }) => {
+  return Object.assign(
+    {
+      query,
+      dataList: pluck('id')(dataEntries),
+    },
+    config
+  )
+}
+
+const reduceDatasetQueries = (state, action) => {
+  return setIn([action.id, action.query], getDataQueryState(action))(state)
+}
+
+const datasetQueriesReducer = compose(
+  reduceIn('dataQueries'),
+  defaultState({}),
+  reduceFor(DATASET_LOAD_SUCCESS)
+)(reduceDatasetQueries)
+
+const reduceVisibleDatasetQuery = (state, { id, query }) => {
+  const activeDatasetQuery = activeDatasetGetQueryConnectorFor(id)(state)
+
+  return activeDatasetQuery === query
+    ? setIn(['visibleDatasetQueries', id], query)(state)
+    : state
+}
+
+const visibleDatasetQueryReducer = reduceFor(DATASET_LOAD_SUCCESS)(
+  reduceVisibleDatasetQuery
+)
+
 export const datasetLoadSuccessReducer = composeReducers(
+  datasetQueriesReducer,
   datasetEntriesReducer,
-  datasetLoadingStateSuccessReducer
+  datasetLoadingStateSuccessReducer,
+  visibleDatasetQueryReducer,
+  reduceIn('visibleDatasetQueries')((state = {}) => state)
 )

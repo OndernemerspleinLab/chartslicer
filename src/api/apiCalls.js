@@ -138,7 +138,6 @@ const getDatasetDimensionFilter = (
 const getDatasetDimensionsFilter: (categoryKeys: {
   [DimensionKey]: CategoryKey[],
 }) => string = compose(
-  bracketize,
   join(' and '),
   map(getDatasetDimensionFilter),
   sortBy(([dimensionKey]) => dimensionKey),
@@ -159,13 +158,13 @@ export const getDatasetQueryString = ({
   periodLength,
   periodType,
   now,
-  topicKey,
+  topicKeys,
   categoryKeys,
 }: ConfigWithDate): string =>
   `${getDatasetFilter({
     cbsPeriodKeys: createCbsPeriods({ endDate: now, periodType, periodLength }),
     categoryKeys,
-  })}&${select(getDatasetSelection(topicKey))}`
+  })}&${select(getDatasetSelection(topicKeys))}`
 
 export const fetchFilteredDataset = ({
   id,

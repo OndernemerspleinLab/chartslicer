@@ -5,7 +5,7 @@ export const datasetLoadSuccess = createSimpleAction(
   DATASET_LOAD_SUCCESS,
   'id',
   'query',
-  'periodType',
+  'config',
   'dataEntries'
 )
 

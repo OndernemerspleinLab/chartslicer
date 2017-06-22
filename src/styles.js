@@ -30,4 +30,4 @@ export const fadeInKeyframes = css.keyframes({
   },
 })
 
-export const fadeInAnimation = `300ms ease-in ${fadeInKeyframes}`
+export const fadeInAnimation = `300ms ease-in-out ${fadeInKeyframes}`

@@ -3,7 +3,7 @@ import glamorous from 'glamorous'
 import { getCounterStyle } from './counterStyle'
 import { violet, wit } from '../colors'
 import { square } from '../helpers/styleHelpers'
-import { resetMarginStyle, marginBottomStyle } from '../marginStyle'
+import { resetMarginStyle } from '../marginStyle'
 import { css } from 'glamor'
 import { withProps, nest } from 'recompose'
 import { borderRadius, fadeInAnimation } from '../styles'
@@ -81,19 +81,29 @@ const StepComp = glamorous.section(
   })
 )
 
-const StepInsideMargin = withProps({ top: '0.7rem', bottom: '1rem' })(
+const StepInsideMargin = withProps({ top: '0.5rem', bottom: '1rem' })(
   InsideMargin
 )
 
 export const Step = nest(StepComp, StepInsideMargin)
 
 export const StepTitle = glamorous.h2(
+  resetMarginStyle,
   {
     lineHeight: 1.15,
     fontSize: '1.3rem',
+    padding: '0.2rem 0',
+    marginBottom: '0.8rem',
   },
-  resetMarginStyle,
-  marginBottomStyle
+  ({ sticky }) =>
+    sticky
+      ? {
+          position: 'sticky',
+          top: 0,
+          backgroundColor: violet.lightest,
+          zIndex: 2,
+        }
+      : undefined
 )
 
 export const Paragraph = glamorous.p({
@@ -150,6 +160,13 @@ export const Label = glamorous.label(
   labelStyle
 )
 
+export const GroupLabel = glamorous.div(
+  {
+    display: 'block',
+  },
+  labelStyle
+)
+
 export const InputQuantifier = glamorous.label({
   lineHeight: 1.15,
   marginLeft: '0.5em',
@@ -187,13 +204,12 @@ const RadioComp = glamorous.span({
   margin: '0.5rem 0.3rem 0 0',
   position: 'relative',
 })
-const RadioInput = withProps({ type: 'radio' })(
-  glamorous.input(hiddenStyle, {
-    ':focus + label': {
-      textDecoration: 'underline',
-    },
-  })
-)
+const RadioInput = glamorous.input(hiddenStyle, {
+  ':focus + label': {
+    textDecoration: 'underline',
+  },
+})
+
 const RadioLabel = glamorous.label(
   borderRadius,
   {
@@ -235,6 +251,7 @@ export const Radio = ({
 }) =>
   <RadioComp>
     <RadioInput
+      type="radio"
       id={id}
       name={name}
       value={value}
@@ -243,3 +260,50 @@ export const Radio = ({
     />
     <RadioLabel htmlFor={id} checked={checked}>{children}</RadioLabel>
   </RadioComp>
+
+export const AccordionButton = glamorous.button(
+  {
+    border: 'none',
+    display: 'block',
+    background: 'none',
+    color: 'inherit',
+    padding: 0,
+    cursor: 'pointer',
+  },
+  ({ opened }) => ({
+    fontWeight: 'inherit',
+    ':after': {
+      content: opened ? '"×"' : '"+"',
+      color: wit,
+      backgroundColor: violet.darker,
+      display: 'inline-block',
+      marginLeft: '0.3rem',
+      fontWeight: 'normal',
+      borderRadius: '999px',
+      textAlign: 'center',
+      width: '1rem',
+      height: '1rem',
+      lineHeight: '1rem',
+    },
+  })
+)
+
+export const CloseAccordion = glamorous.button({
+  border: 'none',
+  display: 'block',
+  background: 'none',
+  color: violet.darker,
+  padding: 0,
+  fontSize: '0.8rem',
+  cursor: 'pointer',
+  animation: fadeInAnimation,
+
+  ':after': {
+    content: '"×"',
+    display: 'inline-block',
+    marginLeft: '0.3rem',
+    fontWeight: 'normal',
+    lineHeight: '0.8rem',
+    fontSize: '1.1rem',
+  },
+})

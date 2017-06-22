@@ -50,6 +50,13 @@ const cbsCategoryGroupsByParentIdReducer = ({
     cbsCategoryGroupsByParentId,
   })(cbsCategoryGroup)
 
+  if (
+    categoryGroup.categories.length === 0 &&
+    categoryGroup.categoryGroups.length === 0
+  ) {
+    return memo
+  }
+
   return set(cbsCategoryGroup.ID, categoryGroup)(memo)
 }
 
