@@ -9,6 +9,7 @@ import { mqBig, sidebarWidth } from './config'
 import { hemelblauw, violet } from './colors'
 import { Placeholder } from './Placeholder'
 import Color from 'color'
+import { DataSource } from './DataSource'
 
 css.global('*', {
   boxSizing: 'border-box',
@@ -86,6 +87,7 @@ export const App = () =>
       <Placeholder />
       <DataInfo />
       <DataChart />
+      <DataSource />
       <DataTable />
     </Main>
   </Layout>
