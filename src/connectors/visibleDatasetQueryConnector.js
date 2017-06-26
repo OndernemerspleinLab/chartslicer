@@ -21,12 +21,16 @@ export const visibleDatasetInfoConnector = state => {
   )
 }
 
-export const dataEntriesConnector = state => {
+export const dataEntriesGetConnector = state => {
   const activeDatasetId = activeDatasetGetIdConnector(state)
 
   return getIn(['dataEntries', activeDatasetId])(state) || {}
 }
 
+export const dataEntriesConnector = state => {
+  return { dataEntries: dataEntriesGetConnector(state) }
+}
+
 export const dataEntryConnector = (state, { entryId }) => {
-  return get(entryId)(dataEntriesConnector(state))
+  return get(entryId)(dataEntriesGetConnector(state))
 }

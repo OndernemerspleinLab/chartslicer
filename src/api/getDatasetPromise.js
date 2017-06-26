@@ -6,6 +6,7 @@ import type {
   DatasetQuery,
   PeriodType,
   DataEntry,
+  TopicKey,
 } from '../store/stateShape'
 import type {
   CbsDataEntries,
@@ -13,6 +14,7 @@ import type {
   DataEntriesPromise,
 } from './apiShape'
 import { convertCbsPeriodToDate } from '../cbsPeriod'
+import { existing } from '../helpers/helpers'
 
 const mapDataEntry = (periodType: PeriodType) => (
   cbsDataEntry: CbsDataEntry
@@ -30,14 +32,18 @@ export const getDatasetPromise = ({
   id,
   query,
   periodType,
+  topicKey,
 }: {
   id: DatasetId,
   query: DatasetQuery,
   periodType: PeriodType,
+  topicKey: TopicKey,
 }): DataEntriesPromise =>
   fetchFilteredDataset({
     id,
     query,
   }).then((cbsDataEntries: CbsDataEntries) =>
-    cbsDataEntries.map(mapDataEntry(periodType))
+    cbsDataEntries
+      .map(mapDataEntry(periodType))
+      .filter(dataEntry => existing(dataEntry[topicKey]))
   )

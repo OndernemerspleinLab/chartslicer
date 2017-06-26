@@ -6,9 +6,14 @@ import Color from 'color'
 import { hemelblauw } from './colors'
 import { compose } from 'recompose'
 import { css } from 'glamor'
-import { metadataLoadingStatePickConnector } from './connectors/metadataLoadingStateConnectors'
+import {
+  metadataLoadingStatePickConnector,
+  metadataLoadingStateConnector,
+} from './connectors/metadataLoadingStateConnectors'
 import { connect } from 'react-redux'
 import { onlyWhenNoVisibleDataset } from './enhancers/datasetEnhancer'
+import { dataQueryLoadingStateConnector } from './connectors/datasetsLoadingStateConnectors'
+import { get } from './helpers/getset'
 
 const imageWidth = 7
 const imageAspectRatio = 280 / 396
@@ -88,7 +93,13 @@ const FigureComp = glamorous.figure(
       : null
 )
 
-const Figure = connect(metadataLoadingStatePickConnector('loading'))(FigureComp)
+const Figure = connect(state => {
+  const metadataLoading = get('loading')(metadataLoadingStateConnector(state))
+  const dataQueryLoading = get('loading')(dataQueryLoadingStateConnector(state))
+  return {
+    loading: metadataLoading || dataQueryLoading,
+  }
+})(FigureComp)
 
 const Image = glamorous.img({
   display: 'block',

@@ -7,6 +7,8 @@ import {
   getFromActiveSubstate,
 } from './connectorHelpers'
 import type { State, Key } from '../store/stateShape'
+import { visibleDatasetInfoConnector } from './visibleDatasetQueryConnector'
+import { getIn } from '../helpers/getset'
 
 export const topicsConnector = getActiveSubstate('topics')
 
@@ -32,3 +34,9 @@ export const topicGroupsMapConnector = mapFromActiveSubstate(
 
 export const topicConnector = (state: State, { topicKey }: { topicKey: Key }) =>
   topicsGetConnector(topicKey)(state)
+
+export const visibleTopicConnector = (state: State) => {
+  const topicKey = getIn(['topicKeys', 0])(visibleDatasetInfoConnector(state))
+
+  return { topic: topicsGetConnector(topicKey)(state) }
+}

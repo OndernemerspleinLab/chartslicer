@@ -40,7 +40,9 @@ export const formatNumber = (decimals: number = 0) => (
 
   const [integerString, decimalString = ''] = numberString.split('.')
 
-  const formattedDecimals = decimalString.slice(0, decimals)
+  const formattedDecimals = decimalString
+    .slice(0, decimals)
+    .padEnd(decimals, '0')
 
   const formattedIntegers = integerString.length <= 4
     ? integerString

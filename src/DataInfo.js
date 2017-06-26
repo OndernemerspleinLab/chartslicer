@@ -4,30 +4,10 @@ import glamorous from 'glamorous'
 import { hemelblauw } from './colors'
 import { InsideMargin } from './graphPickerSteps/Elements'
 import { fadeInAnimation } from './styles'
-import { connect } from 'react-redux'
-import { topicsGetConnector } from './connectors/topicConnectors'
 import { onlyWhenVisibleDataset } from './enhancers/datasetEnhancer'
-import { visibleDatasetInfoConnector } from './connectors/visibleDatasetQueryConnector'
-import { getIn } from './helpers/getset'
-import { categoriesGetInConnector } from './connectors/categoryConnectors'
+import { visibleDataInfoEnhancer } from './enhancers/visibleDataInfoEnhancer'
 
-const dataInfoConnector = connect(state => {
-  const visibleDatasetInfo = visibleDatasetInfoConnector(state)
-  const topicKey = getIn(['topicKeys', 0])(visibleDatasetInfo)
-  const categories = Object.entries(
-    visibleDatasetInfo.categoryKeys
-  ).map(([dimensionKey, [categoryKey]]) => {
-    return categoriesGetInConnector([dimensionKey, categoryKey])(state)
-  })
-
-  return {
-    visibleDatasetInfo,
-    categories,
-    topic: topicsGetConnector(topicKey)(state),
-  }
-})
-
-const enhancer = compose(onlyWhenVisibleDataset, dataInfoConnector)
+const enhancer = compose(onlyWhenVisibleDataset, visibleDataInfoEnhancer)
 
 const DataInfoComp = glamorous.div({
   padding: '0 3rem',

@@ -1,7 +1,7 @@
 import React from 'react'
 import { GraphPicker } from './GraphPicker'
 import { css } from 'glamor'
-// import { Chart } from './Chart'
+import { DataChart } from './DataChart'
 import { DataInfo } from './DataInfo'
 import { DataTable } from './DataTable'
 import glamorous from 'glamorous'
@@ -15,6 +15,7 @@ css.global('*', {
 })
 css.global('html', {
   lineHeight: 1.5,
+  color: hemelblauw.darkest,
 })
 
 const Layout = glamorous.div({
@@ -84,7 +85,7 @@ export const App = () =>
     <Main>
       <Placeholder />
       <DataInfo />
-      {/*<Chart />*/}
+      <DataChart />
       <DataTable />
     </Main>
   </Layout>
