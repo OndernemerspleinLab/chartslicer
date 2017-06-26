@@ -6,10 +6,7 @@ import Color from 'color'
 import { hemelblauw } from './colors'
 import { compose } from 'recompose'
 import { css } from 'glamor'
-import {
-  metadataLoadingStatePickConnector,
-  metadataLoadingStateConnector,
-} from './connectors/metadataLoadingStateConnectors'
+import { metadataLoadingStateConnector } from './connectors/metadataLoadingStateConnectors'
 import { connect } from 'react-redux'
 import { onlyWhenNoVisibleDataset } from './enhancers/datasetEnhancer'
 import { dataQueryLoadingStateConnector } from './connectors/datasetsLoadingStateConnectors'
