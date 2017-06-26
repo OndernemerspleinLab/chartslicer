@@ -1,31 +1,57 @@
+/* @flow */
+
 import {
   DATASET_ID_SELECTED,
   INVALID_DATASET_ID_SELECTED,
   DATASET_ID_CLEARED,
-} from '../actions'
-import { reduceFor, reduceIn, defaultState } from './reducerHelpers'
+} from '../actions/actions'
+import {
+  reduceFor,
+  reduceIn,
+  defaultState,
+  composeReducers,
+} from './reducerHelpers'
 import { compose } from 'redux'
+import type { MaybeDatasetId } from '../store/stateShape'
 
-const activeDatasetReducer = (state, { id }) => id
+///////// Selector /////////
 
-const activeDatasetReducerSelector = compose(
+const activeDatasetSelector = compose(
   reduceIn('activeDatasetId'),
   defaultState(null)
 )
 
-export const reduceActiveDataset = compose(
-  activeDatasetReducerSelector,
+///////// Reduce valid id /////////
+
+const setValidId = (state, { id }): MaybeDatasetId => id
+
+const validActiveDatasetReducer = compose(
+  activeDatasetSelector,
   reduceFor(DATASET_ID_SELECTED)
-)(activeDatasetReducer)
+)(setValidId)
 
-export const reduceClearedActiveDataset = compose(
-  activeDatasetReducerSelector,
-  reduceFor(DATASET_ID_CLEARED)
-)(() => null)
+///////// Reduce invalid id /////////
 
-const invalidActiveIdReducer = (state, { input }) => input
+const setInvalidId = (state, { input }): MaybeDatasetId => input
 
-export const reduceInvalidActiveId = compose(
-  activeDatasetReducerSelector,
+const invalidActiveIdReducer = compose(
+  activeDatasetSelector,
   reduceFor(INVALID_DATASET_ID_SELECTED)
-)(invalidActiveIdReducer)
+)(setInvalidId)
+
+///////// Reduce cleared id /////////
+
+const clearId = (): MaybeDatasetId => null
+
+const clearedActiveDatasetReducer = compose(
+  activeDatasetSelector,
+  reduceFor(DATASET_ID_CLEARED)
+)(clearId)
+
+///////// Reducer /////////
+
+export const activeDatasetReducer = composeReducers(
+  validActiveDatasetReducer,
+  invalidActiveIdReducer,
+  clearedActiveDatasetReducer
+)

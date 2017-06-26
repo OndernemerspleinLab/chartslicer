@@ -1,15 +1,16 @@
 import React from 'react'
 import glamorous from 'glamorous'
-import { onlyWhenNotLoaded } from './higherOrderComponents'
 // Source of image: https://commons.wikimedia.org/wiki/File:George_Bernard_Shaw_1925.jpg
 import imageSrc from './George_Bernard_Shaw_1925.jpg'
 import Color from 'color'
 import { hemelblauw } from './colors'
-import {
-  connectActiveDatasetsNetworkState,
-} from './reducers/networkStateReducer'
 import { compose } from 'recompose'
 import { css } from 'glamor'
+import { metadataLoadingStateConnector } from './connectors/metadataLoadingStateConnectors'
+import { connect } from 'react-redux'
+import { onlyWhenNoVisibleDataset } from './enhancers/datasetEnhancer'
+import { dataQueryLoadingStateConnector } from './connectors/datasetsLoadingStateConnectors'
+import { get } from './helpers/getset'
 
 const imageWidth = 7
 const imageAspectRatio = 280 / 396
@@ -76,7 +77,9 @@ const FigureComp = glamorous.figure(
       bottom: 0,
       top: 0,
       right: 0,
-      backgroundImage: `radial-gradient(closest-side, ${Color(hemelblauw.lighter).alpha(0.3)}, ${hemelblauw.lighter})`,
+      backgroundImage: `radial-gradient(closest-side, ${Color(
+        hemelblauw.lighter
+      ).alpha(0.3)}, ${hemelblauw.lighter})`,
     },
   },
   ({ loading }) =>
@@ -87,7 +90,13 @@ const FigureComp = glamorous.figure(
       : null
 )
 
-const Figure = connectActiveDatasetsNetworkState('loading')(FigureComp)
+const Figure = connect(state => {
+  const metadataLoading = get('loading')(metadataLoadingStateConnector(state))
+  const dataQueryLoading = get('loading')(dataQueryLoadingStateConnector(state))
+  return {
+    loading: metadataLoading || dataQueryLoading,
+  }
+})(FigureComp)
 
 const Image = glamorous.img({
   display: 'block',
@@ -95,7 +104,7 @@ const Image = glamorous.img({
   height: `${imageHeight}rem`,
 })
 
-const PlaceholderContainer = () => (
+const PlaceholderContainer = () =>
   <Center>
     <PlaceholderComp>
       <Figure>
@@ -107,6 +116,7 @@ const PlaceholderContainer = () => (
       </BlockQuote>
     </PlaceholderComp>
   </Center>
-)
 
-export const Placeholder = compose(onlyWhenNotLoaded)(PlaceholderContainer)
+export const Placeholder = compose(onlyWhenNoVisibleDataset)(
+  PlaceholderContainer
+)

@@ -2,12 +2,12 @@ import React from 'react'
 import glamorous from 'glamorous'
 import { getCounterStyle } from './counterStyle'
 import { violet, wit } from '../colors'
-import { square } from '../styleHelpers'
-import { resetMarginStyle, marginBottomStyle } from '../marginStyle'
+import { square } from '../helpers/styleHelpers'
+import { resetMarginStyle } from '../marginStyle'
 import { css } from 'glamor'
 import { withProps, nest } from 'recompose'
 import { borderRadius, fadeInAnimation } from '../styles'
-import { mqSmall } from '../config'
+import { mqSmall, mqBig } from '../config'
 
 const hiddenStyle = {
   position: 'absolute',
@@ -53,6 +53,9 @@ const commonStepStyle = css({
       borderBottom: 'none',
     },
   },
+  [mqBig]: {
+    paddingRight: '2rem',
+  },
 })
 const commonStepIconStyle = css(square(counterSize), {
   display: 'block',
@@ -78,19 +81,29 @@ const StepComp = glamorous.section(
   })
 )
 
-const StepInsideMargin = withProps({ top: '0.7rem', bottom: '1rem' })(
+const StepInsideMargin = withProps({ top: '0.5rem', bottom: '1rem' })(
   InsideMargin
 )
 
 export const Step = nest(StepComp, StepInsideMargin)
 
 export const StepTitle = glamorous.h2(
+  resetMarginStyle,
   {
     lineHeight: 1.15,
     fontSize: '1.3rem',
+    padding: '0.2rem 0',
+    marginBottom: '0.8rem',
   },
-  resetMarginStyle,
-  marginBottomStyle
+  ({ sticky }) =>
+    sticky
+      ? {
+          position: 'sticky',
+          top: 0,
+          backgroundColor: violet.lightest,
+          zIndex: 2,
+        }
+      : undefined
 )
 
 export const Paragraph = glamorous.p({
@@ -101,55 +114,36 @@ export const FormRow = glamorous.div({
   margin: '0 0 1rem 0',
 })
 
-const arrowThickness = 8
-
-const arrowUpStyle = css({
-  ':after': {
-    content: '""',
-    border: `${arrowThickness}px solid transparent`,
-    borderBottomColor: violet.default,
-    position: 'absolute',
-    left: '50%',
-    marginLeft: -arrowThickness,
-    bottom: '100%',
-  },
+const MessageComp = glamorous.section(commonStepStyle, {
+  backgroundColor: violet.default,
+  color: wit,
+  ':before': css(commonStepIconStyle, {
+    content: '"✔"',
+    color: violet.default,
+    backgroundColor: wit,
+  }),
 })
-const MessageComp = glamorous.section(
-  commonStepStyle,
-  {
-    backgroundColor: violet.default,
-    color: wit,
-    ':before': css(commonStepIconStyle, {
-      content: '"✔"',
-      color: violet.default,
-      backgroundColor: wit,
-    }),
-  },
-  arrowUpStyle
-)
 
 export const Message = nest(MessageComp, StepInsideMargin)
 
 const stripeWidth = 6
 
-export const ErrorMessageComp = glamorous.section(
-  commonStepStyle,
-  {
-    backgroundColor: violet.default,
-    color: wit,
-    ':before': css({
-      content: '""',
-      position: 'absolute',
-      top: 0,
-      bottom: 0,
-      left: 0,
-      backgroundColor: violet.lightest,
-      width: '2.5rem',
-      backgroundImage: `repeating-linear-gradient(-45deg, ${violet.lightest}, ${violet.lightest} ${stripeWidth}px, ${violet.default} ${stripeWidth}px, ${violet.default} ${stripeWidth * 2 + 1}px)`,
-    }),
-  },
-  arrowUpStyle
-)
+export const ErrorMessageComp = glamorous.section(commonStepStyle, {
+  backgroundColor: violet.default,
+  color: wit,
+  ':before': css({
+    content: '""',
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    backgroundColor: violet.lightest,
+    width: '2.5rem',
+    backgroundImage: `repeating-linear-gradient(-45deg, ${violet.lightest}, ${violet.lightest} ${stripeWidth}px, ${violet.default} ${stripeWidth}px, ${violet.default} ${stripeWidth *
+      2 +
+      1}px)`,
+  }),
+})
 
 export const ErrorMessage = nest(ErrorMessageComp, StepInsideMargin)
 
@@ -160,6 +154,13 @@ const labelStyle = css({
 })
 
 export const Label = glamorous.label(
+  {
+    display: 'block',
+  },
+  labelStyle
+)
+
+export const GroupLabel = glamorous.div(
   {
     display: 'block',
   },
@@ -203,13 +204,12 @@ const RadioComp = glamorous.span({
   margin: '0.5rem 0.3rem 0 0',
   position: 'relative',
 })
-const RadioInput = withProps({ type: 'radio' })(
-  glamorous.input(hiddenStyle, {
-    ':focus + label': {
-      textDecoration: 'underline',
-    },
-  })
-)
+const RadioInput = glamorous.input(hiddenStyle, {
+  ':focus + label': {
+    textDecoration: 'underline',
+  },
+})
+
 const RadioLabel = glamorous.label(
   borderRadius,
   {
@@ -248,9 +248,10 @@ export const Radio = ({
   value = '',
   onChange,
   checked,
-}) => (
+}) =>
   <RadioComp>
     <RadioInput
+      type="radio"
       id={id}
       name={name}
       value={value}
@@ -259,4 +260,50 @@ export const Radio = ({
     />
     <RadioLabel htmlFor={id} checked={checked}>{children}</RadioLabel>
   </RadioComp>
+
+export const AccordionButton = glamorous.button(
+  {
+    border: 'none',
+    display: 'block',
+    background: 'none',
+    color: 'inherit',
+    padding: 0,
+    cursor: 'pointer',
+  },
+  ({ opened }) => ({
+    fontWeight: 'inherit',
+    ':after': {
+      content: opened ? '"×"' : '"+"',
+      color: wit,
+      backgroundColor: violet.darker,
+      display: 'inline-block',
+      marginLeft: '0.3rem',
+      fontWeight: 'normal',
+      borderRadius: '999px',
+      textAlign: 'center',
+      width: '1rem',
+      height: '1rem',
+      lineHeight: '1rem',
+    },
+  })
 )
+
+export const CloseAccordion = glamorous.button({
+  border: 'none',
+  display: 'block',
+  background: 'none',
+  color: violet.darker,
+  padding: 0,
+  fontSize: '0.8rem',
+  cursor: 'pointer',
+  animation: fadeInAnimation,
+
+  ':after': {
+    content: '"×"',
+    display: 'inline-block',
+    marginLeft: '0.3rem',
+    fontWeight: 'normal',
+    lineHeight: '0.8rem',
+    fontSize: '1.1rem',
+  },
+})

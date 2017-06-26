@@ -4,41 +4,33 @@ import { Label, Input } from './Elements'
 import { Submit } from '../CallToAction'
 import { Media, MediaText, MediaFigure } from '../Media'
 import { marginBottomHalfStyle } from '../marginStyle'
-import { afterPaste } from '../domHelpers'
+import { afterPaste } from '../helpers/domHelpers'
 import { borderRadiusOnlyLeft } from '../styles'
-import { connectActions } from '../store'
-import {
-  connectDatasetsNetworkState,
-  connectActiveDatasetsNetworkState,
-} from '../reducers/networkStateReducer'
+import { connectActions } from '../connectors/actionConnectors'
+import { metadataIsLoadingConnector } from '../connectors/metadataLoadingStateConnectors'
+import { connect } from 'react-redux'
 
 const enhancer = compose(
   connectActions,
-  connectDatasetsNetworkState,
-  connectActiveDatasetsNetworkState('loading'),
+  connect(metadataIsLoadingConnector),
   withState('value', 'updateValue', ''),
   withHandlers({
     onChange: ({ updateValue }) => event =>
       updateValue(event.currentTarget.value),
-    onSubmit: ({
-      tableSelectionChanged,
-      datasetsNetworkState,
-      value,
-    }) => event => {
+    onSubmit: ({ datasetSelectionChanged, value }) => event => {
       event.preventDefault()
-      tableSelectionChanged({ input: value, datasetsNetworkState })
+      datasetSelectionChanged({ input: value })
     },
-    onPaste: ({ tableSelectionChanged, datasetsNetworkState }) =>
+    onPaste: ({ datasetSelectionChanged }) =>
       afterPaste(event => {
-        tableSelectionChanged({
+        datasetSelectionChanged({
           input: event.currentTarget.value,
-          datasetsNetworkState,
         })
       }),
   })
 )
 export const TablePickerInput = enhancer(
-  ({ onChange, onSubmit, onPaste, updateValue, loading }) => (
+  ({ onChange, onSubmit, onPaste, updateValue, loading }) =>
     <form onSubmit={onSubmit}>
       <Label htmlFor="tableIdInput" css={marginBottomHalfStyle}>
         Dataset URL of ID
@@ -58,5 +50,4 @@ export const TablePickerInput = enhancer(
         </MediaFigure>
       </Media>
     </form>
-  )
 )
