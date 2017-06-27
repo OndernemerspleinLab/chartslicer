@@ -41,6 +41,7 @@ const chartParentStyle = {
   width: '100%',
   height: '100%',
   background: wit,
+  border: `1px solid ${hemelblauw.light}`,
 }
 
 const Rectangle = glamorous.div({
@@ -59,7 +60,6 @@ const DataChartComp = glamorous.div({
   margin: '0 3rem',
   maxWidth: '60rem',
   position: 'relative',
-  border: `1px solid ${hemelblauw.light}`,
 })
 
 const DataLoadingIndicator = onlyWhenActiveQueryLoading(Loading)
@@ -75,8 +75,8 @@ const DataChartContainer = ({ topic, dataList, periodType, dataEntries }) => {
 
   return (
     <DataChartComp>
-      <DataLoadingIndicator />
       <Rectangle>
+        <DataLoadingIndicator />
         <VictoryChart
           width={chartWidth}
           height={chartHeight}
