@@ -4,7 +4,7 @@ import {
   getInFromActiveSubstate,
 } from './connectorHelpers'
 import { visibleDatasetInfoConnector } from './visibleDatasetQueryConnector'
-import { DimensionKey, Category } from '../store/stateShape'
+import type { DimensionKey } from '../store/stateShape'
 import { configGetInConnector } from './configConnectors'
 
 export const categoriesConnector = getActiveSubstate('categories')
