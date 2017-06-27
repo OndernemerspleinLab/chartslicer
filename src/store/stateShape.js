@@ -88,24 +88,28 @@ export type CategoryGroupRoot = {
   dimensionKey: DimensionKey,
   categories: CategoryKey[],
   categoryGroups: CategoryGroupId[],
+  parentId: ?CategoryGroupId,
 }
 
 export type CategoryGroup = CategoryGroupRoot & {
   title?: string,
 }
 
+export type CategoryGroupsForDimension = {
+  root: CategoryGroupRoot,
+  [CategoryGroupId]: CategoryGroup,
+}
+
 export type CategoryGroups = {
   id: DatasetId,
-  [DimensionKey]: {
-    root: CategoryGroupRoot,
-    [CategoryGroupId]: CategoryGroup,
-  },
+  [DimensionKey]: CategoryGroupsForDimension,
 }
 
 export type Category = {
   dimensionKey: DimensionKey,
   key: CategoryKey,
   title: string,
+  parentGroupIds: CategoryGroupId[],
 }
 
 export type Categories = {

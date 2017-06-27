@@ -31,10 +31,16 @@ const groupByCategoryGroupID = groupBy(({ CategoryGroupID }) =>
 const mapCategoryGroup = ({
   cbsCategoriesByGroupID,
   cbsCategoryGroupsByParentId,
-}) => ({ ID, DimensionKey, Title }: CbsCategoryGroup): CategoryGroup => ({
+}) => ({
+  ID,
+  DimensionKey,
+  Title,
+  ParentID,
+}: CbsCategoryGroup): CategoryGroup => ({
   id: ID,
   title: Title,
   dimensionKey: DimensionKey,
+  parentId: ParentID,
   categories: getArrayFromMap(ID)(cbsCategoriesByGroupID).map(({ Key }) => Key),
   categoryGroups: getArrayFromMap(ID)(cbsCategoryGroupsByParentId).map(
     ({ ID }) => ID

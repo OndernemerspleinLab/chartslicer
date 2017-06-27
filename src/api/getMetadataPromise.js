@@ -47,14 +47,21 @@ const getSecondMetadataPromise = (id: DatasetId) => ({
 
 const getThirdMetadaPromise = (id: DatasetId) => (
   [memo, cbsCategoryGroups, cbsCategoriesByDimension]
-) => ({
-  ...memo,
-  categoryGroups: getCategoryGroups(id)({
+) => {
+  const categoryGroups = getCategoryGroups(id)({
     cbsCategoryGroups,
     cbsCategoriesByDimension,
-  }),
-  categories: getCategories(id)(cbsCategoriesByDimension),
-})
+  })
+
+  return {
+    ...memo,
+    categoryGroups,
+    categories: getCategories(id)({
+      cbsCategoriesByDimension,
+      categoryGroups,
+    }),
+  }
+}
 
 export const getMetadataPromise = (id: DatasetId) =>
   getFirstMetadataPromise(id)
