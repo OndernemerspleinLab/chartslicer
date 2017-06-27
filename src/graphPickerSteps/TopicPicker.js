@@ -65,6 +65,7 @@ const TopicGroupContainer = ({
   topicGroups = [],
   topicGroupId,
   asAccordion,
+  includesSelection,
   toggle,
   close,
   opened,
@@ -78,7 +79,11 @@ const TopicGroupContainer = ({
     >
       <GroupLabel id={topicGroupHtmlId}>
         {asAccordion
-          ? <AccordionButton onClick={toggle} opened={opened}>
+          ? <AccordionButton
+              onClick={toggle}
+              opened={opened}
+              includesSelection={includesSelection}
+            >
               {title}
             </AccordionButton>
           : title}

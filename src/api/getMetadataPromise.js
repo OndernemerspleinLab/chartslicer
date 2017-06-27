@@ -22,13 +22,17 @@ const getFirstMetadataPromise = (id: DatasetId) =>
     cbsCategoryGroups,
   }))
 
-const addTopicsAndDimensions = ({ id, tableInfo, cbsDataProperties }) => ({
-  id,
-  tableInfo,
-  topicGroups: getTopicGroups(id)(cbsDataProperties),
-  topics: getTopics(id)(cbsDataProperties),
-  dimensions: getDimensions(id)(cbsDataProperties),
-})
+const addTopicsAndDimensions = ({ id, tableInfo, cbsDataProperties }) => {
+  const topicGroups = getTopicGroups(id)(cbsDataProperties)
+
+  return {
+    id,
+    tableInfo,
+    topicGroups,
+    topics: getTopics(id)({ cbsDataProperties, topicGroups }),
+    dimensions: getDimensions(id)(cbsDataProperties),
+  }
+}
 
 const getSecondMetadataPromise = (id: DatasetId) => ({
   tableInfo,

@@ -28,7 +28,7 @@ export type CbsTopic = {
   Title: string,
   Unit: string,
   Decimals: number,
-  ParentId: Id,
+  ParentID: Id,
   Type: CbsTopicType,
 }
 
@@ -39,7 +39,7 @@ export type CbsTopicGroupType = 'TopicGroup'
 export type CbsTopicGroup = {
   Title?: string,
   ID: Id | 'root',
-  ParentId?: Id,
+  ParentID?: Id,
   Type: CbsTopicGroupType,
 }
 

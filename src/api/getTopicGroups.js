@@ -25,7 +25,7 @@ type IdMap = { [string]: Id[] }
 const topicGroupMapper = ({
   topicMap,
   topicGroupMap,
-  cbsTopicGroup: { ID, Title },
+  cbsTopicGroup: { ID, Title, ParentID },
 }: {
   topicMap: KeyMap,
   topicGroupMap: IdMap,
@@ -35,6 +35,7 @@ const topicGroupMapper = ({
   topics: getArrayFromMap(ID)(topicMap).map(get('Key')),
   topicGroups: getArrayFromMap(ID)(topicGroupMap).map(get('ID')),
   title: Title,
+  parentId: ParentID,
 })
 
 const topicGroupReducer = ({

@@ -51,6 +51,7 @@ export type TopicGroupRoot = {
   id: TopicGroupId,
   topics: TopicKey[],
   topicGroups: TopicGroupId[],
+  parentId: ?TopicGroupId,
 }
 
 export type TopicGroup = TopicGroupRoot & {
@@ -68,6 +69,7 @@ export type Topic = {
   title: string,
   unit: string,
   decimals: number,
+  parentGroupIds: TopicGroupId[],
 }
 
 export type Topics = {

@@ -9,6 +9,7 @@ import {
 import type { State, Key } from '../store/stateShape'
 import { visibleDatasetInfoConnector } from './visibleDatasetQueryConnector'
 import { getIn } from '../helpers/getset'
+import { configGetInConnector } from './configConnectors'
 
 export const topicsConnector = getActiveSubstate('topics')
 
@@ -37,6 +38,12 @@ export const topicConnector = (state: State, { topicKey }: { topicKey: Key }) =>
 
 export const visibleTopicConnector = (state: State) => {
   const topicKey = getIn(['topicKeys', 0])(visibleDatasetInfoConnector(state))
+
+  return { topic: topicsGetConnector(topicKey)(state) }
+}
+
+export const selectedTopicConnector = (state: State) => {
+  const topicKey = configGetInConnector(['topicKeys', 0])(state)
 
   return { topic: topicsGetConnector(topicKey)(state) }
 }

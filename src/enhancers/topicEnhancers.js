@@ -1,8 +1,9 @@
 import { connect } from 'react-redux'
-import { merge } from '../helpers/getset'
+import { merge, get } from '../helpers/getset'
 import {
   topicsGetConnector,
   topicGroupsGetConnector,
+  selectedTopicConnector,
 } from '../connectors/topicConnectors'
 import { configGetInConnector } from '../connectors/configConnectors'
 import { isAccordion, accordionEnhancer } from './accordionEnhancer'
@@ -25,12 +26,16 @@ export const topicEnhancer = connect((state, { topicKey }) => {
 export const topicGroupEnhancer = compose(
   connect((state, { topicGroupId }) => {
     const props = topicGroupsGetConnector(topicGroupId)(state)
+    const { topic: selectedTopic } = selectedTopicConnector(state)
+    const parentGroupIds = get('parentGroupIds')(selectedTopic) || []
+    const includesSelection = parentGroupIds.includes(topicGroupId)
 
     return {
       asAccordion: isAccordion({
         id: topicGroupId,
         lists: [props.topics, props.topicGroups],
       }),
+      includesSelection,
       ...props,
     }
   }),

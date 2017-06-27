@@ -270,12 +270,10 @@ export const AccordionButton = glamorous.button(
     padding: 0,
     cursor: 'pointer',
   },
-  ({ opened }) => ({
+  ({ opened, includesSelection }) => ({
     fontWeight: 'inherit',
     ':after': {
-      content: opened ? '"×"' : '"+"',
-      color: wit,
-      backgroundColor: violet.darker,
+      content: opened ? '"×"' : includesSelection ? '"1"' : '"+"',
       display: 'inline-block',
       marginLeft: '0.3rem',
       fontWeight: 'normal',
@@ -284,6 +282,16 @@ export const AccordionButton = glamorous.button(
       width: '1rem',
       height: '1rem',
       lineHeight: '1rem',
+      boxShadow: `0 0 0 1px ${violet.darker}`,
+      ...(includesSelection
+        ? {
+            color: wit,
+            backgroundColor: violet.darker,
+          }
+        : {
+            color: violet.darker,
+            backgroundColor: wit,
+          }),
     },
   })
 )
