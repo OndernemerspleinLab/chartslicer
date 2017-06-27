@@ -4,6 +4,11 @@ import { violet, hemelblauw } from './colors'
 import { Hidden } from './graphPickerSteps/Elements'
 import Color from 'color'
 import { css } from 'glamor'
+import {
+  onlyWhenActiveQueryLoading,
+  onlyWhenVisibleDataset,
+} from './enhancers/datasetEnhancer'
+import { compose } from 'recompose'
 
 const sizeInRem = 2
 
@@ -25,6 +30,7 @@ const LoadingElement = glamorous.div({
   zIndex: 5,
   opacity: 0,
   animation: `${fadeInLoadingKeyframes} 200ms ease-in-out 200ms forwards`,
+  pointerEvents: 'none',
 })
 
 const LoadingSvg = glamorous.svg({
@@ -99,3 +105,8 @@ export const Loading = () =>
       </path>
     </LoadingSvg>
   </LoadingElement>
+
+export const QueryDataLoadingIndicator = compose(
+  onlyWhenVisibleDataset,
+  onlyWhenActiveQueryLoading
+)(Loading)

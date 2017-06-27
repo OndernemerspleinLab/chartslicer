@@ -10,6 +10,7 @@ import { hemelblauw, violet } from './colors'
 import { Placeholder } from './Placeholder'
 import Color from 'color'
 import { DataSource } from './DataSource'
+import { QueryDataLoadingIndicator } from './Loading'
 
 css.global('*', {
   boxSizing: 'border-box',
@@ -74,6 +75,13 @@ const Main = glamorous.div(mainScrollbarStyle, {
   flex: 'auto',
   position: 'relative',
   backgroundColor: hemelblauw.lighter,
+})
+
+const MainScrollArea = glamorous.div(mainScrollbarStyle, {
+  width: '100%',
+  height: '100%',
+  flex: 'auto',
+  position: 'relative',
   overflowX: 'hidden',
   overflowY: 'auto',
 })
@@ -85,9 +93,12 @@ export const App = () =>
     </Sidebar>
     <Main>
       <Placeholder />
-      <DataInfo />
-      <DataChart />
-      <DataSource />
-      <DataTable />
+      <MainScrollArea>
+        <DataInfo />
+        <DataChart />
+        <DataSource />
+        <DataTable />
+      </MainScrollArea>
+      <QueryDataLoadingIndicator />
     </Main>
   </Layout>

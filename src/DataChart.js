@@ -11,16 +11,12 @@ import {
   chartMaxWidth,
 } from './config'
 import { visibleDataInfoEnhancer } from './enhancers/visibleDataInfoEnhancer'
-import {
-  onlyWhenVisibleDataset,
-  onlyWhenActiveQueryLoading,
-} from './enhancers/datasetEnhancer'
+import { onlyWhenVisibleDataset } from './enhancers/datasetEnhancer'
 import { get, getIn } from './helpers/getset'
 import { dataEntriesConnector } from './connectors/visibleDatasetQueryConnector'
 import { connect } from 'react-redux'
 import { formatCbsPeriod } from './cbsPeriod'
 import { formatNumber } from './helpers/helpers'
-import { Loading } from './Loading'
 
 const enhancer = compose(
   onlyWhenVisibleDataset,
@@ -56,8 +52,6 @@ const DataChartComp = glamorous.div({
   position: 'relative',
 })
 
-const DataLoadingIndicator = onlyWhenActiveQueryLoading(Loading)
-
 const DataChartContainer = ({ topic, dataList, periodType, dataEntries }) => {
   const topicKey = get('key')(topic)
   const getTopicValue = dataEntryKey =>
@@ -70,7 +64,6 @@ const DataChartContainer = ({ topic, dataList, periodType, dataEntries }) => {
   return (
     <DataChartComp>
       <Rectangle>
-        <DataLoadingIndicator />
         <VictoryChart
           width={chartWidth}
           height={chartHeight}
