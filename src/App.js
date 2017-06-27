@@ -67,8 +67,10 @@ const Sidebar = glamorous.div(sideScrollbarStyle, {
   flex: 'none',
   overflowX: 'hidden',
   overflowY: 'auto',
-  width: sidebarWidth,
-  borderRight: `2px solid ${violet.default}`,
+  [mqBig]: {
+    borderRight: `2px solid ${violet.default}`,
+    width: sidebarWidth,
+  },
 })
 
 const Main = glamorous.div(mainScrollbarStyle, {

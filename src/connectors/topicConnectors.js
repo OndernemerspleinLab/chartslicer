@@ -45,5 +45,5 @@ export const visibleTopicConnector = (state: State) => {
 export const selectedTopicConnector = (state: State) => {
   const topicKey = configGetInConnector(['topicKeys', 0])(state)
 
-  return { topic: topicsGetConnector(topicKey)(state) }
+  return { selectedTopic: topicsGetConnector(topicKey)(state) }
 }

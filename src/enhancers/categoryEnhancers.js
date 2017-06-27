@@ -2,6 +2,7 @@ import { connect } from 'react-redux'
 import {
   categoriesGetInConnector,
   categoryGroupsGetInConnector,
+  selectedCategoryConnector,
 } from '../connectors/categoryConnectors'
 import { configGetInConnector } from '../connectors/configConnectors'
 import { configChangeHandlersEnhancer } from './configEnhancers'
@@ -9,6 +10,7 @@ import { activeDatasetGetIdConnector } from '../connectors/activeDatasetIdConnec
 import { mapDispatchToProps } from '../connectors/actionConnectors'
 import { compose } from 'recompose'
 import { isAccordion, accordionEnhancer } from './accordionEnhancer'
+import { get } from '../helpers/getset'
 
 export const categoryEnhancer = compose(
   connect((state, { dimensionKey, categoryKey }) => {
@@ -36,11 +38,15 @@ export const categoryGroupEnhancer = compose(
     const props = categoryGroupsGetInConnector([dimensionKey, categoryGroupId])(
       state
     )
+    const { selectedCategory } = selectedCategoryConnector(dimensionKey)(state)
+    const parentGroupIds = get('parentGroupIds')(selectedCategory) || []
+    const includesSelection = parentGroupIds.includes(categoryGroupId)
     return {
       asAccordion: isAccordion({
         id: categoryGroupId,
         lists: [props.categories, props.categoryGroups],
       }),
+      includesSelection,
       ...props,
     }
   }),

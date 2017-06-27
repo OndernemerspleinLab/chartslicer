@@ -64,6 +64,7 @@ const CategoryGroupContainer = pure(
     categoryGroups = [],
     categoryGroupId,
     asAccordion,
+    includesSelection,
     toggle,
     close,
     opened,
@@ -78,7 +79,11 @@ const CategoryGroupContainer = pure(
       >
         <GroupLabel id={categoryGroupHtmlId}>
           {asAccordion
-            ? <AccordionButton onClick={toggle} opened={opened}>
+            ? <AccordionButton
+                onClick={toggle}
+                opened={opened}
+                includesSelection={includesSelection}
+              >
                 {title}
               </AccordionButton>
             : title}
