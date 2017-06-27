@@ -29,7 +29,6 @@ const CbsLink = ({ id }) =>
   </Link>
 
 const DataSourceComp = glamorous.div({
-  padding: '0 3rem',
   backgroundColor: hemelblauw.lighter,
   animation: fadeInAnimation,
   maxWidth: '60rem',

@@ -86,6 +86,10 @@ const MainScrollArea = glamorous.div(mainScrollbarStyle, {
   position: 'relative',
   overflowX: 'hidden',
   overflowY: 'auto',
+  padding: '0 1rem',
+  [mqBig]: {
+    padding: '0 3rem',
+  },
 })
 
 export const App = () =>

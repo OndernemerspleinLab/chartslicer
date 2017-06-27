@@ -21,7 +21,6 @@ const enhancer = compose(
 )
 
 const DataTableComp = glamorous.div({
-  padding: '0 3rem',
   backgroundColor: hemelblauw.lighter,
   animation: fadeInAnimation,
 })

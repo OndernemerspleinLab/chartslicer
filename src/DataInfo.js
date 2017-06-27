@@ -10,7 +10,6 @@ import { visibleDataInfoEnhancer } from './enhancers/visibleDataInfoEnhancer'
 const enhancer = compose(onlyWhenVisibleDataset, visibleDataInfoEnhancer)
 
 const DataInfoComp = glamorous.div({
-  padding: '0 3rem',
   backgroundColor: hemelblauw.lighter,
   animation: fadeInAnimation,
   maxWidth: '60rem',

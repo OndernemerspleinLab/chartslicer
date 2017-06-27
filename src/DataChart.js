@@ -47,7 +47,6 @@ const Rectangle = glamorous.div({
 })
 const DataChartComp = glamorous.div({
   animation: fadeInAnimation,
-  margin: '0 3rem',
   maxWidth: '60rem',
   position: 'relative',
 })
