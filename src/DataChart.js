@@ -1,12 +1,6 @@
 import React from 'react'
 import { compose } from 'recompose'
-import {
-  VictoryTheme,
-  VictoryAxis,
-  VictoryChart,
-  VictoryLine,
-  VictoryGroup,
-} from 'victory'
+import { VictoryTheme, VictoryAxis, VictoryChart, VictoryLine } from 'victory'
 import glamorous from 'glamorous'
 import { hemelblauw, wit } from './colors'
 import { fadeInAnimation } from './styles'
@@ -118,20 +112,18 @@ const DataChartContainer = ({ topic, dataList, periodType, dataEntries }) => {
               },
             }}
           />
-          <VictoryGroup>
-            <VictoryLine
-              data={dataList}
-              x={getPeriodDate}
-              y={getTopicValue}
-              interpolation="catmullRom"
-              style={{
-                data: {
-                  strokeWidth: 1.5,
-                  stroke: hemelblauw.grijscontrast,
-                },
-              }}
-            />
-          </VictoryGroup>
+          <VictoryLine
+            data={dataList}
+            x={getPeriodDate}
+            y={getTopicValue}
+            interpolation="catmullRom"
+            style={{
+              data: {
+                strokeWidth: 1.5,
+                stroke: hemelblauw.grijscontrast,
+              },
+            }}
+          />
         </VictoryChart>
       </Rectangle>
     </DataChartComp>
