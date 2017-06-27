@@ -3,6 +3,7 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { visibleDatasetQueryConnector } from '../connectors/visibleDatasetQueryConnector'
 import { unexisting, existing } from '../helpers/helpers'
+import { dataQueryLoadingStateConnector } from '../connectors/datasetsLoadingStateConnectors'
 
 export const onlyWhenVisibleDataset = compose(
   connect(visibleDatasetQueryConnector),
@@ -18,4 +19,9 @@ export const onlyWhenNoVisibleDataset = compose(
     ({ visibleDatasetQuery }) => existing(visibleDatasetQuery),
     renderNothing
   )
+)
+
+export const onlyWhenActiveQueryLoading = compose(
+  connect(dataQueryLoadingStateConnector),
+  branch(({ loading } = {}) => !loading, renderNothing)
 )
