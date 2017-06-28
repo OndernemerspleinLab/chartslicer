@@ -1,4 +1,6 @@
 export const defaultPeriodLength = 10
+export const minPeriodLength = 2
+export const maxPeriodLength = 300
 
 const breakpoint = 840
 

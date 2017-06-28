@@ -34,14 +34,14 @@ const filter = (filterString: string) =>
 export const apiOrigin = `https://opendata.cbs.nl`
 
 export const apiBaseUrl = `${apiOrigin}/ODataApi/odata`
-export const feedBaseUrl = `${apiOrigin}/ODataFeed/odata`
+// export const feedBaseUrl = `${apiOrigin}/ODataFeed/odata`
 
 ///////// TableInfo /////////
 
 const tableInfoSelection = ['Title', 'GraphTypes']
 
 const getTableInfoUrl = (id: DatasetId) =>
-  `${feedBaseUrl}/${id}/TableInfos?${select(tableInfoSelection)}`
+  `${apiBaseUrl}/${id}/TableInfos?${select(tableInfoSelection)}`
 
 export const fetchTableInfo = (id: DatasetId): CbsTableInfoPromise =>
   fetchJson(getTableInfoUrl(id)).then(getOnlyValue)
@@ -51,7 +51,7 @@ export const fetchTableInfo = (id: DatasetId): CbsTableInfoPromise =>
 const periodsSelection = ['Key']
 
 const getPeriodsUrl = (id: DatasetId) =>
-  `${feedBaseUrl}/${id}/Perioden?${select(periodsSelection)}`
+  `${apiBaseUrl}/${id}/Perioden?${select(periodsSelection)}`
 
 export const fetchPeriods = (id: DatasetId): CbsPeriodsPromise =>
   fetchJson(getPeriodsUrl(id)).then(getValues)
@@ -70,8 +70,8 @@ export const fetchPeriods = (id: DatasetId): CbsPeriodsPromise =>
 // ]
 
 const getDataPropertiesUrl = id =>
-  // `${feedBaseUrl}/${id}/DataProperties?${select(dataPropertiesSelection)}`
-  `${feedBaseUrl}/${id}/DataProperties`
+  // `${apiBaseUrl}/${id}/DataProperties?${select(dataPropertiesSelection)}`
+  `${apiBaseUrl}/${id}/DataProperties`
 
 export const fetchDataProperties = (id: DatasetId): CbsDataPropertiesPromise =>
   fetchJson(getDataPropertiesUrl(id)).then(getValues)
@@ -81,7 +81,7 @@ export const fetchDataProperties = (id: DatasetId): CbsDataPropertiesPromise =>
 const categoryGroupSelection = ['ID', 'DimensionKey', 'Title', 'ParentID']
 
 const getCategoryGroupsUrl = (id: DatasetId) =>
-  `${feedBaseUrl}/${id}/CategoryGroups?${select(categoryGroupSelection)}`
+  `${apiBaseUrl}/${id}/CategoryGroups?${select(categoryGroupSelection)}`
 
 export const fetchCategoryGroups = (id: DatasetId): CbsCategoryGroupsPromise =>
   fetchJson(getCategoryGroupsUrl(id)).then(getValues)
@@ -96,7 +96,7 @@ const getCategoryUrl = ({
 }: {
   id: DatasetId,
   cbsDimensionKey: DimensionKey,
-}) => `${feedBaseUrl}/${id}/${cbsDimensionKey}?${select(categorySelection)}`
+}) => `${apiBaseUrl}/${id}/${cbsDimensionKey}?${select(categorySelection)}`
 
 export const fetchCategory = (id: DatasetId) => (
   cbsDimensionKey: DimensionKey
@@ -111,7 +111,7 @@ export const getDatasetUrl = ({
 }: {
   id: DatasetId,
   query: DatasetQuery,
-}) => `${feedBaseUrl}/${id}/TypedDataSet?${query}`
+}) => `${apiBaseUrl}/${id}/TypedDataSet?${query}`
 
 const getDatasetSelection: (topicKeys: TopicKey[]) => string[] = compose(
   concat(['ID', 'Perioden']),

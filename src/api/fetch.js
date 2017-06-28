@@ -5,6 +5,15 @@ type PromiseAny = Promise<any>
 type PromiseResponse = Promise<Response>
 type PromiseString = Promise<string>
 
+const maxApiUrlLength = 15000
+
+const checkMaxApiUrlLength = (url: string): string => {
+  if (url.length > maxApiUrlLength) {
+    throw new Error('Request URL Too Long')
+  }
+  return url
+}
+
 const checkStatus = (response: Response): Response => {
   if (!response) {
     throw new Error('Possible CORS Error')
@@ -29,6 +38,12 @@ export const httpFetch = (
   url: string,
   options: ?RequestOptions
 ): PromiseResponse => {
+  try {
+    checkMaxApiUrlLength(url)
+  } catch (error) {
+    return new Promise((resolve, reject) => reject(error))
+  }
+
   const responsePromise = fetch(url, options).then(checkStatus)
   responsePromise.catch(error => {
     console.log(error)

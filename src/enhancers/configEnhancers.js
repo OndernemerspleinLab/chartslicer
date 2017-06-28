@@ -12,8 +12,14 @@ export const configChangeHandlersEnhancer = withHandlers({
     inputValue,
     multiValue,
     replaceValue,
+    min,
+    max,
+    type,
   }) => event => {
     const value = existing(inputValue) ? inputValue : event.currentTarget.value
+
+    // const value = minMaxValue({ fieldValue, min, max })
+
     configChanged({
       keyPath,
       value,

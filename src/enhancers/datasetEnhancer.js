@@ -25,3 +25,8 @@ export const onlyWhenActiveQueryLoading = compose(
   connect(dataQueryLoadingStateConnector),
   branch(({ loading } = {}) => !loading, renderNothing)
 )
+
+export const onlyWhenActiveQueryError = compose(
+  connect(dataQueryLoadingStateConnector),
+  branch(({ error } = {}) => unexisting(error), renderNothing)
+)

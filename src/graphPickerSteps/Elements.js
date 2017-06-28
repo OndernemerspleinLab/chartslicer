@@ -192,7 +192,6 @@ export const Input = glamorous.input(borderRadius, {
 
 export const NumberInput = withProps({
   type: 'number',
-  min: 1,
   css: css({
     width: '4rem',
     textAlign: 'right',

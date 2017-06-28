@@ -12,6 +12,7 @@ import type {
 import type { CbsCategoriesByDimension } from './getCbsCategoriesByDimensionPromise'
 import type { CbsCategory, CbsCategories } from './apiShape'
 import { set, getIn, get } from '../helpers/getset'
+import { existing } from '../helpers/helpers'
 
 const getParentCategoryGroups = ({
   parentId,
@@ -23,8 +24,8 @@ const getParentCategoryGroups = ({
   const memo = []
   let nextParentId = parentId
 
-  while (nextParentId != null) {
-    memo.push(nextParentId)
+  while (existing(nextParentId)) {
+    memo.push(((nextParentId: any): CategoryGroupId))
 
     nextParentId = getIn([nextParentId, 'parentId'])(categoryGroupsForDimension)
   }

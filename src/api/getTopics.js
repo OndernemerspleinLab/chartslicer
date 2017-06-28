@@ -10,6 +10,7 @@ import type {
 import type { CbsDataProperties } from './getCbsDataPropertiesPromise'
 import type { CbsTopic } from './apiShape'
 import { set, getIn } from '../helpers/getset'
+import { existing } from '../helpers/helpers'
 
 const getParentTopicGroups = ({
   parentId,
@@ -21,8 +22,8 @@ const getParentTopicGroups = ({
   const memo = []
   let nextParentId = parentId
 
-  while (nextParentId != null) {
-    memo.push(nextParentId)
+  while (existing(nextParentId)) {
+    memo.push(((nextParentId: any): TopicGroupId))
 
     nextParentId = getIn([nextParentId, 'parentId'])(topicGroups)
   }

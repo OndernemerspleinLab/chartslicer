@@ -52,3 +52,15 @@ export const formatNumber = (decimals: number = 0) => (
     ? `${formattedIntegers}${numberSeperator}${formattedDecimals}`
     : formattedIntegers
 }
+
+export const rangeNumber = ({ min, max }: { min: number, max: number }) => (
+  maybeNumber: mixed
+) => {
+  const number = Number(maybeNumber) || 0
+  const inMinRangeNumber = existing(min) ? Math.max(number, min) : number
+  const inRangeNumber = existing(max)
+    ? Math.min(inMinRangeNumber, max)
+    : inMinRangeNumber
+
+  return inRangeNumber
+}

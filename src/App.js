@@ -9,8 +9,8 @@ import { mqBig, sidebarWidth } from './config'
 import { hemelblauw, violet } from './colors'
 import { Placeholder } from './Placeholder'
 import Color from 'color'
-import { DataSource } from './DataSource'
 import { QueryDataLoadingIndicator } from './Loading'
+import { DataQueryError } from './DataQueryError'
 
 css.global('*', {
   boxSizing: 'border-box',
@@ -98,13 +98,13 @@ export const App = () =>
       <GraphPicker />
     </Sidebar>
     <Main>
-      <Placeholder />
       <MainScrollArea>
+        <Placeholder />
         <DataInfo />
         <DataChart />
-        <DataSource />
         <DataTable />
       </MainScrollArea>
       <QueryDataLoadingIndicator />
+      <DataQueryError />
     </Main>
   </Layout>

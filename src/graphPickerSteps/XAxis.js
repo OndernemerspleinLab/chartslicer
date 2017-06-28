@@ -21,7 +21,8 @@ import { tableInfoPickConnector } from '../connectors/tableInfoConnectors'
 import { connect } from 'react-redux'
 import { composeConnectors } from '../connectors/connectorHelpers'
 import { configChangeEnhancer } from '../enhancers/configEnhancers'
-import { compose } from 'recompose'
+import { compose, withProps } from 'recompose'
+import { minPeriodLength, maxPeriodLength } from '../config'
 
 const PeriodTypeRadioComp = ({ inputValue, onChange, name, value }) =>
   <Radio
@@ -52,6 +53,10 @@ const PeriodTypePickerContainer = ({ periodTypes, value }) =>
 
 const periodLengthPickerEnhancer = compose(
   connect(configMapConnector({ value: ['periodLength'] })),
+  withProps({
+    min: minPeriodLength,
+    max: maxPeriodLength,
+  }),
   configChangeEnhancer
 )
 

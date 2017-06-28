@@ -17,6 +17,7 @@ import { dataEntriesConnector } from './connectors/visibleDatasetQueryConnector'
 import { connect } from 'react-redux'
 import { formatCbsPeriod } from './cbsPeriod'
 import { formatNumber } from './helpers/helpers'
+import { DataSource } from './DataSource'
 
 const enhancer = compose(
   onlyWhenVisibleDataset,
@@ -117,6 +118,7 @@ const DataChartContainer = ({ topic, dataList, periodType, dataEntries }) => {
             }}
           />
         </VictoryChart>
+        <DataSource />
       </Rectangle>
     </DataChartComp>
   )

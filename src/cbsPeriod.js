@@ -1,5 +1,7 @@
 import { addYears, addQuarters, addMonths, format } from 'date-fns'
 import nlLocale from 'date-fns/locale/nl'
+import { rangeNumber } from './helpers/helpers'
+import { minPeriodLength, maxPeriodLength } from './config'
 
 const formatDate = (date, formatTemplate) =>
   format(date, formatTemplate, { locale: nlLocale })
@@ -81,12 +83,18 @@ const cbsPeriodAdders = {
   Kwartalen: amount => date => addQuarters(date, amount),
 }
 
+const rangePeriodLength = rangeNumber({
+  min: minPeriodLength,
+  max: maxPeriodLength,
+})
+
 export const createCbsPeriods = ({ endDate, periodType, periodLength }) => {
   const memo = []
   const createCbsPeriod = cbsPeriodCreators[periodType]
   const addCbsPeriods = cbsPeriodAdders[periodType]
+  const rangedPeriodLength = rangePeriodLength(periodLength)
 
-  for (let count = -(periodLength - 1); count <= 0; count += 1) {
+  for (let count = -(rangedPeriodLength - 1); count <= 0; count += 1) {
     memo.push(createCbsPeriod(addCbsPeriods(count)(endDate)))
   }
 
