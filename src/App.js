@@ -77,6 +77,7 @@ const Main = glamorous.div(mainScrollbarStyle, {
   flex: 'auto',
   position: 'relative',
   backgroundColor: hemelblauw.lighter,
+  height: '100%',
 })
 
 const MainScrollArea = glamorous.div(mainScrollbarStyle, {
