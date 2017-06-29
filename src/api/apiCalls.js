@@ -3,7 +3,7 @@
 import { bracketize } from './../helpers/helpers'
 import { map, join, sortBy, identity, concat, defaultTo } from 'lodash/fp'
 import { compose } from 'recompose'
-import { fetchJson } from './fetch'
+import { fetchJson, customError } from './fetch'
 import { get, getIn } from '../helpers/getset'
 import type {
   DatasetId,
@@ -53,8 +53,15 @@ const periodsSelection = ['Key']
 const getPeriodsUrl = (id: DatasetId) =>
   `${apiBaseUrl}/${id}/Perioden?${select(periodsSelection)}`
 
+const cunstomPeriodError = customError({
+  predicate: error => {
+    return getIn(['response', 'status'])(error) === 404
+  },
+  message: 'Dataset does not have a time dimension',
+})
+
 export const fetchPeriods = (id: DatasetId): CbsPeriodsPromise =>
-  fetchJson(getPeriodsUrl(id)).then(getValues)
+  cunstomPeriodError(fetchJson(getPeriodsUrl(id)).then(getValues))
 
 ///////// DataProperties /////////
 // Fetches Dimensions, TopicGroups and Topics

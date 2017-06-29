@@ -59,3 +59,15 @@ export const fetchText = (
   options: ?RequestOptions
 ): PromiseString =>
   httpFetch(url, addTextHeaders(options)).then(response => response.text())
+
+export const customError = ({ predicate, message }) => promise =>
+  promise.catch(error => {
+    if (predicate(error)) {
+      const newError = new error.constructor(message)
+
+      newError.response = error.response
+      throw newError
+    } else {
+      throw error
+    }
+  })
