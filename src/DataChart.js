@@ -109,7 +109,6 @@ const DataChartContainer = ({ topic, dataList, periodType, dataEntries }) => {
             data={dataList}
             x={getPeriodDate}
             y={getTopicValue}
-            interpolation="catmullRom"
             style={{
               data: {
                 strokeWidth: 1.5,
