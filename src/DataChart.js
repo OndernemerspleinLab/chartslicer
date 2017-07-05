@@ -1,6 +1,12 @@
 import React from 'react'
 import { compose } from 'recompose'
-import { VictoryTheme, VictoryAxis, VictoryChart, VictoryLine } from 'victory'
+import {
+  VictoryTheme,
+  VictoryAxis,
+  VictoryChart,
+  VictoryLine,
+  VictoryArea,
+} from 'victory'
 import glamorous from 'glamorous'
 import { hemelblauw, wit } from './colors'
 import { fadeInAnimation } from './styles'
@@ -61,6 +67,13 @@ const DataChartContainer = ({ topic, dataList, periodType, dataEntries }) => {
 
   const formatPeriod = formatCbsPeriod(periodType)
 
+  const Gradient = () =>
+    <linearGradient id="MyGradient" x1="0" x2="0" y1="0" y2="1">
+      >
+      <stop offset="5%" stopColor={hemelblauw.default} stopOpacity={0.5} />
+      <stop offset="95%" stopColor={hemelblauw.default} stopOpacity={0} />
+    </linearGradient>
+
   return (
     <DataChartComp>
       <Rectangle>
@@ -71,6 +84,7 @@ const DataChartContainer = ({ topic, dataList, periodType, dataEntries }) => {
           theme={VictoryTheme.material}
           domainPadding={{ y: [10, 10], x: [0, 0] }}
         >
+          <Gradient />
           <VictoryAxis
             dependentAxis
             fixLabelOverlap
@@ -102,6 +116,16 @@ const DataChartContainer = ({ topic, dataList, periodType, dataEntries }) => {
               axisLabel: {
                 fontSize: '7px',
                 padding: 25,
+              },
+            }}
+          />
+          <VictoryArea
+            data={dataList}
+            x={getPeriodDate}
+            y={getTopicValue}
+            style={{
+              data: {
+                fill: `url(#MyGradient)`,
               },
             }}
           />
