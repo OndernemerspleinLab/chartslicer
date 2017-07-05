@@ -1,3 +1,5 @@
+export const localStorageKey = 'redux/chartslicer'
+
 export const defaultPeriodLength = 10
 export const minPeriodLength = 2
 export const maxPeriodLength = 300
