@@ -1,5 +1,6 @@
+import { SeamlessTextarea } from './SeamlessTextarea'
 import React from 'react'
-import { compose } from 'recompose'
+import { compose, withProps } from 'recompose'
 import glamorous from 'glamorous'
 import { hemelblauw } from './colors'
 import { InsideMargin } from './graphPickerSteps/Elements'
@@ -22,17 +23,17 @@ const TitleComp = glamorous.h1({
   margin: '0 0 1rem 0',
 })
 
-const Categories = glamorous.h2({})
-const Category = glamorous.div({})
+const Description = glamorous.p({})
+
 const DataInfoContainer = ({ topic: { title }, categories }) =>
   <DataInfoComp>
     <InsideMargin top="1.4rem" bottom="2rem">
-      <TitleComp>{title}</TitleComp>
-      <Categories>
-        {categories.map(({ key, title }) =>
-          <Category key={key}>{title}</Category>
-        )}
-      </Categories>
+      <TitleComp>
+        <SeamlessTextarea placeholder="titel" />
+      </TitleComp>
+      <Description>
+        <SeamlessTextarea placeholder="beschrijving" />
+      </Description>
     </InsideMargin>
   </DataInfoComp>
 
