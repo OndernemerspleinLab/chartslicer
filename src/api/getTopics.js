@@ -28,6 +28,8 @@ const getParentTopicGroups = ({
     nextParentId = getIn([nextParentId, 'parentId'])(topicGroups)
   }
 
+  memo.push('root')
+
   return memo
 }
 

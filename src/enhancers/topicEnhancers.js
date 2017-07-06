@@ -33,7 +33,7 @@ export const topicGroupEnhancer = compose(
     return {
       asAccordion: isAccordion({
         id: topicGroupId,
-        lists: [props.topics, props.topicGroups],
+        lists: [props.topics],
       }),
       includesSelection,
       ...props,

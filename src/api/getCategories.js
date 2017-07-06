@@ -30,6 +30,8 @@ const getParentCategoryGroups = ({
     nextParentId = getIn([nextParentId, 'parentId'])(categoryGroupsForDimension)
   }
 
+  memo.push('root')
+
   return memo
 }
 

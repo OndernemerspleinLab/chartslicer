@@ -18,7 +18,8 @@ export const sidebarWidth = '25rem'
 
 export const supportedPeriodTypes = ['Jaar', 'Maanden', 'Kwartalen']
 
-export const accordionFromLength = 5
+export const accordionFromLength = 1
+export const rootAccordionFromLength = 3
 
 export const thousandsSeperator = ' '
 export const numberSeperator = ','

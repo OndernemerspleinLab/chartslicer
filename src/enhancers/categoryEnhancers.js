@@ -44,7 +44,7 @@ export const categoryGroupEnhancer = compose(
     return {
       asAccordion: isAccordion({
         id: categoryGroupId,
-        lists: [props.categories, props.categoryGroups],
+        lists: [props.categories],
       }),
       includesSelection,
       ...props,
