@@ -58,6 +58,47 @@ const DataChartComp = glamorous.div({
   position: 'relative',
 })
 
+const yAxisStyle = {
+  tickLabels: {
+    fontSize: '7px',
+    padding: 5,
+  },
+  axisLabel: {
+    fontSize: '7px',
+    padding: 40,
+  },
+}
+
+const yAxisDomain = [0]
+
+const xAxisStyle = {
+  tickLabels: {
+    fontSize: '7px',
+    padding: 5,
+  },
+  axisLabel: {
+    fontSize: '7px',
+    padding: 25,
+  },
+}
+
+const chartStyle = { parent: chartParentStyle }
+const chartDomainPadding = { y: [10, 10], x: [0, 0] }
+
+const areaStyle = {
+  data: {
+    fill: `url(#MyGradient)`,
+  },
+}
+
+const lineStyle = {
+  data: {
+    strokeWidth: 1,
+    stroke: hemelblauw.grijscontrast,
+    strokeLinejoin: 'round',
+  },
+}
+
 const DataChartContainer = ({ topic, dataList, periodType, dataEntries }) => {
   const topicKey = get('key')(topic)
   const getTopicValue = dataEntryKey =>
@@ -80,9 +121,9 @@ const DataChartContainer = ({ topic, dataList, periodType, dataEntries }) => {
         <VictoryChart
           width={chartWidth}
           height={chartHeight}
-          style={{ parent: chartParentStyle }}
+          style={chartStyle}
           theme={VictoryTheme.material}
-          domainPadding={{ y: [10, 10], x: [0, 0] }}
+          domainPadding={chartDomainPadding}
         >
           <Gradient />
           <VictoryAxis
@@ -90,17 +131,8 @@ const DataChartContainer = ({ topic, dataList, periodType, dataEntries }) => {
             fixLabelOverlap
             label={get('unit')(topic)}
             tickFormat={formatNumber(get('decimals')(topic))}
-            domain={[0]}
-            style={{
-              tickLabels: {
-                fontSize: '7px',
-                padding: 5,
-              },
-              axisLabel: {
-                fontSize: '7px',
-                padding: 40,
-              },
-            }}
+            domain={yAxisDomain}
+            style={yAxisStyle}
           />
           <VictoryAxis
             fixLabelOverlap
@@ -108,37 +140,19 @@ const DataChartContainer = ({ topic, dataList, periodType, dataEntries }) => {
             tickFormat={formatPeriod}
             label={periodType}
             scale="time"
-            style={{
-              tickLabels: {
-                fontSize: '7px',
-                padding: 5,
-              },
-              axisLabel: {
-                fontSize: '7px',
-                padding: 25,
-              },
-            }}
+            style={xAxisStyle}
           />
           <VictoryArea
             data={dataList}
             x={getPeriodDate}
             y={getTopicValue}
-            style={{
-              data: {
-                fill: `url(#MyGradient)`,
-              },
-            }}
+            style={areaStyle}
           />
           <VictoryLine
             data={dataList}
             x={getPeriodDate}
             y={getTopicValue}
-            style={{
-              data: {
-                strokeWidth: 1.5,
-                stroke: hemelblauw.grijscontrast,
-              },
-            }}
+            style={lineStyle}
           />
         </VictoryChart>
         <DataSource />
