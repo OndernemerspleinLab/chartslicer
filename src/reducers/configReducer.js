@@ -69,6 +69,8 @@ const initConfig = ({
     id,
     periodType: getIn(['periodTypes', 0])(tableInfo),
     periodLength: defaultPeriodLength,
+    title: '',
+    description: '',
     topicKeys: [
       findFirstEntryInGroups({
         groups: topicGroups,

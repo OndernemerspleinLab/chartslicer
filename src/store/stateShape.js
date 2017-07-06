@@ -144,6 +144,8 @@ export type ConfigState = {
   periodType: PeriodType,
   periodLength: number,
   topicKeys: TopicKey[],
+  title: string,
+  description: string,
   categoryKeys: {
     [DimensionKey]: CategoryKey[],
   },
