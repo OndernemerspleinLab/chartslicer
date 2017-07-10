@@ -1,3 +1,4 @@
+import { existing } from './../helpers/helpers'
 /*@flow*/
 
 import { pick, mapValues } from 'lodash/fp'
@@ -26,7 +27,9 @@ export const getFromActiveSubstate = (substateConnector: SubstateConnector) => (
   weakMemoize(state => {
     const substate = substateConnector(state)
 
-    return get(key)(substate) || {}
+    const result = get(key)(substate)
+
+    return existing(result) ? result : {}
   })
 
 ///////// getInFromActiveSubstate /////////
@@ -37,7 +40,9 @@ export const getInFromActiveSubstate = (
   weakMemoize(state => {
     const substate = substateConnector(state)
 
-    return getIn(keyPath)(substate) || {}
+    const result = getIn(keyPath)(substate)
+
+    return existing(result) ? result : {}
   })
 
 ///////// pickFromActiveSubstate /////////

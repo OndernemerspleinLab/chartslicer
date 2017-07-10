@@ -257,7 +257,9 @@ export const Radio = ({
       onChange={onChange}
       checked={checked}
     />
-    <RadioLabel htmlFor={id} checked={checked}>{children}</RadioLabel>
+    <RadioLabel htmlFor={id} checked={checked}>
+      {children}
+    </RadioLabel>
   </RadioComp>
 
 export const AccordionButton = glamorous.button(
@@ -280,7 +282,7 @@ export const AccordionButton = glamorous.button(
       textAlign: 'center',
       width: '1rem',
       height: '1rem',
-      lineHeight: '1rem',
+      lineHeight: 1.3,
       boxShadow: `0 0 0 1px ${violet.darker}`,
       ...(includesSelection
         ? {

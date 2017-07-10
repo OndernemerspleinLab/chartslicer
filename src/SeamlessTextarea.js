@@ -1,3 +1,5 @@
+import { unexisting } from './helpers/helpers'
+import { hemelblauw } from './colors'
 import { withState, withHandlers, compose } from 'recompose'
 import { get } from './helpers/getset'
 
@@ -13,13 +15,20 @@ const Textarea = glamorous.textarea(
     color: 'inherit',
     font: 'inherit',
     width: '100%',
+    '::placeholder': {
+      color: 'inherit',
+      opacity: 0.3,
+    },
   },
-  ({ height }) => ({
+  ({ height, inline }) => ({
     height,
   })
 )
 
 const resize = ({ setHeight }) => element => {
+  if (unexisting(element)) {
+    return
+  }
   element.style.height = 0
 
   const { offsetHeight } = element

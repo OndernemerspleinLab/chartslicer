@@ -1,9 +1,13 @@
+import { Pencil } from './svg/Pencil'
+import { connect } from 'react-redux'
+import { configGetConnector } from './connectors/configConnectors'
+import { configChangeEnhancer } from './enhancers/configEnhancers'
 import { SeamlessTextarea } from './SeamlessTextarea'
 import React from 'react'
-import { compose, withProps } from 'recompose'
+import { compose } from 'recompose'
 import glamorous from 'glamorous'
 import { hemelblauw } from './colors'
-import { InsideMargin } from './graphPickerSteps/Elements'
+import { InsideMargin, Hidden } from './graphPickerSteps/Elements'
 import { fadeInAnimation } from './styles'
 import { onlyWhenVisibleDataset } from './enhancers/datasetEnhancer'
 import { visibleDataInfoEnhancer } from './enhancers/visibleDataInfoEnhancer'
@@ -21,18 +25,62 @@ const TitleComp = glamorous.h1({
   fontSize: '2.2rem',
   lineHeight: '1.2',
   margin: '0 0 1rem 0',
+  position: 'relative',
 })
 
-const Description = glamorous.p({})
+const Description = glamorous.p({
+  position: 'relative',
+})
+
+const TextAreaLabelElement = glamorous.label({
+  position: 'absolute',
+  top: '0.3em',
+  bottom: '0.3em',
+  right: '100%',
+  paddingRight: '0.8rem',
+})
+
+const TextareaLabel = ({ children, htmlFor }) =>
+  <TextAreaLabelElement htmlFor={htmlFor}>
+    <Hidden>
+      {children}
+    </Hidden>
+    <Pencil />
+  </TextAreaLabelElement>
+
+const TitleTextarea = compose(
+  connect(state => {
+    return {
+      keyPath: ['title'],
+      value: configGetConnector('title')(state),
+    }
+  }),
+  configChangeEnhancer
+)(SeamlessTextarea)
+
+const DescriptionTextarea = compose(
+  connect(state => {
+    return {
+      keyPath: ['description'],
+      value: configGetConnector('description')(state),
+    }
+  }),
+  configChangeEnhancer
+)(SeamlessTextarea)
 
 const DataInfoContainer = ({ topic: { title }, categories }) =>
   <DataInfoComp>
     <InsideMargin top="1.4rem" bottom="2rem">
       <TitleComp>
-        <SeamlessTextarea placeholder="titel" />
+        <TextareaLabel htmlFor="titleInput">Titel</TextareaLabel>
+        <TitleTextarea id="titleInput" placeholder="Kies een titel…" />
       </TitleComp>
       <Description>
-        <SeamlessTextarea placeholder="beschrijving" />
+        <TextareaLabel htmlFor="descriptionInput">beschrijving</TextareaLabel>
+        <DescriptionTextarea
+          id="descriptionInput"
+          placeholder="Kies een beschrijving…"
+        />
       </Description>
     </InsideMargin>
   </DataInfoComp>

@@ -4,8 +4,8 @@ import {
   VictoryTheme,
   VictoryAxis,
   VictoryChart,
-  VictoryLine,
   VictoryArea,
+  VictoryScatter,
 } from 'victory'
 import glamorous from 'glamorous'
 import { hemelblauw, wit } from './colors'
@@ -88,14 +88,15 @@ const chartDomainPadding = { y: [10, 10], x: [0, 0] }
 const areaStyle = {
   data: {
     fill: `url(#MyGradient)`,
+    strokeWidth: 1,
+    stroke: hemelblauw.default,
+    strokeLinejoin: 'round',
   },
 }
 
-const lineStyle = {
+const scatterStyle = {
   data: {
-    strokeWidth: 1,
-    stroke: hemelblauw.grijscontrast,
-    strokeLinejoin: 'round',
+    fill: hemelblauw.default,
   },
 }
 
@@ -112,7 +113,7 @@ const DataChartContainer = ({ topic, dataList, periodType, dataEntries }) => {
     <linearGradient id="MyGradient" x1="0" x2="0" y1="0" y2="1">
       >
       <stop offset="0%" stopColor={hemelblauw.default} stopOpacity={0.3} />
-      <stop offset="90%" stopColor={hemelblauw.default} stopOpacity={0} />
+      <stop offset="50%" stopColor={hemelblauw.default} stopOpacity={0} />
     </linearGradient>
 
   return (
@@ -148,11 +149,12 @@ const DataChartContainer = ({ topic, dataList, periodType, dataEntries }) => {
             y={getTopicValue}
             style={areaStyle}
           />
-          <VictoryLine
+          <VictoryScatter
             data={dataList}
             x={getPeriodDate}
             y={getTopicValue}
-            style={lineStyle}
+            style={scatterStyle}
+            size={2}
           />
         </VictoryChart>
         <DataSource />

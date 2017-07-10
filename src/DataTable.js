@@ -49,8 +49,10 @@ const Cell = glamorous.td(cellStyle)
 
 const HeadingCell = glamorous.th(cellStyle)
 
-const TopicHeadingCell = connect(topicConnector)(({ title, unit }) =>
-  <HeadingCell>{title} ({unit})</HeadingCell>
+const TopicHeadingCell = connect(topicConnector)(({ unit }) =>
+  <HeadingCell>
+    {unit}
+  </HeadingCell>
 )
 
 const DataRow = connect((state, ownProps) => {
