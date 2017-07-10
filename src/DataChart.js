@@ -89,8 +89,8 @@ const areaStyle = {
   data: {
     fill: `url(#MyGradient)`,
     strokeWidth: 1,
-    stroke: hemelblauw.default,
     strokeLinejoin: 'round',
+    stroke: hemelblauw.default,
   },
 }
 
