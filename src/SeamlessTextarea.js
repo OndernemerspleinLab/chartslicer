@@ -1,7 +1,5 @@
 import { unexisting } from './helpers/helpers'
-import { hemelblauw } from './colors'
 import { withState, withHandlers, compose } from 'recompose'
-import { get } from './helpers/getset'
 
 import glamorous from 'glamorous'
 
