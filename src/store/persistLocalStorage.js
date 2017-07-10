@@ -1,3 +1,4 @@
+import { get } from './../helpers/getset'
 import { localStorageKey } from './../config'
 
 const canUseLocalStorage = () => {
@@ -25,7 +26,9 @@ const getFromLocalStorage = () => {
 }
 
 const setInLocalStorage = state => {
-  const json = JSON.stringify(state)
+  const stateWithConfig = { config: get('config')(state) }
+
+  const json = JSON.stringify(stateWithConfig)
 
   try {
     localStorage.setItem(localStorageKey, json)

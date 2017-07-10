@@ -1,3 +1,5 @@
+import { activeDatasetGetIdConnector } from './../connectors/activeDatasetIdConnector'
+import { configConnector } from './../connectors/configConnectors'
 import { weakMemoize } from './../helpers/weakMemoize'
 import { first } from 'lodash/fp'
 
@@ -68,5 +70,14 @@ export const getPersistentData = () => {
 }
 
 export const setPersistentData = state => {
-  setJsonValue(state)
+  const activeDatasetId = activeDatasetGetIdConnector(state)
+  const activeConfig = configConnector(state)
+
+  const persistingState = {
+    activeDatasetId,
+    config: {
+      [activeDatasetId]: activeConfig,
+    },
+  }
+  setJsonValue(persistingState)
 }

@@ -34,9 +34,7 @@ const manageUrl = ({ getState }) => () => {
 }
 
 export const persistState = ({ getState, setPersistentData }) => () => {
-  const stateWithConfig = { config: get('config')(getState()) }
-
-  setPersistentData(stateWithConfig)
+  setPersistentData(getState())
 }
 
 export const rehydrateState = () => {
