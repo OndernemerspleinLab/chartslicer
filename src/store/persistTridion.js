@@ -38,7 +38,11 @@ const getField = () => {
 const getValue = () => {
   const field = getField()
 
-  if (typeof field === 'object' && typeof field.getValues === 'function') {
+  if (
+    typeof field === 'object' &&
+    field !== null &&
+    typeof field.getValues === 'function'
+  ) {
     return first(field.getValues())
   }
 }
@@ -47,7 +51,7 @@ const setValue = value => {
   const field = getField()
 
   if (typeof field === 'object' && typeof field.setValues === 'function') {
-    return first(field.setValues([value]))
+    field.setValues([value])
   }
 }
 
