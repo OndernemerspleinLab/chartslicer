@@ -1,4 +1,4 @@
-import { existing } from './../helpers/helpers'
+import { existing, unexisting } from './../helpers/helpers'
 import { getIn } from './../helpers/getset'
 import { activeDatasetGetIdConnector } from './../connectors/activeDatasetIdConnector'
 import { configConnector } from './../connectors/configConnectors'
@@ -8,7 +8,7 @@ import { first } from 'lodash/fp'
 const getFieldFromOpener = weakMemoize(opener => {
   const getView = getIn(['$display', 'getView'])(opener)
 
-  if (typeof getView !== 'function') {
+  if (unexisting(getView)) {
     return
   }
 
