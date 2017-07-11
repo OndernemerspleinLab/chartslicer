@@ -5,20 +5,34 @@ import { configConnector } from './../connectors/configConnectors'
 import { weakMemoize } from './../helpers/weakMemoize'
 import { first } from 'lodash/fp'
 
-const getFieldFromWindow = weakMemoize(dialogArguments => {
-  if (typeof dialogArguments.getFields === 'function') {
-    const fields = dialogArguments.getFields()
+const getFieldFromOpener = weakMemoize(opener => {
+  const getView = getIn(['$display', 'getView'])(opener)
 
-    return fields[0]
+  if (typeof getView !== 'function') {
+    return
   }
+
+  const tridionView = getView()
+
+  const tridionFieldBuilder = getIn(['properties', 'controls', 'fieldBuilder'])(
+    tridionView
+  )
+
+  if (typeof tridionFieldBuilder !== 'object') {
+    return
+  }
+
+  const field = tridionFieldBuilder.getField('Text')
+
+  return field
 })
 
 const getField = () => {
-  if (typeof window.dialogArguments !== 'object') {
-    return undefined
-  }
+  const { opener } = window
 
-  return getFieldFromWindow(window.dialogArguments)
+  if (typeof opener === 'object') {
+    return getFieldFromOpener(opener)
+  }
 }
 
 const getValue = () => {
@@ -71,9 +85,9 @@ export const shouldPersist = ({ activeDatasetId, activeConfig }) => {
 }
 
 export const canPersist = () => {
-  const tridion = getIn(['opener', 'Tridion'])(window)
+  const field = getField()
 
-  return existing(tridion)
+  return existing(field)
 }
 
 export const getPersistentData = () => {
