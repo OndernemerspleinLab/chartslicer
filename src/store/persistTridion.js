@@ -77,15 +77,14 @@ const setJsonValue = jsValue => {
   }
 }
 
-export const shouldPersist = ({ activeDatasetId, activeConfig }) => {
+export const isWritable = () => {
   const field = getField()
 
-  return (
-    existing(field) &&
-    !field.getReadOnly() &&
-    existing(activeDatasetId) &&
-    existing(activeConfig)
-  )
+  return existing(field) && !field.getReadOnly()
+}
+
+export const shouldPersist = ({ activeDatasetId, activeConfig }) => {
+  return isWritable() && existing(activeDatasetId) && existing(activeConfig)
 }
 
 export const canPersist = () => {
