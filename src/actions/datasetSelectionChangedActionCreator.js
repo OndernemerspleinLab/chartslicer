@@ -18,7 +18,7 @@ const shouldFetch = itemNetworkState =>
 export const shouldFetchForId = id => networkState =>
   existing(id) && shouldFetch(get(id)(networkState))
 
-const fetchMetadata = ({ id }) => (dispatch, getState) => {
+export const fetchMetadata = ({ id }) => (dispatch, getState) => {
   const loadingState = allMetadataLoadingStateConnector(getState())
 
   if (!shouldFetchForId(id)(loadingState)) {

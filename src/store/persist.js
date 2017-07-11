@@ -1,4 +1,5 @@
 import { fetchMetadata } from './../actions/datasetSelectionChangedActionCreator'
+import { datasetSelectionChanged } from '../actions/actionCreators'
 import { activeDatasetGetIdConnector } from './../connectors/activeDatasetIdConnector'
 import { existing } from '../helpers/helpers'
 import { get } from '../helpers/getset'
