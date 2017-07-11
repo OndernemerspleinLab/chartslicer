@@ -100,7 +100,9 @@ export const getPersistentData = () => {
   return typeof tridionData === 'object' && existing(tridionData.id)
     ? {
         activeDatasetId: tridionData.id,
-        [tridionData.id]: tridionData,
+        config: {
+          [tridionData.id]: tridionData,
+        },
       }
     : {}
 }
