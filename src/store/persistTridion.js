@@ -1,3 +1,5 @@
+import { existing } from './../helpers/helpers'
+import { getIn } from './../helpers/getset'
 import { activeDatasetGetIdConnector } from './../connectors/activeDatasetIdConnector'
 import { configConnector } from './../connectors/configConnectors'
 import { weakMemoize } from './../helpers/weakMemoize'
@@ -57,27 +59,46 @@ const setJsonValue = jsValue => {
   }
 }
 
-export const canPersist = () => {
+export const shouldPersist = ({ activeDatasetId, activeConfig }) => {
   const field = getField()
 
-  return typeof field === 'object'
+  return (
+    existing(field) &&
+    !field.getReadOnly() &&
+    existing(activeDatasetId) &&
+    existing(activeConfig)
+  )
+}
+
+export const canPersist = () => {
+  const tridion = getIn(['opener', 'Tridion'])(window)
+
+  return existing(tridion)
 }
 
 export const getPersistentData = () => {
   const tridionData = getJsonValue()
 
-  return typeof tridionData === 'object' ? tridionData : {}
+  return typeof tridionData === 'object' && existing(tridionData.id)
+    ? {
+        activeDatasetId: tridionData.id,
+        [tridionData.id]: tridionData,
+      }
+    : {}
 }
 
 export const setPersistentData = state => {
   const activeDatasetId = activeDatasetGetIdConnector(state)
   const activeConfig = configConnector(state)
 
-  const persistingState = {
-    activeDatasetId,
-    config: {
-      [activeDatasetId]: activeConfig,
-    },
+  if (
+    !shouldPersist({
+      activeDatasetId,
+      activeConfig,
+    })
+  ) {
+    return
   }
-  setJsonValue(persistingState)
+
+  setJsonValue(activeConfig)
 }

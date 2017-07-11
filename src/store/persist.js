@@ -1,3 +1,4 @@
+import { activeDatasetGetIdConnector } from './../connectors/activeDatasetIdConnector'
 import { existing } from '../helpers/helpers'
 import { get } from '../helpers/getset'
 import { datasetSelectionChanged } from '../actions/actionCreators'
@@ -51,6 +52,14 @@ export const rehydrateState = () => {
         ...localStorageData,
       }
     : { now }
+}
+
+export const rehydrateMetadata = ({ getState, dispatch }) => {
+  const activeDatasetId = activeDatasetGetIdConnector(getState())
+
+  if (existing(activeDatasetId)) {
+    dispatch(datasetSelectionChanged({ input: activeDatasetId }))
+  }
 }
 
 const handleUrlChange = ({ dispatch, getState }) => () => {
