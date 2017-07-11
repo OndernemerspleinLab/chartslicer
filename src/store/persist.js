@@ -82,7 +82,8 @@ export const managePersistence = store => {
   }
 
   store.subscribe(persistState({ ...store, ...persist }))
-  store.subscribe(manageUrl({ ...store, ...persist }))
+  store.subscribe(manageUrl(store))
   listenOn('hashchange', handleUrlChange(store))(window)
+  manageUrl(store)
   handleUrlChange(store)()
 }
