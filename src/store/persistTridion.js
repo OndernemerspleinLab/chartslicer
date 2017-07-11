@@ -18,7 +18,7 @@ const getFieldFromOpener = weakMemoize(opener => {
     tridionView
   )
 
-  if (typeof tridionFieldBuilder !== 'object') {
+  if (typeof tridionFieldBuilder !== 'object' && tridionFieldBuilder !== null) {
     return
   }
 
@@ -30,7 +30,7 @@ const getFieldFromOpener = weakMemoize(opener => {
 const getField = () => {
   const { opener } = window
 
-  if (typeof opener === 'object') {
+  if (typeof opener === 'object' && opener !== null) {
     return getFieldFromOpener(opener)
   }
 }
