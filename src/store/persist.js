@@ -1,7 +1,7 @@
+import { fetchMetadata } from './../actions/datasetSelectionChangedActionCreator'
 import { activeDatasetGetIdConnector } from './../connectors/activeDatasetIdConnector'
 import { existing } from '../helpers/helpers'
 import { get } from '../helpers/getset'
-import { datasetSelectionChanged } from '../actions/actionCreators'
 import { listenOn } from '../helpers/domHelpers'
 import * as persistLocalStorage from './persistLocalStorage'
 import * as persistTridion from './persistTridion'
@@ -58,7 +58,7 @@ export const rehydrateMetadata = ({ getState, dispatch }) => {
   const activeDatasetId = activeDatasetGetIdConnector(getState())
 
   if (existing(activeDatasetId)) {
-    dispatch(datasetSelectionChanged({ input: activeDatasetId }))
+    dispatch(fetchMetadata({ id: activeDatasetId }))
   }
 }
 
