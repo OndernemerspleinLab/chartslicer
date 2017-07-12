@@ -77,11 +77,10 @@ const handleUrlChange = ({ dispatch, getState }) => () => {
 }
 
 export const managePersistence = store => {
-  if (!persist) {
-    return
+  if (persist) {
+    store.subscribe(persistState({ ...store, ...persist }))
   }
 
-  store.subscribe(persistState({ ...store, ...persist }))
   store.subscribe(manageUrl(store))
   listenOn('hashchange', handleUrlChange(store))(window)
   manageUrl(store)()

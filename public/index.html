@@ -6,30 +6,90 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" href="%PUBLIC_URL%/favicon.png">
-  <!--
-      Notice the use of %PUBLIC_URL% in the tag above.
-      It will be replaced with the URL of the `public` folder during the build.
-      Only files inside the `public` folder can be referenced from the HTML.
+  <style>
+    html {
+      background-color: rgba(226, 240, 247, 0.8);
+    }
+  </style>
+  <style class="removeOnLoad">
+    @-webkit-keyframes appLoadingFadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
 
-      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
-      work correctly both with client-side routing and a non-root public URL.
-      Learn how to configure a non-root public URL by running `npm run build`.
-    -->
+    @-moz-keyframes appLoadingFadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    @-o-keyframes appLoadingFadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes appLoadingFadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    .appLoading {
+      -webkit-animation: appLoadingFadeIn 200ms ease-in-out 600ms forwards;
+      position: absolute;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: 2px;
+      left: 0;
+      opacity: 0;
+      animation: appLoadingFadeIn 200ms ease-in-out 600ms forwards;
+      background-color: rgba(226, 240, 247, 0.8);
+    }
+
+    .appLoading-text {
+      position: absolute;
+      left: -999em;
+      top: 0px;
+      height: 1px;
+      overflow: hidden;
+    }
+
+    .appLoading-spinner {
+      width: 2rem;
+      height: 2rem;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      margin-top: -1rem;
+      margin-left: -1rem;
+    }
+  </style>
   <title>Chart slicer</title>
 </head>
 
 <body>
+
+  <div class="appLoading removeOnLoad">
+    <span class="appLoading-text">Chart Slicer wordt geladen</span>
+    <img class="appLoading-spinner" src="%PUBLIC_URL%/loading.svg">
+  </div>
+
   <div id="root"></div>
-  <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
-
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
-
-      To begin the development, run `npm start`.
-      To create a production bundle, use `npm run build`.
-    -->
 </body>
 
 </html>

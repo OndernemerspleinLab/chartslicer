@@ -316,3 +316,17 @@ export const CloseAccordion = glamorous.button({
     fontSize: '1.1rem',
   },
 })
+
+export const Center = glamorous.div({
+  display: 'flex',
+  height: '100%',
+  width: '100%',
+  alignItems: 'center',
+  justifyContent: 'center',
+})
+
+export const CoverPage = glamorous.div({
+  position: 'absolute',
+  height: '100%',
+  width: '100%',
+})

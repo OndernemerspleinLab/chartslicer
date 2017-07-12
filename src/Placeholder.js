@@ -1,3 +1,4 @@
+import { Center } from './graphPickerSteps/Elements'
 import React from 'react'
 import glamorous from 'glamorous'
 // Source of image: https://commons.wikimedia.org/wiki/File:George_Bernard_Shaw_1925.jpg
@@ -19,14 +20,6 @@ const imageAltText = 'George Bernard Shaw'
 const quote =
   'It is the mark of a truly intelligent person to be moved by statistics.'
 const source = 'George Bernard Shaw'
-
-const Center = glamorous.div({
-  display: 'flex',
-  height: '100%',
-  width: '100%',
-  alignItems: 'center',
-  justifyContent: 'center',
-})
 
 const PlaceholderComp = glamorous.div({
   fontFamily: 'georgia, serif',
@@ -111,8 +104,12 @@ const PlaceholderContainer = () =>
         <Image src={imageSrc} alt={imageAltText} />
       </Figure>
       <BlockQuote>
-        <Quote>“{quote}”</Quote>
-        <Source>— {source}</Source>
+        <Quote>
+          “{quote}”
+        </Quote>
+        <Source>
+          — {source}
+        </Source>
       </BlockQuote>
     </PlaceholderComp>
   </Center>

@@ -1,3 +1,4 @@
+import { writableEnhancer } from './writableEnhancer'
 import React from 'react'
 import { GraphPicker } from './GraphPicker'
 import { css } from 'glamor'
@@ -93,7 +94,7 @@ const MainScrollArea = glamorous.div(mainScrollbarStyle, {
   },
 })
 
-export const App = () =>
+export const App = writableEnhancer(() =>
   <Layout>
     <Sidebar>
       <GraphPicker />
@@ -109,3 +110,4 @@ export const App = () =>
       <DataQueryError />
     </Main>
   </Layout>
+)

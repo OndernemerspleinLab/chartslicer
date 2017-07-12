@@ -11,9 +11,15 @@ import { startStore } from './store/store'
 import { App } from './App'
 import { Provider } from 'react-redux'
 
+Array.from(document.getElementsByClassName('removeOnLoad')).forEach(element =>
+  element.remove()
+)
+
 const store = startStore()
 
 ReactDOM.render(
-  <Provider store={store}><App /></Provider>,
+  <Provider store={store}>
+    <App />
+  </Provider>,
   document.getElementById('root')
 )
