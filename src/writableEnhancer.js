@@ -1,3 +1,4 @@
+import { mqBig } from './config'
 import { hemelblauw } from './colors'
 import { Center, CoverPage } from './graphPickerSteps/Elements'
 import { fadeInAnimation } from './styles'
@@ -22,14 +23,17 @@ const NotWritableElement = nest(
     animation: fadeInAnimation,
     color: hemelblauw.default,
     fontSize: '2.6rem',
-    margin: 0,
-    padding: '3rem',
+    margin: '0 0 10% 0',
     textAlign: 'center',
+    padding: '3rem',
+    [mqBig]: {
+      padding: '3rem 7rem',
+    },
   })
 )
 const NotWritable = () =>
   <NotWritableElement>
-    Het Tridion component kan niet worden aangepast. Mogelijk is het niet
+    Het Tridion-component kan niet worden aangepast. Mogelijk is het niet
     uitgecheckt.
   </NotWritableElement>
 
