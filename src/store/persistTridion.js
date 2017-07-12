@@ -2,10 +2,9 @@ import { existing, unexisting } from './../helpers/helpers'
 import { getIn } from './../helpers/getset'
 import { activeDatasetGetIdConnector } from './../connectors/activeDatasetIdConnector'
 import { configConnector } from './../connectors/configConnectors'
-import { weakMemoize } from './../helpers/weakMemoize'
 import { first } from 'lodash/fp'
 
-const getFieldFromOpener = weakMemoize(opener => {
+const getFieldFromOpener = opener => {
   const getView = getIn(['$display', 'getView'])(opener)
 
   if (unexisting(getView)) {
@@ -25,7 +24,7 @@ const getFieldFromOpener = weakMemoize(opener => {
   const field = tridionFieldBuilder.getField('Text')
 
   return field
-})
+}
 
 const getField = () => {
   const { opener } = window
