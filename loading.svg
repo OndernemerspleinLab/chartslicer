@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid" class="appLoading-spinner" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink">
+      <path d="M0 50A50 50 0 0 1 50 0L50 50L0 50" fill="#a90061" opacity="0.5" transform="rotate(136 50 50)">
+        <animateTransform attributeName="transform" type="rotate" from="0 50 50" to="360 50 50" dur="0.75s" repeatCount="indefinite"></animateTransform>
+      </path>
+      <path d="M50 0A50 50 0 0 1 100 50L50 50L50 0" fill="#f4e9f1" opacity="0.5" transform="rotate(282 50 50)">
+        <animateTransform attributeName="transform" type="rotate" from="0 50 50" to="360 50 50" dur="1s" repeatCount="indefinite"></animateTransform>
+      </path>
+      <path d="M100 50A50 50 0 0 1 50 100L50 50L100 50" fill="#0077c0" opacity="0.5" transform="rotate(68 50 50)">
+        <animateTransform attributeName="transform" type="rotate" from="0 50 50" to="360 50 50" dur="1.5s" repeatCount="indefinite"></animateTransform>
+      </path>
+      <path d="M50 100A50 50 0 0 1 0 50L50 50L50 100" fill="#e2f0f7" opacity="0.5" transform="rotate(214 50 50)">
+        <animateTransform attributeName="transform" type="rotate" from="0 50 50" to="360 50 50" dur="3s" repeatCount="indefinite"></animateTransform>
+      </path>
+    </svg>
