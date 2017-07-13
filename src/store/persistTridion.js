@@ -66,7 +66,7 @@ const getJsonValue = () => {
 
 const setJsonValue = jsValue => {
   try {
-    const value = JSON.stringify(jsValue)
+    const value = JSON.stringify(jsValue, null, '  ')
 
     setValue(value)
 
