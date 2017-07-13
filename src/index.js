@@ -12,7 +12,7 @@ import { App } from './App'
 import { Provider } from 'react-redux'
 
 Array.from(document.getElementsByClassName('removeOnLoad')).forEach(element =>
-  element.remove()
+  element.parentNode.removeChild(element)
 )
 
 const store = startStore()
