@@ -63,7 +63,7 @@ const DataRow = connect((state, ownProps) => {
 })(props =>
   <Row>
     <Cell>
-      {formatCbsPeriod(props.periodType)(props.periodDate)}
+      {formatCbsPeriod(props.periodType)(' ')(props.periodDate)}
     </Cell>
     <Cell>
       {formatNumber(props.topic.decimals)(props[props.topicKey])}

@@ -6,6 +6,9 @@ import {
   VictoryChart,
   VictoryArea,
   VictoryScatter,
+  VictoryVoronoiContainer,
+  VictoryTooltip,
+  VictoryLabel,
 } from 'victory'
 import glamorous from 'glamorous'
 import { hemelblauw, wit } from './colors'
@@ -65,7 +68,8 @@ const yAxisStyle = {
   },
   axisLabel: {
     fontSize: '7px',
-    padding: 40,
+    textAnchor: 'start',
+    fontWeight: 'bold',
   },
 }
 
@@ -78,7 +82,8 @@ const xAxisStyle = {
   },
   axisLabel: {
     fontSize: '7px',
-    padding: 25,
+    padding: 28,
+    fontWeight: 'bold',
   },
 }
 
@@ -96,7 +101,7 @@ const areaStyle = {
 
 const scatterStyle = {
   data: {
-    fill: hemelblauw.default,
+    fill: (data, active) => (active ? hemelblauw.darker : hemelblauw.default),
   },
 }
 
@@ -111,7 +116,6 @@ const DataChartContainer = ({ topic, dataList, periodType, dataEntries }) => {
 
   const Gradient = () =>
     <linearGradient id="MyGradient" x1="0" x2="0" y1="0" y2="1">
-      >
       <stop offset="0%" stopColor={hemelblauw.default} stopOpacity={0.3} />
       <stop offset="50%" stopColor={hemelblauw.default} stopOpacity={0} />
     </linearGradient>
@@ -125,6 +129,7 @@ const DataChartContainer = ({ topic, dataList, periodType, dataEntries }) => {
           style={chartStyle}
           theme={VictoryTheme.material}
           domainPadding={chartDomainPadding}
+          containerComponent={<VictoryVoronoiContainer />}
         >
           <Gradient />
           <VictoryAxis
@@ -134,11 +139,12 @@ const DataChartContainer = ({ topic, dataList, periodType, dataEntries }) => {
             tickFormat={formatNumber(get('decimals')(topic))}
             domain={yAxisDomain}
             style={yAxisStyle}
+            axisLabelComponent={<VictoryLabel x={20} y={46} angle={0} />}
           />
           <VictoryAxis
             fixLabelOverlap
             tickValues={dataList.map(getPeriodDate)}
-            tickFormat={formatPeriod}
+            tickFormat={formatPeriod('\n')}
             label={periodType}
             scale="time"
             style={xAxisStyle}
@@ -155,6 +161,28 @@ const DataChartContainer = ({ topic, dataList, periodType, dataEntries }) => {
             y={getTopicValue}
             style={scatterStyle}
             size={2}
+            labels={({ x, y }) => [
+              `${formatPeriod(' ')(x)}`,
+              `${formatNumber(get('decimals')(topic))(y)}`,
+            ]}
+            labelComponent={
+              <VictoryTooltip
+                activateData={true}
+                cornerRadius={1}
+                dy={-2}
+                pointerLength={4}
+                pointerWidth={4}
+                style={{
+                  fontSize: '5px',
+                  fill: hemelblauw.darker,
+                }}
+                flyoutStyle={{
+                  strokeWidth: 0.5,
+                  stroke: hemelblauw.darker,
+                  fill: wit,
+                }}
+              />
+            }
           />
         </VictoryChart>
         <DataSource />

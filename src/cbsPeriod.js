@@ -63,13 +63,13 @@ export const convertCbsPeriodToDate = type => cbsPeriodString => {
 }
 
 const cbsPeriodFormatters = {
-  Jaar: date => formatDate(date, 'YYYY'),
-  Maanden: date => formatDate(date, 'MMM YYYY'),
-  Kwartalen: date => formatDate(date, 'YYYY [Q]Q'),
+  Jaar: seperator => date => formatDate(date, 'YYYY'),
+  Maanden: seperator => date => formatDate(date, `MMM[${seperator}]YYYY`),
+  Kwartalen: seperator => date => formatDate(date, `YYYY[${seperator}][Q]Q`),
 }
 
-export const formatCbsPeriod = type => cbsPeriod =>
-  cbsPeriodFormatters[type](cbsPeriod)
+export const formatCbsPeriod = type => seperator => cbsPeriod =>
+  cbsPeriodFormatters[type](seperator)(cbsPeriod)
 
 const cbsPeriodCreators = {
   Jaar: date => formatDate(date, 'YYYY[JJ00]'),
