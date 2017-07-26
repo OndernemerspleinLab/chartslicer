@@ -167,7 +167,6 @@ const DataChartContainer = ({ topic, dataList, periodType, dataEntries }) => {
             ]}
             labelComponent={
               <VictoryTooltip
-                activateData={true}
                 cornerRadius={1}
                 dy={-2}
                 pointerLength={4}
