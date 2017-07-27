@@ -1,5 +1,6 @@
 // @flow
 
+import { pick } from 'lodash/fp'
 import {
   getActiveSubstate,
   pickFromActiveSubstate,
@@ -8,7 +9,7 @@ import {
 } from './connectorHelpers'
 import type { State, Key } from '../store/stateShape'
 import { visibleDatasetInfoConnector } from './visibleDatasetQueryConnector'
-import { getIn } from '../helpers/getset'
+import { getIn, set } from '../helpers/getset'
 import { configGetInConnector } from './configConnectors'
 
 export const topicsConnector = getActiveSubstate('topics')
@@ -46,4 +47,18 @@ export const selectedTopicConnector = (state: State) => {
   const topicKey = configGetInConnector(['topicKeys', 0])(state)
 
   return { selectedTopic: topicsGetConnector(topicKey)(state) }
+}
+
+const pickFromSelectedTopic = pick(['key', 'title', 'unit', 'decimals'])
+export const selectedTopicsConnector = (state: State) => {
+  const topicKeys = configGetInConnector(['topicKeys'])(state)
+
+  return {
+    selectedTopics: topicKeys.reduce((memo, topicKey) => {
+      return set(
+        topicKey,
+        pickFromSelectedTopic(topicsGetConnector(topicKey)(state))
+      )(memo)
+    }, {}),
+  }
 }

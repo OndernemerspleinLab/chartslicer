@@ -1,5 +1,6 @@
+import { selectedTopicsConnector } from '../connectors/topicConnectors'
 import { existing, unexisting } from './../helpers/helpers'
-import { getIn } from './../helpers/getset'
+import { getIn, omit } from './../helpers/getset'
 import { activeDatasetGetIdConnector } from './../connectors/activeDatasetIdConnector'
 import { configConnector } from './../connectors/configConnectors'
 import { first } from 'lodash/fp'
@@ -99,7 +100,7 @@ export const getPersistentData = () => {
     ? {
         activeDatasetId: tridionData.id,
         config: {
-          [tridionData.id]: tridionData,
+          [tridionData.id]: omit('selectedTopics')(tridionData),
         },
       }
     : {}
@@ -117,6 +118,7 @@ export const setPersistentData = state => {
   ) {
     return
   }
+  const { selectedTopics } = selectedTopicsConnector(state)
 
-  setJsonValue(activeConfig)
+  setJsonValue({ selectedTopics, ...activeConfig })
 }
