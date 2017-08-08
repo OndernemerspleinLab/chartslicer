@@ -1,6 +1,6 @@
 // @flow
 
-import { bracketize } from './../helpers/helpers'
+import { bracketize } from '../helpers/helpers'
 import { map, join, sortBy, identity, concat, defaultTo } from 'lodash/fp'
 import { compose } from 'recompose'
 import { fetchJson, customError } from './fetch'

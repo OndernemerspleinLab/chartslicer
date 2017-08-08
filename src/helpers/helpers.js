@@ -21,9 +21,9 @@ export const chunkNumberString = (chunkSize: number) => (
   for (
     let restString = string;
     restString.length > 0;
-    restString = restString.slice(0, -3)
+    restString = restString.slice(0, -chunkSize)
   ) {
-    memo.unshift(restString.slice(-3))
+    memo.unshift(restString.slice(-chunkSize))
   }
 
   return memo
@@ -44,9 +44,10 @@ export const formatNumber = (decimals: number = 0) => (
     .slice(0, decimals)
     .padEnd(decimals, '0')
 
-  const formattedIntegers = integerString.length <= 4
-    ? integerString
-    : chunkNumberString(3)(integerString).join(thousandsSeperator)
+  const formattedIntegers =
+    integerString.length <= 4
+      ? integerString
+      : chunkNumberString(3)(integerString).join(thousandsSeperator)
 
   return formattedDecimals.length > 0
     ? `${formattedIntegers}${numberSeperator}${formattedDecimals}`
