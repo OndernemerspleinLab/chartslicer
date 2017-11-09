@@ -18,13 +18,21 @@ const getPeriodTypes = compose(
 )
 
 const mapCbsTableInfo = (id: DatasetId) => (
-  [{ Title, GraphTypes }: CbsTableInfo, cbsPeriods: CbsPeriods]
+  [{ Title, GraphTypes, Language }: CbsTableInfo, cbsPeriods: CbsPeriods]
 ): TableInfo => ({
   id,
   title: Title,
+  language: Language,
   graphTypes: split(',')(GraphTypes),
   periodTypes: getPeriodTypes(cbsPeriods),
 })
 
 export const getTableInfoPromise = (id: DatasetId): Promise<TableInfo> =>
-  Promise.all([fetchTableInfo(id), fetchPeriods(id)]).then(mapCbsTableInfo(id))
+  fetchTableInfo(id)
+    .then((cbsTableInfo: CbsTableInfo) => {
+      return Promise.all([
+        cbsTableInfo,
+        fetchPeriods({ id, language: cbsTableInfo.Language }),
+      ])
+    })
+    .then(mapCbsTableInfo(id))

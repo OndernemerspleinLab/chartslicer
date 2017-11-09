@@ -38,7 +38,7 @@ export const apiBaseUrl = `${apiOrigin}/ODataApi/odata`
 
 ///////// TableInfo /////////
 
-const tableInfoSelection = ['Title', 'GraphTypes']
+const tableInfoSelection = ['Title', 'GraphTypes', 'Language']
 
 const getTableInfoUrl = (id: DatasetId) =>
   `${apiBaseUrl}/${id}/TableInfos?${select(tableInfoSelection)}`
@@ -50,8 +50,27 @@ export const fetchTableInfo = (id: DatasetId): CbsTableInfoPromise =>
 
 const periodsSelection = ['Key']
 
-const getPeriodsUrl = (id: DatasetId) =>
-  `${apiBaseUrl}/${id}/Perioden?${select(periodsSelection)}`
+const getCbsPeriodKey = (language: string) => {
+  switch (language) {
+    case 'en':
+      return 'Periods'
+    case 'nl':
+    default:
+      return 'Perioden'
+  }
+}
+
+const getPeriodsUrl = ({
+  id,
+  language,
+}: {
+  id: DatasetId,
+  language: string,
+}) => {
+  return `${apiBaseUrl}/${id}/${getCbsPeriodKey(language)}?${select(
+    periodsSelection
+  )}`
+}
 
 const cunstomPeriodError = customError({
   predicate: error => {
@@ -60,8 +79,14 @@ const cunstomPeriodError = customError({
   message: 'Dataset does not have a time dimension',
 })
 
-export const fetchPeriods = (id: DatasetId): CbsPeriodsPromise =>
-  cunstomPeriodError(fetchJson(getPeriodsUrl(id)).then(getValues))
+export const fetchPeriods = ({
+  id,
+  language,
+}: {
+  id: DatasetId,
+  language: string,
+}): CbsPeriodsPromise =>
+  cunstomPeriodError(fetchJson(getPeriodsUrl({ id, language })).then(getValues))
 
 ///////// DataProperties /////////
 // Fetches Dimensions, TopicGroups and Topics
@@ -120,11 +145,14 @@ export const getDatasetUrl = ({
   query: DatasetQuery,
 }) => `${apiBaseUrl}/${id}/TypedDataSet?${query}`
 
-const getDatasetSelection: (topicKeys: TopicKey[]) => string[] = compose(
-  concat(['ID', 'Perioden']),
-  sortBy(identity),
-  defaultTo([])
-)
+const getDatasetSelection: string => (
+  topicKeys: TopicKey[]
+) => string[] = language =>
+  compose(
+    concat(['ID', getCbsPeriodKey(language)]),
+    sortBy(identity),
+    defaultTo([])
+  )
 
 const getDatasetPeriodenFilter: (string[]) => string = compose(
   bracketize,
@@ -158,7 +186,7 @@ const getDatasetFilter = ({ cbsPeriodKeys, categoryKeys }): string =>
     )} and ${getDatasetDimensionsFilter(categoryKeys)}`
   )
 
-export type ConfigWithDate = ConfigState & { now: Date }
+export type ConfigWithDate = ConfigState & { language: string, now: Date }
 
 export const getDatasetQueryString = ({
   id,
@@ -166,12 +194,13 @@ export const getDatasetQueryString = ({
   periodType,
   now,
   topicKeys,
+  language,
   categoryKeys,
 }: ConfigWithDate): string =>
   `${getDatasetFilter({
     cbsPeriodKeys: createCbsPeriods({ endDate: now, periodType, periodLength }),
     categoryKeys,
-  })}&${select(getDatasetSelection(topicKeys))}`
+  })}&${select(getDatasetSelection(language)(topicKeys))}`
 
 export const fetchFilteredDataset = ({
   id,

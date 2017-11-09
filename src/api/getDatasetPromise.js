@@ -22,7 +22,9 @@ const mapDataEntry = (periodType: PeriodType) => (
   return {
     id: cbsDataEntry.ID,
     periodType,
-    periodDate: convertCbsPeriodToDate(periodType)(cbsDataEntry.Perioden),
+    periodDate: convertCbsPeriodToDate(periodType)(
+      cbsDataEntry.Perioden || cbsDataEntry.Periods
+    ),
     // add topics and dimensions
     ...omit(['ID', 'Perioden'])(cbsDataEntry),
   }

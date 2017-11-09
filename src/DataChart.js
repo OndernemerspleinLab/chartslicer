@@ -24,12 +24,14 @@ import { onlyWhenVisibleDataset } from './enhancers/datasetEnhancer'
 import { get, getIn } from './helpers/getset'
 import { dataEntriesConnector } from './connectors/visibleDatasetQueryConnector'
 import { connect } from 'react-redux'
-import { formatCbsPeriod } from './cbsPeriod'
+import { formatCbsPeriod, getCbsPeriodLabel } from './cbsPeriod'
 import { formatNumber } from './helpers/helpers'
 import { DataSource } from './DataSource'
+import { tableLanguageConnector } from './connectors/tableInfoConnectors'
 
 const enhancer = compose(
   onlyWhenVisibleDataset,
+  connect(tableLanguageConnector),
   visibleDataInfoEnhancer,
   connect(dataEntriesConnector)
 )
@@ -105,7 +107,13 @@ const scatterStyle = {
   },
 }
 
-const DataChartContainer = ({ topic, dataList, periodType, dataEntries }) => {
+const DataChartContainer = ({
+  topic,
+  language,
+  dataList,
+  periodType,
+  dataEntries,
+}) => {
   const topicKey = get('key')(topic)
   const getTopicValue = dataEntryKey =>
     getIn([dataEntryKey, topicKey])(dataEntries)
@@ -114,11 +122,14 @@ const DataChartContainer = ({ topic, dataList, periodType, dataEntries }) => {
 
   const formatPeriod = formatCbsPeriod(periodType)
 
-  const Gradient = () =>
+  const periodLabel = getCbsPeriodLabel({ language, periodType })
+
+  const Gradient = () => (
     <linearGradient id="MyGradient" x1="0" x2="0" y1="0" y2="1">
       <stop offset="0%" stopColor={hemelblauw.default} stopOpacity={0.3} />
       <stop offset="50%" stopColor={hemelblauw.default} stopOpacity={0} />
     </linearGradient>
+  )
 
   return (
     <DataChartComp>
@@ -145,7 +156,7 @@ const DataChartContainer = ({ topic, dataList, periodType, dataEntries }) => {
             fixLabelOverlap
             tickValues={dataList.map(getPeriodDate)}
             tickFormat={formatPeriod('\n')}
-            label={periodType}
+            label={periodLabel}
             scale="time"
             style={xAxisStyle}
           />

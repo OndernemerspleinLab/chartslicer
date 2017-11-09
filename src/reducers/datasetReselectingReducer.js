@@ -10,12 +10,14 @@ import { getDatasetQueryString } from '../api/apiCalls'
 import { configConnector } from '../connectors/configConnectors'
 import type { ConfigWithDate } from '../api/apiCalls'
 import { activeDatasetGetIdConnector } from '../connectors/activeDatasetIdConnector'
+import { tableLanguageGetter } from '../connectors/tableInfoConnectors'
 
-const getConfigWithDate = (state: State): ConfigWithDate => {
+const getConfigWithDateAndLanguage = (state: State): ConfigWithDate => {
   const config = configConnector(state)
   const { now } = state
+  const language = tableLanguageGetter(state)
 
-  return { ...config, now }
+  return { ...config, now, language }
 }
 
 const reduceWhenReselectingDataset = reduceWhen(
@@ -51,7 +53,7 @@ const setVisibleDatasetQueries = (state, { queryString, id }) =>
     : state
 
 const reduceDatasetReselecting = (state: State): State => {
-  const queryString = getDatasetQueryString(getConfigWithDate(state))
+  const queryString = getDatasetQueryString(getConfigWithDateAndLanguage(state))
   const id = activeDatasetGetIdConnector(state)
 
   return composeReducers(

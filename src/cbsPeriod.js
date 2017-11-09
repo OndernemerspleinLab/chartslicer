@@ -62,6 +62,21 @@ export const convertCbsPeriodToDate = type => cbsPeriodString => {
   return cbsPeriodToDateConverters[type](cbsPeriod)
 }
 
+const cbsPeriodLabels = {
+  nl: {
+    Jaar: 'Jaar',
+    Maanden: 'Maanden',
+    Kwartalen: 'Kwartalen',
+  },
+  en: {
+    Jaar: 'Year',
+    Maanden: 'Months',
+    Kwartalen: 'Quarters',
+  },
+}
+export const getCbsPeriodLabel = ({ language, periodType }) =>
+  cbsPeriodLabels[language][periodType]
+
 const cbsPeriodFormatters = {
   Jaar: seperator => date => formatDate(date, 'YYYY'),
   Maanden: seperator => date => formatDate(date, `MMM[${seperator}]YYYY`),

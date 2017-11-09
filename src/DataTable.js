@@ -12,11 +12,13 @@ import {
 import { connect } from 'react-redux'
 import { topicConnector } from './connectors/topicConnectors'
 import { get } from './helpers/getset'
-import { formatCbsPeriod } from './cbsPeriod'
+import { formatCbsPeriod, getCbsPeriodLabel } from './cbsPeriod'
 import { formatNumber } from './helpers/helpers'
+import { tableLanguageConnector } from './connectors/tableInfoConnectors'
 
 const enhancer = compose(
   onlyWhenVisibleDataset,
+  connect(tableLanguageConnector),
   connect(visibleDatasetInfoConnector)
 )
 
@@ -49,30 +51,30 @@ const Cell = glamorous.td(cellStyle)
 
 const HeadingCell = glamorous.th(cellStyle)
 
-const TopicHeadingCell = connect(topicConnector)(({ unit }) =>
-  <HeadingCell>
-    {unit}
-  </HeadingCell>
-)
+const TopicHeadingCell = connect(topicConnector)(({ unit }) => (
+  <HeadingCell>{unit}</HeadingCell>
+))
 
 const DataRow = connect((state, ownProps) => {
   return {
     topic: topicConnector(state, ownProps),
     ...dataEntryConnector(state, ownProps),
   }
-})(props =>
+})(props => (
   <Row>
-    <Cell>
-      {formatCbsPeriod(props.periodType)(' ')(props.periodDate)}
-    </Cell>
-    <Cell>
-      {formatNumber(props.topic.decimals)(props[props.topicKey])}
-    </Cell>
+    <Cell>{formatCbsPeriod(props.periodType)(' ')(props.periodDate)}</Cell>
+    <Cell>{formatNumber(props.topic.decimals)(props[props.topicKey])}</Cell>
   </Row>
-)
+))
 
-const DataTableContainer = ({ topicKeys, dataList = [], periodType }) => {
+const DataTableContainer = ({
+  topicKeys,
+  dataList = [],
+  periodType,
+  language,
+}) => {
   const topicKey = get(0)(topicKeys)
+  const periodLabel = getCbsPeriodLabel({ language, periodType })
 
   return (
     <DataTableComp>
@@ -80,16 +82,14 @@ const DataTableContainer = ({ topicKeys, dataList = [], periodType }) => {
         <Table>
           <TableHead>
             <HeadingRow>
-              <HeadingCell>
-                {periodType}
-              </HeadingCell>
+              <HeadingCell>{periodLabel}</HeadingCell>
               <TopicHeadingCell topicKey={topicKey} />
             </HeadingRow>
           </TableHead>
           <Tablebody>
-            {dataList.map(entryId =>
+            {dataList.map(entryId => (
               <DataRow topicKey={topicKey} entryId={entryId} key={entryId} />
-            )}
+            ))}
           </Tablebody>
         </Table>
       </InsideMargin>

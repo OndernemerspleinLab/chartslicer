@@ -8,12 +8,13 @@ import { activeDatasetIdConnector } from './connectors/activeDatasetIdConnector'
 import { connect } from 'react-redux'
 import { CreateCommonsBy, CreateCommonsLogo } from './CreativeCommons'
 import { Hidden } from './graphPickerSteps/Elements'
+import { tableLanguageConnector } from './connectors/tableInfoConnectors'
 
 const Link = glamorous.a({
   color: hemelblauw.default,
 })
 
-const CreativeCommonsLink = () =>
+const CreativeCommonsLink = () => (
   <Link
     target="_blank"
     href="https://creativecommons.org/licenses/by/3.0/nl/"
@@ -25,14 +26,16 @@ const CreativeCommonsLink = () =>
     <Hidden>CC BY 3.0 NL</Hidden>
     <CreateCommonsLogo /> <CreateCommonsBy />
   </Link>
+)
 
-const CbsLink = ({ id }) =>
+const CbsLink = ({ id, language }) => (
   <Link
     target="_blank"
-    href={`https://opendata.cbs.nl/#/CBS/nl/dataset/${id}/table`}
+    href={`https://opendata.cbs.nl/#/CBS/${language}/dataset/${id}/table`}
   >
     CBS
   </Link>
+)
 
 const DataSourceComp = glamorous.div({
   animation: fadeInAnimation,
@@ -43,12 +46,15 @@ const DataSourceComp = glamorous.div({
   fontSize: '0.8rem',
 })
 
-const DataSourceContainer = ({ activeDatasetId }) =>
+const DataSourceContainer = ({ activeDatasetId, language }) => (
   <DataSourceComp css={{ marginTop: '2rem' }}>
-    Bron: <CbsLink id={activeDatasetId} /> <CreativeCommonsLink />
+    Bron: <CbsLink id={activeDatasetId} language={language} />{' '}
+    <CreativeCommonsLink />
   </DataSourceComp>
+)
 
 export const DataSource = compose(
   onlyWhenVisibleDataset,
+  connect(tableLanguageConnector),
   connect(activeDatasetIdConnector)
 )(DataSourceContainer)

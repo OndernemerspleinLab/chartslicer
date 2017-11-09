@@ -38,6 +38,7 @@ export type TableInfo = {
   title: string,
   id: DatasetId,
   graphTypes: string[],
+  language: string,
   periodTypes: PeriodType[],
 }
 
@@ -80,13 +81,13 @@ export type Topics = {
 ///////// Categories /////////
 
 export type CategoryKey = Key
-export type CategoryGroupId = Id
+export type CategoryGroupId = Id | 'root'
 export type DimensionKey = Key
 
 export type CategoryGroupKeyPath = [DimensionKey, CategoryGroupId]
 
 export type CategoryGroupRoot = {
-  id: CategoryGroupId | 'root',
+  id: CategoryGroupId,
   dimensionKey: DimensionKey,
   categories: CategoryKey[],
   categoryGroups: CategoryGroupId[],

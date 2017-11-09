@@ -15,6 +15,7 @@ import type {
 export type CbsTableInfo = {
   Title: string,
   GraphTypes: string[],
+  Language: string,
 }
 
 export type CbsTableInfoPromise = Promise<CbsTableInfo>
@@ -103,7 +104,8 @@ export type CbsPeriodsPromise = Promise<CbsPeriods>
 
 export type CbsDataEntry = {
   ID: Id,
-  Perioden: CbsPeriodKey,
+  Perioden?: CbsPeriodKey,
+  Periods?: CbsPeriodKey,
   [TopicKey]: number,
 }
 
