@@ -6,10 +6,17 @@ import { get } from '../helpers/getset'
 import { listenOn } from '../helpers/domHelpers'
 import * as persistLocalStorage from './persistLocalStorage'
 import * as persistTridion from './persistTridion'
+import { supportedLanguages, defaultLanguage } from '../config'
 
 const getLocationHash = () => window.location.hash.replace(/^#/, '')
 
 const getUrlSearchParams = () => new URLSearchParams(getLocationHash())
+
+const getEnvironmentLanguage = () => {
+  const lang = getUrlSearchParams().get('lang')
+
+  return supportedLanguages.includes(lang) ? lang : defaultLanguage
+}
 
 const getUrlSearchParamDatasetId = () => getUrlSearchParams().get('datasetId')
 
@@ -40,19 +47,22 @@ export const persistState = ({ getState, setPersistentData }) => () => {
 }
 
 export const rehydrateState = () => {
-  const now = new Date()
+  const baseState = {
+    environmentLanguage: getEnvironmentLanguage(),
+    now: new Date(),
+  }
   if (!persist) {
-    return { now }
+    return baseState
   }
 
   const localStorageData = persist.getPersistentData()
 
   return typeof localStorageData === 'object'
     ? {
-        now,
+        ...baseState,
         ...localStorageData,
       }
-    : { now }
+    : baseState
 }
 
 export const rehydrateMetadata = ({ getState, dispatch }) => {

@@ -1,14 +1,16 @@
 import React from 'react'
 import { StepTitle, Step } from './Elements'
 import { CallToActionLink } from '../CallToAction'
+import { environmentLanguageConnector } from '../connectors/environmentLanguageConnectors'
+import { connect } from 'react-redux'
+import { getStatLineUrl } from '../config'
 
-const statLineUrl = 'https://opendata.cbs.nl/'
-
-export const Intro = () => (
+export const IntroComponent = ({ environmentLanguage }) => (
   <Step>
     <StepTitle>Zoek een dataset bij CBS StatLine</StepTitle>
-    <CallToActionLink href={statLineUrl} target="_bank">
+    <CallToActionLink href={getStatLineUrl(environmentLanguage)} target="_bank">
       CBS StatLine
     </CallToActionLink>
   </Step>
 )
+export const Intro = connect(environmentLanguageConnector)(IntroComponent)

@@ -23,3 +23,8 @@ export const rootAccordionFromLength = 3
 
 export const thousandsSeperator = ' '
 export const numberSeperator = ','
+
+export const defaultLanguage = 'nl'
+export const supportedLanguages = [defaultLanguage, 'en']
+
+export const getStatLineUrl = lang => `https://opendata.cbs.nl/#/CBS/${lang}/`
