@@ -154,11 +154,14 @@ const getDatasetSelection: string => (
     defaultTo([])
   )
 
-const getDatasetPeriodenFilter: (string[]) => string = compose(
-  bracketize,
-  join(' or '),
-  map((cbsPeriod: string) => `(Perioden eq '${cbsPeriod}')`)
-)
+const getDatasetPeriodenFilter: string => (string[]) => string = language =>
+  compose(
+    bracketize,
+    join(' or '),
+    map(
+      (cbsPeriod: string) => `(${getCbsPeriodKey(language)} eq '${cbsPeriod}')`
+    )
+  )
 
 const getDatasetDimensionFilter = (
   [dimensionKey, categoryKeysForDimension]: [DimensionKey, CategoryKey[]]
@@ -179,9 +182,9 @@ const getDatasetDimensionsFilter: (categoryKeys: {
   Object.entries
 )
 
-const getDatasetFilter = ({ cbsPeriodKeys, categoryKeys }): string =>
+const getDatasetFilter = ({ cbsPeriodKeys, categoryKeys, language }): string =>
   filter(
-    `${getDatasetPeriodenFilter(
+    `${getDatasetPeriodenFilter(language)(
       cbsPeriodKeys
     )} and ${getDatasetDimensionsFilter(categoryKeys)}`
   )
@@ -200,6 +203,7 @@ export const getDatasetQueryString = ({
   `${getDatasetFilter({
     cbsPeriodKeys: createCbsPeriods({ endDate: now, periodType, periodLength }),
     categoryKeys,
+    language,
   })}&${select(getDatasetSelection(language)(topicKeys))}`
 
 export const fetchFilteredDataset = ({
