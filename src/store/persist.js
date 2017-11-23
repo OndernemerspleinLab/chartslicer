@@ -13,7 +13,7 @@ const getLocationHash = () => window.location.hash.replace(/^#/, '')
 const getUrlSearchParams = () => new URLSearchParams(getLocationHash())
 
 const getEnvironmentLanguage = () => {
-  const lang = getUrlSearchParams().get('lang')
+  const lang = new URLSearchParams(window.location.search).get('lang')
 
   return supportedLanguages.includes(lang) ? lang : defaultLanguage
 }
