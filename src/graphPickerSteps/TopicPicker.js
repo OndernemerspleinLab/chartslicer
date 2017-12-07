@@ -8,6 +8,7 @@ import {
   FormRow,
   AccordionButton,
   CloseAccordion,
+  Checkbox,
 } from './Elements'
 import glamorous from 'glamorous'
 import { violet } from '../colors'
@@ -17,6 +18,8 @@ import { compose, branch, renderNothing } from 'recompose'
 import { topicEnhancer, topicGroupEnhancer } from '../enhancers/topicEnhancers'
 import { unexisting } from '../helpers/helpers'
 import { fadeInAnimation } from '../styles'
+import { MultiDimensionOption } from './MultiDimensionPicker'
+import { first } from 'lodash/fp'
 
 const RadioTopicUnit = compose(
   branch(({ children }) => unexisting(children), renderNothing)
@@ -32,16 +35,36 @@ const RadioTopicUnit = compose(
   })
 )
 
-const TopicRadioComp = ({ title, unit, inputValue, onChange, name, value }) =>
-  <Radio
-    id={`topic-${inputValue}`}
-    name={name}
-    value={inputValue}
-    onChange={onChange}
-    checked={value === inputValue}
-  >
-    {title} <RadioTopicUnit>{unit}</RadioTopicUnit>
-  </Radio>
+const TopicRadioComp = ({
+  title,
+  unit,
+  inputValue,
+  onChange,
+  name,
+  value,
+  isMultiDimension,
+}) =>
+  isMultiDimension ? (
+    <Checkbox
+      id={`topic-${inputValue}`}
+      name={name}
+      value={inputValue}
+      onChange={onChange}
+      checked={value.includes(inputValue)}
+    >
+      {title} <RadioTopicUnit>{unit}</RadioTopicUnit>
+    </Checkbox>
+  ) : (
+    <Radio
+      id={`topic-${inputValue}`}
+      name={name}
+      value={inputValue}
+      onChange={onChange}
+      checked={first(value) === inputValue}
+    >
+      {title} <RadioTopicUnit>{unit}</RadioTopicUnit>
+    </Radio>
+  )
 
 const TopicRadio = compose(topicEnhancer, configChangeEnhancer)(TopicRadioComp)
 
@@ -78,42 +101,47 @@ const TopicGroupContainer = ({
       role={topicGroupId === 'root' ? 'radiogroup' : 'group'}
     >
       <GroupLabel id={topicGroupHtmlId}>
-        {asAccordion
-          ? <AccordionButton
-              onClick={toggle}
-              opened={opened}
-              includesSelection={includesSelection}
-            >
-              {title}
-            </AccordionButton>
-          : title}
+        {asAccordion ? (
+          <AccordionButton
+            onClick={toggle}
+            opened={opened}
+            includesSelection={includesSelection}
+          >
+            {title}
+          </AccordionButton>
+        ) : (
+          title
+        )}
       </GroupLabel>
+      {opened || !asAccordion ? (
+        <FormRow css={{ animation: fadeInAnimation }}>
+          {topics.map(topicKey => (
+            <TopicRadio key={topicKey} topicKey={topicKey} />
+          ))}
+        </FormRow>
+      ) : null}
       {opened || !asAccordion
-        ? <FormRow css={{ animation: fadeInAnimation }}>
-            {topics.map(topicKey =>
-              <TopicRadio key={topicKey} topicKey={topicKey} />
-            )}
-          </FormRow>
-        : null}
-      {opened || !asAccordion
-        ? topicGroups.map(topicGroupId =>
+        ? topicGroups.map(topicGroupId => (
             <TopicGroup key={topicGroupId} topicGroupId={topicGroupId} />
-          )
+          ))
         : null}
-      {asAccordion && opened
-        ? <CloseAccordion onClick={close}>Sluit {title}</CloseAccordion>
-        : null}
+      {asAccordion && opened ? (
+        <CloseAccordion onClick={close}>Sluit {title}</CloseAccordion>
+      ) : null}
     </TopicGroupComp>
   )
 }
 
 const TopicGroup = topicGroupEnhancer(TopicGroupContainer)
 
-export const TopicPicker = onlyWhenMetadataLoaded(() =>
+export const TopicPicker = onlyWhenMetadataLoaded(() => (
   <Step>
     <StepTitle sticky>Kies het onderwerp</StepTitle>
+    <MultiDimensionOption inputValue="topic">
+      Meerdere onderwerpen selecteren
+    </MultiDimensionOption>
     <Form>
       <TopicGroup topicGroupId={'root'} title={'Onderwerpen'} />
     </Form>
   </Step>
-)
+))

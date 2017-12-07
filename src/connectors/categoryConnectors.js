@@ -38,16 +38,16 @@ export const visibleCategoriesConnector = (state: State) => {
   return { categories }
 }
 
-export const selectedCategoryConnector = (dimensionKey: DimensionKey) => (
+export const selectedCategoriesConnector = (dimensionKey: DimensionKey) => (
   state: State
 ) => {
-  const categoryKey = configGetInConnector(['categoryKeys', dimensionKey, 0])(
+  const categoryKeys = configGetInConnector(['categoryKeys', dimensionKey])(
     state
   )
 
   return {
-    selectedCategory: categoriesGetInConnector([dimensionKey, categoryKey])(
-      state
+    selectedCategories: categoryKeys.map(categoryKey =>
+      categoriesGetInConnector([dimensionKey, categoryKey])(state)
     ),
   }
 }

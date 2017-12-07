@@ -65,3 +65,11 @@ export const rangeNumber = ({ min, max }: { min: number, max: number }) => (
 
   return inRangeNumber
 }
+
+export const slugify = (string: string = ''): string => {
+  return string
+    .toLowerCase()
+    .replace(/[^a-z0-9\-_]+/g, '')
+    .replace(/^-+/, '')
+    .replace(/-+$/, '')
+}

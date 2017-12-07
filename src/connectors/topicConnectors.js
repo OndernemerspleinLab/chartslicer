@@ -43,10 +43,14 @@ export const visibleTopicConnector = (state: State) => {
   return { topic: topicsGetConnector(topicKey)(state) }
 }
 
-export const selectedTopicConnector = (state: State) => {
-  const topicKey = configGetInConnector(['topicKeys', 0])(state)
+export const selectedTopicListConnector = (state: State) => {
+  const topicKeys = configGetInConnector(['topicKeys'])(state)
 
-  return { selectedTopic: topicsGetConnector(topicKey)(state) }
+  return {
+    selectedTopics: topicKeys.map(topicKey => {
+      return topicsGetConnector(topicKey)(state)
+    }),
+  }
 }
 
 const pickFromSelectedTopic = pick(['key', 'title', 'unit', 'decimals'])

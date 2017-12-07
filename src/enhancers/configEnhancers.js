@@ -3,6 +3,7 @@ import { withHandlers, compose } from 'recompose'
 import { existing } from '../helpers/helpers'
 import { activeDatasetIdConnector } from '../connectors/activeDatasetIdConnector'
 import { connect } from 'react-redux'
+import { multiDimensionConnector } from '../connectors/configConnectors'
 
 export const configChangeHandlersEnhancer = withHandlers({
   onChange: ({
@@ -14,6 +15,7 @@ export const configChangeHandlersEnhancer = withHandlers({
     replaceValue,
     min,
     max,
+    maxLength,
     type,
   }) => event => {
     const value = existing(inputValue) ? inputValue : event.currentTarget.value
@@ -26,6 +28,7 @@ export const configChangeHandlersEnhancer = withHandlers({
       activeDatasetId,
       multiValue,
       replaceValue,
+      maxLength,
     })
   },
 })
@@ -33,4 +36,34 @@ export const configChangeHandlersEnhancer = withHandlers({
 export const configChangeEnhancer = compose(
   connect(activeDatasetIdConnector, mapDispatchToProps),
   configChangeHandlersEnhancer
+)
+
+const multiDimensionOptionConnector = state => {
+  const { multiDimension } = multiDimensionConnector(state)
+  const { activeDatasetId } = activeDatasetIdConnector(state)
+
+  return {
+    value: multiDimension,
+    activeDatasetId,
+  }
+}
+
+export const multiDimensionOptionChangeHandlersEnhancer = withHandlers({
+  onChange: ({ activeDatasetId, configChanged, inputValue }) => event => {
+    const newValue = event.target.checked ? inputValue : false
+    // const value = minMaxValue({ fieldValue, min, max })
+
+    configChanged({
+      keyPath: ['multiDimension'],
+      value: newValue,
+      activeDatasetId,
+      multiValue: false,
+      replaceValue: true,
+    })
+  },
+})
+
+export const multiDimensionOptionEnhancer = compose(
+  connect(multiDimensionOptionConnector, mapDispatchToProps),
+  multiDimensionOptionChangeHandlersEnhancer
 )

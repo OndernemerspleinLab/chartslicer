@@ -203,6 +203,13 @@ const RadioComp = glamorous.span({
   margin: '0.5rem 0.3rem 0 0',
   position: 'relative',
 })
+
+const SingleRadioComp = glamorous.span({
+  display: 'inline-block',
+  margin: '0 0.3rem 0.5rem 0',
+  position: 'relative',
+})
+
 const RadioInput = glamorous.input(hiddenStyle, {
   ':focus + label': {
     textDecoration: 'underline',
@@ -240,6 +247,62 @@ const RadioLabel = glamorous.label(
   }
 )
 
+const CheckboxLabel = glamorous.label(
+  borderRadius,
+  {
+    color: wit,
+    lineHeight: 1.2,
+    cursor: 'pointer',
+    display: 'inline-block',
+    padding: '0.2em 0.6em 0.2em 1.4em',
+    position: 'relative',
+    ':before': {
+      content: '""',
+      left: '0.6em',
+      top: '0.6em',
+      position: 'absolute',
+      ...square('0.3em'),
+    },
+  },
+  ({ checked }) => {
+    const backgroundColor = checked ? violet.darker : violet.default
+
+    return {
+      backgroundColor,
+      ':before': {
+        boxShadow: `0 0 0 2px ${backgroundColor}, 0 0 0 3px ${wit}`,
+        backgroundColor: checked ? wit : 'transparent',
+      },
+    }
+  }
+)
+
+const SingleCheckboxLabel = glamorous.label(
+  borderRadius,
+  {
+    color: violet.darker,
+    lineHeight: 1.2,
+    cursor: 'pointer',
+    display: 'inline-block',
+    padding: '0.2em 0.6em 0.2em 0.8em',
+    position: 'relative',
+    ':before': {
+      content: '""',
+      left: 0,
+      top: '0.6em',
+      position: 'absolute',
+      ...square('0.3em'),
+    },
+  },
+  ({ checked }) => {
+    return {
+      ':before': {
+        boxShadow: `0 0 0 2px ${violet.lightest}, 0 0 0 3px ${violet.darker}`,
+        backgroundColor: checked ? violet.darker : 'transparent',
+      },
+    }
+  }
+)
 export const Radio = ({
   children,
   name,
@@ -247,7 +310,7 @@ export const Radio = ({
   value = '',
   onChange,
   checked,
-}) =>
+}) => (
   <RadioComp>
     <RadioInput
       type="radio"
@@ -261,6 +324,53 @@ export const Radio = ({
       {children}
     </RadioLabel>
   </RadioComp>
+)
+
+export const Checkbox = ({
+  children,
+  name,
+  id = name,
+  value = '',
+  onChange,
+  checked,
+}) => (
+  <RadioComp>
+    <RadioInput
+      type="checkbox"
+      id={id}
+      name={name}
+      value={value}
+      onChange={onChange}
+      checked={checked}
+    />
+    <CheckboxLabel htmlFor={id} checked={checked}>
+      {children}
+    </CheckboxLabel>
+  </RadioComp>
+)
+
+export const SingleCheckbox = ({
+  children,
+  name,
+  id = name,
+  value = '',
+  onChange,
+  checked,
+}) => (
+  <SingleRadioComp>
+    <RadioInput
+      type="checkbox"
+      id={id}
+      name={name}
+      value={value}
+      onChange={onChange}
+      checked={checked}
+    />
+    <SingleCheckboxLabel htmlFor={id} checked={checked}>
+      {children}
+    </SingleCheckboxLabel>
+  </SingleRadioComp>
+)
 
 export const AccordionButton = glamorous.button(
   {
@@ -274,7 +384,7 @@ export const AccordionButton = glamorous.button(
   ({ opened, includesSelection }) => ({
     fontWeight: 'inherit',
     ':after': {
-      content: opened ? '"×"' : includesSelection ? '"1"' : '"+"',
+      content: opened ? '"×"' : '"+"',
       display: 'inline-block',
       marginLeft: '0.3rem',
       fontWeight: 'normal',

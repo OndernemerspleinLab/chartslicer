@@ -24,3 +24,6 @@ export const {
 
 export const get = key => getIn([key])
 export const update = (key, updater) => updateIn([key], updater)
+
+export const omitFromArray = value => array =>
+  array.filter(entry => entry !== value)

@@ -11,7 +11,6 @@ import { mqBig, sidebarWidth, mqSmall } from './config'
 import { connect } from 'react-redux'
 import { orderedDimensionsConnector } from './connectors/dimensionConnectors'
 import { CategoryPicker } from './graphPickerSteps/CategoryPicker'
-import { MultiDimensionPicker } from './graphPickerSteps/MultiDimensionPicker'
 
 const GraphPickerComp = glamorous.div(counterResetStyle, {
   backgroundColor: violet.lightest,
@@ -31,7 +30,6 @@ const GraphPickerContainer = ({ dimensionKeys = [] }) => (
     <Intro />
     <TablePicker />
     <TablePickerResult />
-    <MultiDimensionPicker />
     <XAxis />
     <TopicPicker />
     {dimensionKeys.map(dimensionKey => (

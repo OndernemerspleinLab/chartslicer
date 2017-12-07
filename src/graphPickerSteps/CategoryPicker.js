@@ -3,6 +3,7 @@ import {
   Step,
   StepTitle,
   GroupLabel,
+  Checkbox,
   Radio,
   Form,
   FormRow,
@@ -20,6 +21,8 @@ import {
 } from '../enhancers/categoryEnhancers'
 import { dimensionForKeyEnhancer } from '../enhancers/dimensionEnhancers'
 import { fadeInAnimation } from '../styles'
+import { MultiDimensionOption } from './MultiDimensionPicker'
+import { first } from 'lodash/fp'
 
 const CategoryRadioComp = ({
   title,
@@ -27,16 +30,26 @@ const CategoryRadioComp = ({
   inputValue,
   onChange,
   name,
-  value,
+  value = [],
+  isMultiDimension,
 }) =>
-  Radio({
-    id: `category-${dimensionKey}-${inputValue}`,
-    name,
-    value: inputValue,
-    onChange,
-    checked: value === inputValue,
-    children: title,
-  })
+  isMultiDimension
+    ? Checkbox({
+        id: `category-${dimensionKey}-${inputValue}`,
+        name,
+        value: inputValue,
+        onChange,
+        checked: value.includes(inputValue),
+        children: title,
+      })
+    : Radio({
+        id: `category-${dimensionKey}-${inputValue}`,
+        name,
+        value: inputValue,
+        onChange,
+        checked: first(value) === inputValue,
+        children: title,
+      })
 
 const CategoryRadio = compose(categoryEnhancer, configChangeEnhancer)(
   CategoryRadioComp
@@ -78,39 +91,41 @@ const CategoryGroupContainer = pure(
         role={categoryGroupId === 'root' ? 'radiogroup' : 'group'}
       >
         <GroupLabel id={categoryGroupHtmlId}>
-          {asAccordion
-            ? <AccordionButton
-                onClick={toggle}
-                opened={opened}
-                includesSelection={includesSelection}
-              >
-                {title}
-              </AccordionButton>
-            : title}
+          {asAccordion ? (
+            <AccordionButton
+              onClick={toggle}
+              opened={opened}
+              includesSelection={includesSelection}
+            >
+              {title}
+            </AccordionButton>
+          ) : (
+            title
+          )}
         </GroupLabel>
+        {opened || !asAccordion ? (
+          <FormRow css={{ animation: fadeInAnimation }}>
+            {categories.map(categoryKey => (
+              <CategoryRadio
+                key={categoryKey}
+                categoryKey={categoryKey}
+                dimensionKey={dimensionKey}
+              />
+            ))}
+          </FormRow>
+        ) : null}
         {opened || !asAccordion
-          ? <FormRow css={{ animation: fadeInAnimation }}>
-              {categories.map(categoryKey =>
-                <CategoryRadio
-                  key={categoryKey}
-                  categoryKey={categoryKey}
-                  dimensionKey={dimensionKey}
-                />
-              )}
-            </FormRow>
-          : null}
-        {opened || !asAccordion
-          ? categoryGroups.map(categoryGroupId =>
+          ? categoryGroups.map(categoryGroupId => (
               <CategoryGroup
                 key={categoryGroupId}
                 categoryGroupId={categoryGroupId}
                 dimensionKey={dimensionKey}
               />
-            )
+            ))
           : null}
-        {asAccordion && opened
-          ? <CloseAccordion onClick={close}>Sluit {title}</CloseAccordion>
-          : null}
+        {asAccordion && opened ? (
+          <CloseAccordion onClick={close}>Sluit {title}</CloseAccordion>
+        ) : null}
       </CategoryGroupComp>
     )
   }
@@ -122,9 +137,12 @@ export const CategoryPicker = compose(
   pure,
   onlyWhenMetadataLoaded,
   dimensionForKeyEnhancer
-)(({ dimensionKey, title }) =>
+)(({ dimensionKey, title }) => (
   <Step>
     <StepTitle sticky>Filter op ‘{title}’</StepTitle>
+    <MultiDimensionOption inputValue={dimensionKey}>
+      Meerdere ‘{dimensionKey}’ selecteren
+    </MultiDimensionOption>
     <Form>
       <CategoryGroup
         categoryGroupId={'root'}
@@ -133,4 +151,4 @@ export const CategoryPicker = compose(
       />
     </Form>
   </Step>
-)
+))

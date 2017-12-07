@@ -1,27 +1,20 @@
-import { onlyWhenMetadataLoaded } from '../enhancers/metadataEnhancers'
-import { Step, StepTitle, Form, FormRow } from './Elements'
+import { SingleCheckbox } from './Elements'
 import React from 'react'
-import { orderedDimensionsConnector } from '../connectors/dimensionConnectors'
-import { dimensionForKeyEnhancer } from '../enhancers/dimensionEnhancers'
-import { connect } from 'react-redux'
+import { multiDimensionOptionEnhancer } from '../enhancers/configEnhancers'
+import { slugify } from '../helpers/helpers'
 
-const DimensionRadioComp = () => {
-  return null
-}
-const DimensionRadio = dimensionForKeyEnhancer(DimensionRadioComp)
+const MultiDimensionOptionComp = props => {
+  const checked = props.value === props.inputValue
 
-const MultiDimensionOptionsComp = ({ dimensionKeys = [] }) => {
-  return <FormRow>{dimensionKeys.map(dimensionKey => {})}</FormRow>
+  return (
+    <SingleCheckbox
+      {...props}
+      checked={checked}
+      name={slugify(props.inputValue)}
+    />
+  )
 }
-const MultiDimensionOptions = connect(orderedDimensionsConnector)(
-  MultiDimensionOptionsComp
+
+export const MultiDimensionOption = multiDimensionOptionEnhancer(
+  MultiDimensionOptionComp
 )
-
-export const MultiDimensionPicker = onlyWhenMetadataLoaded(() => (
-  <Step>
-    <StepTitle>Kies een dimensie om te vergelijken</StepTitle>
-    <Form>
-      <MultiDimensionOptions />
-    </Form>
-  </Step>
-))

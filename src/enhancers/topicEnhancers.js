@@ -3,22 +3,30 @@ import { merge, get } from '../helpers/getset'
 import {
   topicsGetConnector,
   topicGroupsGetConnector,
-  selectedTopicConnector,
+  selectedTopicListConnector,
 } from '../connectors/topicConnectors'
-import { configGetInConnector } from '../connectors/configConnectors'
+import {
+  configGetInConnector,
+  multiDimensionConnector,
+} from '../connectors/configConnectors'
 import { isAccordion, accordionEnhancer } from './accordionEnhancer'
 import { compose } from 'recompose'
+import { flatten } from 'lodash/fp'
 
 export const topicEnhancer = connect((state, { topicKey }) => {
   const topic = topicsGetConnector(topicKey)(state)
-  const value = configGetInConnector(['topicKeys', 0])(state)
+  const { multiDimension } = multiDimensionConnector(state)
+  const isMultiDimension = multiDimension === 'topic'
+  const value = configGetInConnector(['topicKeys'])(state)
 
   return merge(topic)({
-    replaceValue: true,
+    isMultiDimension,
+    replaceValue: !isMultiDimension,
     multiValue: true,
     inputValue: topic.key,
     name: 'topicKey',
     keyPath: ['topicKeys'],
+    maxLength: 3,
     value,
   })
 })
@@ -26,8 +34,12 @@ export const topicEnhancer = connect((state, { topicKey }) => {
 export const topicGroupEnhancer = compose(
   connect((state, { topicGroupId }) => {
     const props = topicGroupsGetConnector(topicGroupId)(state)
-    const { selectedTopic } = selectedTopicConnector(state)
-    const parentGroupIds = get('parentGroupIds')(selectedTopic) || []
+    const { selectedTopics = [] } = selectedTopicListConnector(state)
+    const parentGroupIds = flatten(
+      selectedTopics.map(
+        selectedTopic => get('parentGroupIds')(selectedTopic) || []
+      )
+    )
     const includesSelection = parentGroupIds.includes(topicGroupId)
 
     return {

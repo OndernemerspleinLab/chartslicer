@@ -7,9 +7,19 @@ import {
 } from './reducerHelpers'
 import { compose } from 'redux'
 import { defaultsDeep } from 'lodash/fp'
-import { setIn, get, getIn, update, updateIn, addLast } from '../helpers/getset'
+import {
+  setIn,
+  set,
+  get,
+  getIn,
+  update,
+  updateIn,
+  addLast,
+  omitFromArray,
+} from '../helpers/getset'
 import { defaultPeriodLength } from '../config'
 import { findFirstEntryInGroups } from '../helpers/findFirstEntryInGroups'
+import { existing } from '../helpers/helpers'
 
 ///////// Selector /////////
 
@@ -20,27 +30,103 @@ const configSelector = compose(reduceIn('config'), defaultState({}))
 const setConfigEntry = (state = {}, { activeDatasetId, keyPath, value }) =>
   setIn([activeDatasetId, ...keyPath], value)(state)
 
-const addUniqueValue = value => (valueList = []) =>
-  valueList.includes(value) ? valueList : addLast(value)(valueList)
+const removeValue = value => valueList =>
+  valueList.length > 1 ? omitFromArray(value)(valueList) : valueList
 
-const pushConfigEntry = (state = {}, { activeDatasetId, keyPath, value }) =>
-  updateIn([activeDatasetId, ...keyPath], addUniqueValue)(state)
+const toggleUniqueValue = value => (valueList = []) => {
+  return valueList.includes(value)
+    ? removeValue(value)(valueList)
+    : addLast(value)(valueList)
+}
 
-const replaceConfigEntry = (state = {}, { activeDatasetId, keyPath, value }) =>
-  setIn([activeDatasetId, ...keyPath], [value])(state)
+const sliceValueList = maxLength => valueList => {
+  return existing(maxLength) ? valueList.slice(-maxLength) : valueList
+}
 
-const setConfigMultiValueEntry = (state, action) =>
-  action.replaceValue
+const toggleConfigEntry = (
+  state = {},
+  { activeDatasetId, keyPath, value, maxLength }
+) => {
+  return updateIn(
+    [activeDatasetId, ...keyPath],
+    compose(sliceValueList(maxLength), toggleUniqueValue(value))
+  )(state)
+}
+
+const replaceConfigEntry = (
+  state = {},
+  { activeDatasetId, keyPath, value }
+) => {
+  return setIn([activeDatasetId, ...keyPath], [value])(state)
+}
+
+const setConfigMultiValueEntry = (state, action) => {
+  return action.replaceValue
     ? replaceConfigEntry(state, action)
-    : pushConfigEntry(state, action)
-
-const setConfig = (state, action) =>
-  action.multiValue
+    : toggleConfigEntry(state, action)
+}
+const setConfig = (state, action) => {
+  return action.multiValue
     ? setConfigMultiValueEntry(state, action)
     : setConfigEntry(state, action)
+}
+
+const makeSingleDimension = (valueList = []) => {
+  if (valueList.length > 1) {
+    return valueList.slice(0, 1)
+  }
+
+  return valueList
+}
+
+const resolveMultiDimensionChangeForTopics = multiDimension => topicKeys => {
+  return multiDimension === 'topic' ? topicKeys : makeSingleDimension(topicKeys)
+}
+
+const resolveMultiDimensionChangeForCategory = multiDimension => (
+  memo,
+  [dimensionKey, categoryKeys]
+) => {
+  return multiDimension === dimensionKey
+    ? memo
+    : set(dimensionKey, makeSingleDimension(categoryKeys))(memo)
+}
+
+const resolveMultiDimensionChangeForCategories = multiDimension => (
+  categories = {}
+) => {
+  return Object.entries(categories).reduce(
+    resolveMultiDimensionChangeForCategory(multiDimension),
+    categories
+  )
+}
+
+const isMultiDimensionAction = ({ keyPath = [] }) => {
+  return keyPath.length === 1 && keyPath[0] === 'multiDimension'
+}
+const resolveMultiDimensionChange = (state, action) => {
+  const { activeDatasetId } = action
+
+  if (!isMultiDimensionAction(action) || !activeDatasetId) {
+    return state
+  }
+
+  const multiDimension = getIn([activeDatasetId, 'multiDimension'])(state)
+
+  return compose(
+    updateIn(
+      [activeDatasetId, 'topicKeys'],
+      resolveMultiDimensionChangeForTopics(multiDimension)
+    ),
+    updateIn(
+      [activeDatasetId, 'categoryKeys'],
+      resolveMultiDimensionChangeForCategories(multiDimension)
+    )
+  )(state)
+}
 
 const setConfigReducer = compose(configSelector, reduceFor(CONFIG_CHANGED))(
-  setConfig
+  composeReducers(resolveMultiDimensionChange, setConfig)
 )
 
 ///////// Add initial config /////////
@@ -71,6 +157,7 @@ const initConfig = ({
     periodLength: defaultPeriodLength,
     title: '',
     description: '',
+    multiDimension: false,
     topicKeys: [
       findFirstEntryInGroups({
         groups: topicGroups,

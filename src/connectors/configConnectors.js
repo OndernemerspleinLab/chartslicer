@@ -16,3 +16,5 @@ export const configGetInConnector = getInFromActiveSubstate(configConnector)
 export const configPickConnector = pickFromActiveSubstate(configConnector)
 
 export const configMapConnector = mapFromActiveSubstate(configConnector)
+
+export const multiDimensionConnector = configPickConnector(['multiDimension'])

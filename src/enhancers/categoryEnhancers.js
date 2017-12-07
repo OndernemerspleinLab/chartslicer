@@ -2,31 +2,39 @@ import { connect } from 'react-redux'
 import {
   categoriesGetInConnector,
   categoryGroupsGetInConnector,
-  selectedCategoryConnector,
+  selectedCategoriesConnector,
 } from '../connectors/categoryConnectors'
-import { configGetInConnector } from '../connectors/configConnectors'
+import {
+  configGetInConnector,
+  multiDimensionConnector,
+} from '../connectors/configConnectors'
 import { configChangeHandlersEnhancer } from './configEnhancers'
 import { activeDatasetGetIdConnector } from '../connectors/activeDatasetIdConnector'
 import { mapDispatchToProps } from '../connectors/actionConnectors'
 import { compose } from 'recompose'
 import { isAccordion, accordionEnhancer } from './accordionEnhancer'
 import { get } from '../helpers/getset'
+import { flatten } from 'lodash/fp'
 
 export const categoryEnhancer = compose(
   connect((state, { dimensionKey, categoryKey }) => {
     const category = categoriesGetInConnector([dimensionKey, categoryKey])(
       state
     )
-    const value = configGetInConnector(['categoryKeys', dimensionKey, 0])(state)
+    const { multiDimension } = multiDimensionConnector(state)
+    const isMultiDimension = multiDimension === dimensionKey
+    const value = configGetInConnector(['categoryKeys', dimensionKey])(state)
 
     return {
+      isMultiDimension,
       title: category.title,
       inputValue: category.key,
       name: `${dimensionKey}-categoryKey`,
       multiValue: true,
-      replaceValue: true,
+      replaceValue: !isMultiDimension,
       keyPath: ['categoryKeys', dimensionKey],
       value,
+      maxLength: 3,
       datasetId: activeDatasetGetIdConnector(state),
     }
   }, mapDispatchToProps),
@@ -38,8 +46,14 @@ export const categoryGroupEnhancer = compose(
     const props = categoryGroupsGetInConnector([dimensionKey, categoryGroupId])(
       state
     )
-    const { selectedCategory } = selectedCategoryConnector(dimensionKey)(state)
-    const parentGroupIds = get('parentGroupIds')(selectedCategory) || []
+    const { selectedCategories = [] } = selectedCategoriesConnector(
+      dimensionKey
+    )(state)
+    const parentGroupIds = flatten(
+      selectedCategories.map(
+        selectedCategory => get('parentGroupIds')(selectedCategory) || []
+      )
+    )
     const includesSelection = parentGroupIds.includes(categoryGroupId)
     return {
       asAccordion: isAccordion({

@@ -16,7 +16,8 @@ export const configChanged = dataGetterActionEnhancer(
     'keyPath',
     'value',
     'replaceValue',
-    'multiValue'
+    'multiValue',
+    'maxLength'
   )
 )
 
