@@ -73,7 +73,7 @@ const setConfig = (state, action) => {
 
 const makeSingleDimension = (valueList = []) => {
   if (valueList.length > 1) {
-    return valueList.slice(0, 1)
+    return valueList.slice(-1)
   }
 
   return valueList
