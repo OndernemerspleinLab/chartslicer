@@ -4,6 +4,7 @@ import {
   topicsGetConnector,
   topicGroupsGetConnector,
   selectedTopicListConnector,
+  selectedUnitConnector,
 } from '../connectors/topicConnectors'
 import {
   configGetInConnector,
@@ -12,21 +13,32 @@ import {
 import { isAccordion, accordionEnhancer } from './accordionEnhancer'
 import { compose } from 'recompose'
 import { flatten } from 'lodash/fp'
+import { unexisting } from '../helpers/helpers'
+import { maxDimensions } from '../config'
+
+const canSelectTopic = ({ topicUnit, selectedUnit }) =>
+  unexisting(selectedUnit) || selectedUnit === topicUnit
 
 export const topicEnhancer = connect((state, { topicKey }) => {
   const topic = topicsGetConnector(topicKey)(state)
   const { multiDimension } = multiDimensionConnector(state)
   const isMultiDimension = multiDimension === 'topic'
   const value = configGetInConnector(['topicKeys'])(state)
+  const { unit: selectedUnit } = selectedUnitConnector(state)
+  const { unit: topicUnit } = topic
 
   return merge(topic)({
     isMultiDimension,
-    replaceValue: !isMultiDimension,
+    unselectable:
+      isMultiDimension && !canSelectTopic({ topicUnit, selectedUnit }),
+    replaceValue:
+      !isMultiDimension || !canSelectTopic({ topicUnit, selectedUnit }),
     multiValue: true,
     inputValue: topic.key,
     name: 'topicKey',
     keyPath: ['topicKeys'],
-    maxLength: 3,
+    maxLength: maxDimensions,
+    selectedUnit,
     value,
   })
 })

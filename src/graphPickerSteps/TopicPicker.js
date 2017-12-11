@@ -20,6 +20,7 @@ import { unexisting } from '../helpers/helpers'
 import { fadeInAnimation } from '../styles'
 import { MultiDimensionOption } from './MultiDimensionPicker'
 import { first } from 'lodash/fp'
+import { maxDimensions } from '../config'
 
 const RadioTopicUnit = compose(
   branch(({ children }) => unexisting(children), renderNothing)
@@ -43,6 +44,7 @@ const TopicRadioComp = ({
   name,
   value,
   isMultiDimension,
+  unselectable,
 }) =>
   isMultiDimension ? (
     <Checkbox
@@ -51,6 +53,7 @@ const TopicRadioComp = ({
       value={inputValue}
       onChange={onChange}
       checked={value.includes(inputValue)}
+      unselectable={unselectable}
     >
       {title} <RadioTopicUnit>{unit}</RadioTopicUnit>
     </Checkbox>
@@ -61,6 +64,7 @@ const TopicRadioComp = ({
       value={inputValue}
       onChange={onChange}
       checked={first(value) === inputValue}
+      unselectable={unselectable}
     >
       {title} <RadioTopicUnit>{unit}</RadioTopicUnit>
     </Radio>
@@ -138,7 +142,7 @@ export const TopicPicker = onlyWhenMetadataLoaded(() => (
   <Step>
     <StepTitle sticky>Kies het onderwerp</StepTitle>
     <MultiDimensionOption inputValue="topic">
-      Meerdere onderwerpen selecteren
+      Meerdere onderwerpen selecteren (maximaal {maxDimensions})
     </MultiDimensionOption>
     <Form>
       <TopicGroup topicGroupId={'root'} title={'Onderwerpen'} />

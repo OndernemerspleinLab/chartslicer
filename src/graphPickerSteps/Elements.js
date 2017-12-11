@@ -264,14 +264,18 @@ const CheckboxLabel = glamorous.label(
       ...square('0.3em'),
     },
   },
-  ({ checked }) => {
-    const backgroundColor = checked ? violet.darker : violet.default
+  ({ checked, unselectable }) => {
+    const backgroundColor = unselectable
+      ? violet.light
+      : checked ? violet.darker : violet.default
+    const color = unselectable ? violet.darker : wit
 
     return {
       backgroundColor,
+      color,
       ':before': {
-        boxShadow: `0 0 0 2px ${backgroundColor}, 0 0 0 3px ${wit}`,
-        backgroundColor: checked ? wit : 'transparent',
+        boxShadow: `0 0 0 2px ${backgroundColor}, 0 0 0 3px ${color}`,
+        backgroundColor: checked ? color : 'transparent',
       },
     }
   }
@@ -310,6 +314,7 @@ export const Radio = ({
   value = '',
   onChange,
   checked,
+  unselectable,
 }) => (
   <RadioComp>
     <RadioInput
@@ -320,7 +325,7 @@ export const Radio = ({
       onChange={onChange}
       checked={checked}
     />
-    <RadioLabel htmlFor={id} checked={checked}>
+    <RadioLabel htmlFor={id} checked={checked} unselectable={unselectable}>
       {children}
     </RadioLabel>
   </RadioComp>
@@ -333,6 +338,7 @@ export const Checkbox = ({
   value = '',
   onChange,
   checked,
+  unselectable,
 }) => (
   <RadioComp>
     <RadioInput
@@ -343,7 +349,7 @@ export const Checkbox = ({
       onChange={onChange}
       checked={checked}
     />
-    <CheckboxLabel htmlFor={id} checked={checked}>
+    <CheckboxLabel htmlFor={id} checked={checked} unselectable={unselectable}>
       {children}
     </CheckboxLabel>
   </RadioComp>

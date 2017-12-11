@@ -23,6 +23,7 @@ import { dimensionForKeyEnhancer } from '../enhancers/dimensionEnhancers'
 import { fadeInAnimation } from '../styles'
 import { MultiDimensionOption } from './MultiDimensionPicker'
 import { first } from 'lodash/fp'
+import { maxDimensions } from '../config'
 
 const CategoryRadioComp = ({
   title,
@@ -141,7 +142,7 @@ export const CategoryPicker = compose(
   <Step>
     <StepTitle sticky>Filter op ‘{title}’</StepTitle>
     <MultiDimensionOption inputValue={dimensionKey}>
-      Meerdere ‘{title}’ selecteren
+      Meerdere ‘{title}’ selecteren (maximaal {maxDimensions})
     </MultiDimensionOption>
     <Form>
       <CategoryGroup

@@ -11,6 +11,7 @@ import type { State, Key } from '../store/stateShape'
 import { visibleDatasetInfoConnector } from './visibleDatasetQueryConnector'
 import { getIn, set } from '../helpers/getset'
 import { configGetInConnector } from './configConnectors'
+import { first } from 'lodash/fp'
 
 export const topicsConnector = getActiveSubstate('topics')
 
@@ -54,6 +55,7 @@ export const selectedTopicListConnector = (state: State) => {
 }
 
 const pickFromSelectedTopic = pick(['key', 'title', 'unit', 'decimals'])
+
 export const selectedTopicsConnector = (state: State) => {
   const topicKeys = configGetInConnector(['topicKeys'])(state)
 
@@ -65,4 +67,11 @@ export const selectedTopicsConnector = (state: State) => {
       )(memo)
     }, {}),
   }
+}
+
+export const selectedUnitConnector = (state: State) => {
+  const topicKeys = configGetInConnector(['topicKeys'])(state)
+  const firstTopicKey = first(topicKeys)
+
+  return pick(['unit'])(topicsGetConnector(firstTopicKey)(state))
 }

@@ -15,6 +15,7 @@ import { compose } from 'recompose'
 import { isAccordion, accordionEnhancer } from './accordionEnhancer'
 import { get } from '../helpers/getset'
 import { flatten } from 'lodash/fp'
+import { maxDimensions } from '../config'
 
 export const categoryEnhancer = compose(
   connect((state, { dimensionKey, categoryKey }) => {
@@ -34,7 +35,7 @@ export const categoryEnhancer = compose(
       replaceValue: !isMultiDimension,
       keyPath: ['categoryKeys', dimensionKey],
       value,
-      maxLength: 3,
+      maxLength: maxDimensions,
       datasetId: activeDatasetGetIdConnector(state),
     }
   }, mapDispatchToProps),
