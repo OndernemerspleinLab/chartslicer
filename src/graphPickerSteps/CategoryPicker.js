@@ -141,7 +141,7 @@ export const CategoryPicker = compose(
   <Step>
     <StepTitle sticky>Filter op ‘{title}’</StepTitle>
     <MultiDimensionOption inputValue={dimensionKey}>
-      Meerdere ‘{dimensionKey}’ selecteren
+      Meerdere ‘{title}’ selecteren
     </MultiDimensionOption>
     <Form>
       <CategoryGroup

@@ -1,4 +1,8 @@
-import { CONFIG_CHANGED, METADATA_LOAD_SUCCESS } from '../actions/actions'
+import {
+  CONFIG_CHANGED,
+  METADATA_LOAD_SUCCESS,
+  MULTI_DIMENSION_CHANGED,
+} from '../actions/actions'
 import {
   reduceFor,
   reduceIn,
@@ -101,17 +105,13 @@ const resolveMultiDimensionChangeForCategories = multiDimension => (
   )
 }
 
-const isMultiDimensionAction = ({ keyPath = [] }) => {
-  return keyPath.length === 1 && keyPath[0] === 'multiDimension'
-}
-const resolveMultiDimensionChange = (state, action) => {
-  const { activeDatasetId } = action
-
-  if (!isMultiDimensionAction(action) || !activeDatasetId) {
+const resolveMultiDimensionChange = (
+  state,
+  { activeDatasetId, multiDimension }
+) => {
+  if (!activeDatasetId) {
     return state
   }
-
-  const multiDimension = getIn([activeDatasetId, 'multiDimension'])(state)
 
   return compose(
     updateIn(
@@ -126,8 +126,17 @@ const resolveMultiDimensionChange = (state, action) => {
 }
 
 const setConfigReducer = compose(configSelector, reduceFor(CONFIG_CHANGED))(
-  composeReducers(resolveMultiDimensionChange, setConfig)
+  setConfig
 )
+
+const setMultiDimension = (state, { activeDatasetId, multiDimension }) => {
+  return setIn([activeDatasetId, 'multiDimension'], multiDimension)(state)
+}
+
+const setMultiDimensionReducer = compose(
+  configSelector,
+  reduceFor(MULTI_DIMENSION_CHANGED)
+)(composeReducers(resolveMultiDimensionChange, setMultiDimension))
 
 ///////// Add initial config /////////
 
@@ -183,5 +192,6 @@ const initialConfigForDatasetReducer = compose(
 
 export const configReducer = composeReducers(
   setConfigReducer,
+  setMultiDimensionReducer,
   initialConfigForDatasetReducer
 )

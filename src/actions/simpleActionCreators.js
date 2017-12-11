@@ -5,6 +5,7 @@ import {
   METADATA_LOAD_ERROR,
   INVALID_DATASET_ID_SELECTED,
   CONFIG_CHANGED,
+  MULTI_DIMENSION_CHANGED,
 } from './actions'
 import { createSimpleAction } from './actionHelpers'
 import { dataGetterActionEnhancer } from './dataGetterActionEnhancer'
@@ -18,6 +19,13 @@ export const configChanged = dataGetterActionEnhancer(
     'replaceValue',
     'multiValue',
     'maxLength'
+  )
+)
+export const multiDimensionChanged = dataGetterActionEnhancer(
+  createSimpleAction(
+    MULTI_DIMENSION_CHANGED,
+    'activeDatasetId',
+    'multiDimension'
   )
 )
 

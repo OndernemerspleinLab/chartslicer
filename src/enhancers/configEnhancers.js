@@ -49,16 +49,16 @@ const multiDimensionOptionConnector = state => {
 }
 
 export const multiDimensionOptionChangeHandlersEnhancer = withHandlers({
-  onChange: ({ activeDatasetId, configChanged, inputValue }) => event => {
+  onChange: ({
+    activeDatasetId,
+    multiDimensionChanged,
+    inputValue,
+  }) => event => {
     const newValue = event.target.checked ? inputValue : false
-    // const value = minMaxValue({ fieldValue, min, max })
 
-    configChanged({
-      keyPath: ['multiDimension'],
-      value: newValue,
+    multiDimensionChanged({
+      multiDimension: newValue,
       activeDatasetId,
-      multiValue: false,
-      replaceValue: true,
     })
   },
 })

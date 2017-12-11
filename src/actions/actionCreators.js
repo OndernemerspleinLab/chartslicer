@@ -1,6 +1,7 @@
 export { datasetSelectionChanged } from './datasetSelectionChangedActionCreator'
 export {
   configChanged,
+  multiDimensionChanged,
   datasetIdCleared,
   datasetIdSelected,
   invalidDatasetIdSelected,
