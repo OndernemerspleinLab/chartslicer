@@ -264,11 +264,11 @@ const CheckboxLabel = glamorous.label(
       ...square('0.3em'),
     },
   },
-  ({ checked, unselectable }) => {
-    const backgroundColor = unselectable
+  ({ checked, differentSelectionGroup }) => {
+    const backgroundColor = differentSelectionGroup
       ? violet.light
       : checked ? violet.darker : violet.default
-    const color = unselectable ? violet.darker : wit
+    const color = differentSelectionGroup ? violet.darker : wit
 
     return {
       backgroundColor,
@@ -314,7 +314,7 @@ export const Radio = ({
   value = '',
   onChange,
   checked,
-  unselectable,
+  differentSelectionGroup,
 }) => (
   <RadioComp>
     <RadioInput
@@ -325,7 +325,11 @@ export const Radio = ({
       onChange={onChange}
       checked={checked}
     />
-    <RadioLabel htmlFor={id} checked={checked} unselectable={unselectable}>
+    <RadioLabel
+      htmlFor={id}
+      checked={checked}
+      differentSelectionGroup={differentSelectionGroup}
+    >
       {children}
     </RadioLabel>
   </RadioComp>
@@ -338,7 +342,7 @@ export const Checkbox = ({
   value = '',
   onChange,
   checked,
-  unselectable,
+  differentSelectionGroup,
 }) => (
   <RadioComp>
     <RadioInput
@@ -349,7 +353,11 @@ export const Checkbox = ({
       onChange={onChange}
       checked={checked}
     />
-    <CheckboxLabel htmlFor={id} checked={checked} unselectable={unselectable}>
+    <CheckboxLabel
+      htmlFor={id}
+      checked={checked}
+      differentSelectionGroup={differentSelectionGroup}
+    >
       {children}
     </CheckboxLabel>
   </RadioComp>

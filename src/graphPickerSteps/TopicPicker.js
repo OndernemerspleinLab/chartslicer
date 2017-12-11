@@ -44,7 +44,7 @@ const TopicRadioComp = ({
   name,
   value,
   isMultiDimension,
-  unselectable,
+  differentSelectionGroup,
 }) =>
   isMultiDimension ? (
     <Checkbox
@@ -53,7 +53,7 @@ const TopicRadioComp = ({
       value={inputValue}
       onChange={onChange}
       checked={value.includes(inputValue)}
-      unselectable={unselectable}
+      differentSelectionGroup={differentSelectionGroup}
     >
       {title} <RadioTopicUnit>{unit}</RadioTopicUnit>
     </Checkbox>
@@ -64,7 +64,7 @@ const TopicRadioComp = ({
       value={inputValue}
       onChange={onChange}
       checked={first(value) === inputValue}
-      unselectable={unselectable}
+      differentSelectionGroup={differentSelectionGroup}
     >
       {title} <RadioTopicUnit>{unit}</RadioTopicUnit>
     </Radio>

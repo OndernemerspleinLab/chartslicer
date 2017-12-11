@@ -29,7 +29,7 @@ export const topicEnhancer = connect((state, { topicKey }) => {
 
   return merge(topic)({
     isMultiDimension,
-    unselectable:
+    differentSelectionGroup:
       isMultiDimension && !canSelectTopic({ topicUnit, selectedUnit }),
     replaceValue:
       !isMultiDimension || !canSelectTopic({ topicUnit, selectedUnit }),

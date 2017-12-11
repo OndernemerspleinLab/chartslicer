@@ -75,8 +75,6 @@ const yAxisStyle = {
   },
 }
 
-const yAxisDomain = [0]
-
 const xAxisStyle = {
   tickLabels: {
     fontSize: '7px',
@@ -148,7 +146,6 @@ const DataChartContainer = ({
             fixLabelOverlap
             label={get('unit')(topic)}
             tickFormat={formatNumber(get('decimals')(topic))}
-            domain={yAxisDomain}
             style={yAxisStyle}
             axisLabelComponent={<VictoryLabel x={20} y={46} angle={0} />}
           />
