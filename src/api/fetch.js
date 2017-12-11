@@ -1,5 +1,6 @@
-import { setIn } from '../helpers/getset'
 // @flow
+
+import { setIn } from '../helpers/getset'
 
 type PromiseAny = Promise<any>
 type PromiseResponse = Promise<Response>
@@ -44,7 +45,7 @@ export const httpFetch = (
     return new Promise((resolve, reject) => reject(error))
   }
 
-  const responsePromise = fetch(url, options).then(checkStatus)
+  const responsePromise = fetch(url, options || {}).then(checkStatus)
   responsePromise.catch(error => {
     console.log(error)
   })
@@ -60,7 +61,13 @@ export const fetchText = (
 ): PromiseString =>
   httpFetch(url, addTextHeaders(options)).then(response => response.text())
 
-export const customError = ({ predicate, message }) => promise =>
+export const customError = ({
+  predicate,
+  message,
+}: {
+  predicate: Error => boolean,
+  message: string,
+}) => (promise: Promise<*>) =>
   promise.catch(error => {
     if (predicate(error)) {
       const newError = new error.constructor(message)

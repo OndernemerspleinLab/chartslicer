@@ -1,6 +1,6 @@
-import { existing } from './../helpers/helpers'
 /*@flow*/
 
+import { existing } from './../helpers/helpers'
 import { pick, mapValues } from 'lodash/fp'
 import { getIn, get, merge } from '../helpers/getset'
 import type { Key, KeyPath, State, Substate } from '../store/stateShape'
