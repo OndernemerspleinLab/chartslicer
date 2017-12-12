@@ -7,6 +7,9 @@ import {
 } from '../connectors/visibleDatasetQueryConnector'
 import { existing } from '../helpers/helpers'
 import { DIMENSION_TOPIC, minPeriodLength } from '../config'
+import { topicsGetConnector } from '../connectors/topicConnectors'
+import { categoriesGetInConnector } from '../connectors/categoryConnectors'
+import { branch, renderNothing } from 'recompose'
 
 const dataEntryFilter = ({
   dataEntries,
@@ -59,15 +62,16 @@ const arrangeDataEntries = ({
   categoryKeys,
   dataEntries,
   dataList,
+  state,
 }) => {
   if (!multiDimension) {
     const topicKey = first(topicKeys)
     const categoryKeyForDimensions = mapValues(first)(categoryKeys)
+    const { title } = topicsGetConnector(topicKey)(state)
 
     return [
       {
-        multiDimension,
-        topicKey,
+        title,
         dataEntryList: getFilteredDataEntryList({
           dataList,
           dataEntries,
@@ -82,9 +86,10 @@ const arrangeDataEntries = ({
     const categoryKeyForDimensions = mapValues(first)(categoryKeys)
 
     return topicKeys.map(topicKey => {
+      const { title } = topicsGetConnector(topicKey)(state)
+
       return {
-        multiDimension,
-        topicKey,
+        title,
         dataEntryList: getFilteredDataEntryList({
           dataList,
           dataEntries,
@@ -107,9 +112,13 @@ const arrangeDataEntries = ({
       multiDimensionCategoryKey
     )(categoryKeyForAllDimensions)
 
-    return {
+    const { title } = categoriesGetInConnector([
       multiDimension,
-      categoryKey: multiDimensionCategoryKey,
+      multiDimensionCategoryKey,
+    ])(state)
+
+    return {
+      title,
       dataEntryList: getFilteredDataEntryList({
         dataList,
         dataEntries,
@@ -142,6 +151,7 @@ export const visibleDataInfoEnhancer = connect(state => {
       categoryKeys,
       dataEntries,
       dataList,
+      state,
     })
   )
 
@@ -150,3 +160,8 @@ export const visibleDataInfoEnhancer = connect(state => {
     dataGroupsList,
   }
 })
+
+export const onlyWhenDataGroupsList = branch(
+  ({ dataGroupsList }) => dataGroupsList.length <= 0,
+  renderNothing
+)

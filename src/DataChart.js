@@ -11,6 +11,7 @@ import {
   VictoryTooltip,
   VictoryLabel,
   VictoryGroup,
+  VictoryLegend,
 } from 'victory'
 import glamorous from 'glamorous'
 import { hemelblauw, wit } from './colors'
@@ -22,7 +23,10 @@ import {
   chartMaxWidth,
   chartColors,
 } from './config'
-import { visibleDataInfoEnhancer } from './enhancers/visibleDataInfoEnhancer'
+import {
+  visibleDataInfoEnhancer,
+  onlyWhenDataGroupsList,
+} from './enhancers/visibleDataInfoEnhancer'
 import { onlyWhenVisibleDataset } from './enhancers/datasetEnhancer'
 import { get, getIn } from './helpers/getset'
 import { dataEntriesConnector } from './connectors/visibleDatasetQueryConnector'
@@ -36,7 +40,7 @@ const enhancer = compose(
   onlyWhenVisibleDataset,
   connect(tableLanguageConnector),
   visibleDataInfoEnhancer,
-  connect(dataEntriesConnector)
+  onlyWhenDataGroupsList
 )
 
 const chartParentStyle = {
@@ -113,6 +117,24 @@ const scatterStyle = ({ color, colorDarker }) => ({
   },
 })
 
+const legendProps = {
+  orientation: 'horizontal',
+  gutter: 0,
+  style: {
+    labels: {
+      fontSize: 7,
+    },
+  },
+}
+
+const getLegendData = ({ symbol, color, title }) => ({
+  name: title,
+  symbol: {
+    type: symbol,
+    fill: color,
+  },
+})
+
 const DataChartContainer = ({
   topic,
   language,
@@ -135,7 +157,7 @@ const DataChartContainer = ({
     </linearGradient>
   )
 
-  const Area = ({ dataEntryList, color, colorId }) => {
+  const Area = ({ dataEntryList, color, colorDarker, colorId, title }) => {
     return (
       <VictoryArea
         key={`area-${colorId}`}
@@ -145,8 +167,25 @@ const DataChartContainer = ({
         style={areaStyle({ color, colorId })}
         labels={({ x, y }) => [
           `${formatPeriod(' ')(x)}`,
-          `${formatNumber(get('decimals')(topic))(y)}`,
+          `${title}: ${formatNumber(get('decimals')(topic))(y)}`,
         ]}
+        labelComponent={
+          <VictoryTooltip
+            cornerRadius={1}
+            dy={-2}
+            pointerLength={4}
+            pointerWidth={4}
+            style={{
+              fontSize: '5px',
+              fill: colorDarker,
+            }}
+            flyoutStyle={{
+              strokeWidth: 0.5,
+              stroke: colorDarker,
+              fill: wit,
+            }}
+          />
+        }
       />
     )
   }
@@ -170,32 +209,12 @@ const DataChartContainer = ({
         style={scatterStyle({ color, colorDarker })}
         size={2}
         symbol={symbol}
-        labels={({ x, y }) => [
-          `${formatPeriod(' ')(x)}`,
-          `${formatNumber(get('decimals')(topic))(y)}`,
-        ]}
-        labelComponent={
-          <VictoryTooltip
-            cornerRadius={1}
-            dy={-2}
-            pointerLength={4}
-            pointerWidth={4}
-            style={{
-              fontSize: '5px',
-              fill: hemelblauw.darker,
-            }}
-            flyoutStyle={{
-              strokeWidth: 0.5,
-              stroke: hemelblauw.darker,
-              fill: wit,
-            }}
-          />
-        }
       />,
     ]
   }
 
   console.log('dataGroupsList', dataGroupsList)
+  const firstDataEntryList = getIn(['0', 'dataEntryList'])(dataGroupsList)
 
   return (
     <DataChartComp>
@@ -220,7 +239,7 @@ const DataChartContainer = ({
           />
           <VictoryAxis
             fixLabelOverlap
-            tickValues={dataGroupsList[0].dataEntryList.map(getPeriodDate)}
+            tickValues={firstDataEntryList.map(getPeriodDate)}
             tickFormat={formatPeriod('\n')}
             label={periodLabel}
             scale="time"
@@ -232,6 +251,12 @@ const DataChartContainer = ({
           {dataGroupsList.map((props, index) =>
             Line({ ...props, ...chartColors[index] })
           )}
+          <VictoryLegend
+            {...legendProps}
+            data={dataGroupsList.map((props, index) =>
+              getLegendData({ ...props, ...chartColors[index] })
+            )}
+          />
         </VictoryChart>
         <DataSource />
       </Rectangle>
