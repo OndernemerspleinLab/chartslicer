@@ -21,7 +21,7 @@ import {
   addLast,
   omitFromArray,
 } from '../helpers/getset'
-import { defaultPeriodLength } from '../config'
+import { defaultPeriodLength, DIMENSION_TOPIC } from '../config'
 import { findFirstEntryInGroups } from '../helpers/findFirstEntryInGroups'
 import { existing } from '../helpers/helpers'
 
@@ -84,7 +84,9 @@ const makeSingleDimension = (valueList = []) => {
 }
 
 const resolveMultiDimensionChangeForTopics = multiDimension => topicKeys => {
-  return multiDimension === 'topic' ? topicKeys : makeSingleDimension(topicKeys)
+  return multiDimension === DIMENSION_TOPIC
+    ? topicKeys
+    : makeSingleDimension(topicKeys)
 }
 
 const resolveMultiDimensionChangeForCategory = multiDimension => (

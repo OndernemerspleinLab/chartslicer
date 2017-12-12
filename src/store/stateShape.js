@@ -9,6 +9,8 @@ export type DataEntryId = Id
 export type DatasetId = string
 export type MaybeDatasetId = ?DatasetId
 
+export type MultiDimensionSetting = string | false
+
 export type DatasetQuery = string
 
 ///////// Network state /////////
@@ -138,6 +140,10 @@ export type Dimensions = {
   [DimensionKey]: Dimension,
 }
 
+export type CategoryKeys = {
+  [DimensionKey]: CategoryKey[],
+}
+
 ///////// Config state /////////
 
 export type ConfigState = {
@@ -147,9 +153,8 @@ export type ConfigState = {
   topicKeys: TopicKey[],
   title: string,
   description: string,
-  categoryKeys: {
-    [DimensionKey]: CategoryKey[],
-  },
+  multiDimension: MultiDimensionSetting,
+  categoryKeys: CategoryKeys,
 }
 
 ///////// Dataset /////////

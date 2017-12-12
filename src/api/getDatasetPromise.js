@@ -1,5 +1,5 @@
 // @flow
-import { omit } from 'lodash/fp'
+import { pick } from 'lodash/fp'
 import { fetchFilteredDataset } from '../api/apiCalls'
 import type {
   DatasetId,
@@ -7,6 +7,8 @@ import type {
   PeriodType,
   DataEntry,
   TopicKey,
+  CategoryKeys,
+  MultiDimensionSetting,
 } from '../store/stateShape'
 import type {
   CbsDataEntries,
@@ -14,11 +16,16 @@ import type {
   DataEntriesPromise,
 } from './apiShape'
 import { convertCbsPeriodToDate } from '../cbsPeriod'
-import { existing } from '../helpers/helpers'
 
-const mapDataEntry = (periodType: PeriodType) => (
-  cbsDataEntry: CbsDataEntry
-): DataEntry => {
+const mapDataEntry = ({
+  periodType,
+  topicKeys = [],
+  categoryKeys = {},
+}: {
+  periodType: PeriodType,
+  topicKeys: TopicKey[],
+  categoryKeys: CategoryKeys,
+}) => (cbsDataEntry: CbsDataEntry): DataEntry => {
   return {
     id: cbsDataEntry.ID,
     periodType,
@@ -26,7 +33,8 @@ const mapDataEntry = (periodType: PeriodType) => (
       cbsDataEntry.Perioden || cbsDataEntry.Periods
     ),
     // add topics and dimensions
-    ...omit(['ID', 'Perioden'])(cbsDataEntry),
+    ...pick(topicKeys)(cbsDataEntry),
+    ...pick(Object.keys(categoryKeys))(cbsDataEntry),
   }
 }
 
@@ -34,18 +42,20 @@ export const getDatasetPromise = ({
   id,
   query,
   periodType,
-  topicKey,
+  topicKeys,
+  multiDimension,
+  categoryKeys,
 }: {
   id: DatasetId,
   query: DatasetQuery,
   periodType: PeriodType,
-  topicKey: TopicKey,
+  topicKeys: TopicKey[],
+  categoryKeys: CategoryKeys,
+  multiDimension: MultiDimensionSetting,
 }): DataEntriesPromise =>
   fetchFilteredDataset({
     id,
     query,
   }).then((cbsDataEntries: CbsDataEntries) =>
-    cbsDataEntries
-      .map(mapDataEntry(periodType))
-      .filter(dataEntry => existing(dataEntry[topicKey]))
+    cbsDataEntries.map(mapDataEntry({ periodType, categoryKeys, topicKeys }))
   )

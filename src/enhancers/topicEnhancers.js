@@ -14,7 +14,7 @@ import { isAccordion, accordionEnhancer } from './accordionEnhancer'
 import { compose } from 'recompose'
 import { flatten } from 'lodash/fp'
 import { unexisting } from '../helpers/helpers'
-import { maxDimensions } from '../config'
+import { maxDimensions, DIMENSION_TOPIC } from '../config'
 
 const canSelectTopic = ({ topicUnit, selectedUnit }) =>
   unexisting(selectedUnit) || selectedUnit === topicUnit
@@ -22,7 +22,7 @@ const canSelectTopic = ({ topicUnit, selectedUnit }) =>
 export const topicEnhancer = connect((state, { topicKey }) => {
   const topic = topicsGetConnector(topicKey)(state)
   const { multiDimension } = multiDimensionConnector(state)
-  const isMultiDimension = multiDimension === 'topic'
+  const isMultiDimension = multiDimension === DIMENSION_TOPIC
   const value = configGetInConnector(['topicKeys'])(state)
   const { unit: selectedUnit } = selectedUnitConnector(state)
   const { unit: topicUnit } = topic

@@ -69,7 +69,7 @@ const DataRow = connect((state, ownProps) => {
 
 const DataTableContainer = ({
   topicKeys,
-  dataList = [],
+  dataGroupsList,
   periodType,
   language,
 }) => {

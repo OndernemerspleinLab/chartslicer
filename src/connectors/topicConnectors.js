@@ -39,9 +39,12 @@ export const topicConnector = (state: State, { topicKey }: { topicKey: Key }) =>
   topicsGetConnector(topicKey)(state)
 
 export const visibleTopicConnector = (state: State) => {
-  const topicKey = getIn(['topicKeys', 0])(visibleDatasetInfoConnector(state))
+  const topicKeys =
+    getIn(['topicKeys'])(visibleDatasetInfoConnector(state)) || []
 
-  return { topic: topicsGetConnector(topicKey)(state) }
+  return {
+    topics: topicKeys.map(topicKey => topicsGetConnector(topicKey)(state)),
+  }
 }
 
 export const selectedTopicListConnector = (state: State) => {

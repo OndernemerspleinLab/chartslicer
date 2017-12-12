@@ -1,6 +1,6 @@
 //@flow
 
-import { get, getIn } from '../helpers/getset'
+import { get } from '../helpers/getset'
 import type { State } from '../store/stateShape'
 import type { Action, ActionCreator } from './actionTypes'
 import { dataQueryLoadingStateConnectorFor } from '../connectors/datasetsLoadingStateConnectors'
@@ -29,7 +29,9 @@ export const dataGetterActionEnhancer = (actionCreator: ActionCreator) => (
   const query = activeDatasetGetQueryConnector(nextState)
   const config = configConnector(nextState)
   const periodType = get('periodType')(config)
-  const topicKey = getIn(['topicKeys', 0])(config)
+  const categoryKeys = get('categoryKeys')(config)
+  const topicKeys = get('topicKeys')(config)
+  const multiDimension = get('multiDimension')(config)
 
   if (!id) {
     return
@@ -44,7 +46,14 @@ export const dataGetterActionEnhancer = (actionCreator: ActionCreator) => (
     return
   }
 
-  getDatasetPromise({ id, query, periodType, topicKey }).then(
+  getDatasetPromise({
+    id,
+    query,
+    periodType,
+    topicKeys,
+    multiDimension,
+    categoryKeys,
+  }).then(
     dataEntries =>
       dispatch(datasetLoadSuccess({ id, query, config, dataEntries })),
     error => dispatch(datasetLoadError({ id, query, error }))

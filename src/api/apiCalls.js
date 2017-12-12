@@ -8,7 +8,7 @@ import { get, getIn } from '../helpers/getset'
 import type {
   DatasetId,
   DimensionKey,
-  TopicKey,
+  Key,
   CategoryKey,
   ConfigState,
   DatasetQuery,
@@ -145,9 +145,7 @@ export const getDatasetUrl = ({
   query: DatasetQuery,
 }) => `${apiBaseUrl}/${id}/TypedDataSet?${query}`
 
-const getDatasetSelection: string => (
-  topicKeys: TopicKey[]
-) => string[] = language =>
+const getDatasetSelection: string => (keys: Key[]) => string[] = language =>
   compose(
     concat(['ID', getCbsPeriodKey(language)]),
     sortBy(identity),
@@ -204,7 +202,9 @@ export const getDatasetQueryString = ({
     cbsPeriodKeys: createCbsPeriods({ endDate: now, periodType, periodLength }),
     categoryKeys,
     language,
-  })}&${select(getDatasetSelection(language)(topicKeys))}`
+  })}&${select(
+    getDatasetSelection(language)(concat(Object.keys(categoryKeys))(topicKeys))
+  )}`
 
 export const fetchFilteredDataset = ({
   id,

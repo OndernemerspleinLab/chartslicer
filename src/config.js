@@ -29,3 +29,5 @@ export const defaultLanguage = 'nl'
 export const supportedLanguages = [defaultLanguage, 'en']
 
 export const getStatLineUrl = lang => `https://opendata.cbs.nl/#/CBS/${lang}/`
+
+export const DIMENSION_TOPIC = 'DIMENSION_TOPIC'

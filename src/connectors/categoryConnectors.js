@@ -30,10 +30,9 @@ export const visibleCategoriesConnector = (state: State) => {
 
   const categoryEntries = Object.entries(visibleDatasetInfo.categoryKeys)
 
-  const categories =
-    categoryEntries.map(([dimensionKey, [categoryKey]]) => {
-      return categoriesGetInConnector([dimensionKey, categoryKey])(state)
-    }) || []
+  const categories = categoryEntries.map(([dimensionKey, [categoryKey]]) => {
+    return categoriesGetInConnector([dimensionKey, categoryKey])(state)
+  })
 
   return { categories }
 }

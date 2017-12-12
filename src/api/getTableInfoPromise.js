@@ -1,5 +1,6 @@
-import { compose } from 'recompose'
 // @flow
+
+import { compose } from 'recompose'
 import { supportedPeriodTypes } from './../config'
 import { getCbsPeriodType } from '../cbsPeriod'
 import { reduce, union, split, intersection } from 'lodash/fp'

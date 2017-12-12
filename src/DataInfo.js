@@ -40,13 +40,12 @@ const TextAreaLabelElement = glamorous.label({
   paddingRight: '0.8rem',
 })
 
-const TextareaLabel = ({ children, htmlFor }) =>
+const TextareaLabel = ({ children, htmlFor }) => (
   <TextAreaLabelElement htmlFor={htmlFor}>
-    <Hidden>
-      {children}
-    </Hidden>
+    <Hidden>{children}</Hidden>
     <Pencil />
   </TextAreaLabelElement>
+)
 
 const TitleTextarea = compose(
   connect(state => {
@@ -68,7 +67,7 @@ const DescriptionTextarea = compose(
   configChangeEnhancer
 )(SeamlessTextarea)
 
-const DataInfoContainer = ({ topic: { title }, categories }) =>
+const DataInfoContainer = () => (
   <DataInfoComp>
     <InsideMargin top="1.4rem" bottom="2rem">
       <TitleComp>
@@ -84,5 +83,6 @@ const DataInfoContainer = ({ topic: { title }, categories }) =>
       </Description>
     </InsideMargin>
   </DataInfoComp>
+)
 
 export const DataInfo = enhancer(DataInfoContainer)

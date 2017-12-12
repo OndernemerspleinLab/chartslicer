@@ -20,7 +20,7 @@ import { unexisting } from '../helpers/helpers'
 import { fadeInAnimation } from '../styles'
 import { MultiDimensionOption } from './MultiDimensionPicker'
 import { first } from 'lodash/fp'
-import { maxDimensions } from '../config'
+import { maxDimensions, DIMENSION_TOPIC } from '../config'
 
 const RadioTopicUnit = compose(
   branch(({ children }) => unexisting(children), renderNothing)
@@ -141,7 +141,7 @@ const TopicGroup = topicGroupEnhancer(TopicGroupContainer)
 export const TopicPicker = onlyWhenMetadataLoaded(() => (
   <Step>
     <StepTitle sticky>Kies het onderwerp</StepTitle>
-    <MultiDimensionOption inputValue="topic">
+    <MultiDimensionOption inputValue={DIMENSION_TOPIC}>
       Meerdere onderwerpen selecteren (maximaal {maxDimensions})
     </MultiDimensionOption>
     <Form>
