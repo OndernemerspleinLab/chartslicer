@@ -18,6 +18,14 @@ export const violet = {
   light: '#e5b2cf',
   lightest: '#f4e9f1',
 }
+
+export const mosgroen = {
+  darker: '#686b00',
+  default: '#727800',
+  light: '#d6d7b2',
+  lightest: '#eeeed7',
+}
+
 export const grijs = {
   darkest: '#333333',
   grijs6: '#696969',

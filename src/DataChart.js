@@ -5,10 +5,12 @@ import {
   VictoryAxis,
   VictoryChart,
   VictoryArea,
+  VictoryLine,
   VictoryScatter,
   VictoryVoronoiContainer,
   VictoryTooltip,
   VictoryLabel,
+  VictoryGroup,
 } from 'victory'
 import glamorous from 'glamorous'
 import { hemelblauw, wit } from './colors'
@@ -18,6 +20,7 @@ import {
   chartWidth,
   chartHeight,
   chartMaxWidth,
+  chartColors,
 } from './config'
 import { visibleDataInfoEnhancer } from './enhancers/visibleDataInfoEnhancer'
 import { onlyWhenVisibleDataset } from './enhancers/datasetEnhancer'
@@ -90,44 +93,109 @@ const xAxisStyle = {
 const chartStyle = { parent: chartParentStyle }
 const chartDomainPadding = { y: [10, 10], x: [0, 0] }
 
-const areaStyle = {
+const areaStyle = ({ colorId }) => ({
   data: {
-    fill: `url(#MyGradient)`,
+    fill: `url(#${colorId})`,
+  },
+})
+
+const lineStyle = ({ color, colorId }) => ({
+  data: {
     strokeWidth: 1,
     strokeLinejoin: 'round',
-    stroke: hemelblauw.default,
+    stroke: color,
   },
-}
+})
 
-const scatterStyle = {
+const scatterStyle = ({ color, colorDarker }) => ({
   data: {
-    fill: (data, active) => (active ? hemelblauw.darker : hemelblauw.default),
+    fill: (data, active) => (active ? colorDarker : color),
   },
-}
+})
 
 const DataChartContainer = ({
   topic,
   language,
-  dataList,
   periodType,
   dataEntries,
+  dataGroupsList,
 }) => {
   const topicKey = get('key')(topic)
-  const getTopicValue = dataEntryKey =>
-    getIn([dataEntryKey, topicKey])(dataEntries)
-  const getPeriodDate = dataEntryKey =>
-    getIn([dataEntryKey, 'periodDate'])(dataEntries)
+  const getValue = dataEntry => get('value')(dataEntry)
+  const getPeriodDate = dataEntry => get('periodDate')(dataEntry)
 
   const formatPeriod = formatCbsPeriod(periodType)
 
   const periodLabel = getCbsPeriodLabel({ language, periodType })
 
-  const Gradient = () => (
-    <linearGradient id="MyGradient" x1="0" x2="0" y1="0" y2="1">
-      <stop offset="0%" stopColor={hemelblauw.default} stopOpacity={0.3} />
-      <stop offset="50%" stopColor={hemelblauw.default} stopOpacity={0} />
+  const Gradient = ({ color, colorId }) => (
+    <linearGradient id={colorId} x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0%" stopColor={color} stopOpacity={0.3} />
+      <stop offset="50%" stopColor={color} stopOpacity={0} />
     </linearGradient>
   )
+
+  const Area = ({ dataEntryList, color, colorId }) => {
+    return (
+      <VictoryArea
+        key={`area-${colorId}`}
+        data={dataEntryList}
+        x={getPeriodDate}
+        y={getValue}
+        style={areaStyle({ color, colorId })}
+        labels={({ x, y }) => [
+          `${formatPeriod(' ')(x)}`,
+          `${formatNumber(get('decimals')(topic))(y)}`,
+        ]}
+      />
+    )
+  }
+
+  const Wrapper = ({ children }) => children
+
+  const Line = ({ dataEntryList, color, colorId, colorDarker, symbol }) => {
+    return [
+      <VictoryLine
+        key={`area-${colorId}`}
+        data={dataEntryList}
+        x={getPeriodDate}
+        y={getValue}
+        style={lineStyle({ color, colorId })}
+      />,
+      <VictoryScatter
+        key={`scatter-${colorId}`}
+        data={dataEntryList}
+        x={getPeriodDate}
+        y={getValue}
+        style={scatterStyle({ color, colorDarker })}
+        size={2}
+        symbol={symbol}
+        labels={({ x, y }) => [
+          `${formatPeriod(' ')(x)}`,
+          `${formatNumber(get('decimals')(topic))(y)}`,
+        ]}
+        labelComponent={
+          <VictoryTooltip
+            cornerRadius={1}
+            dy={-2}
+            pointerLength={4}
+            pointerWidth={4}
+            style={{
+              fontSize: '5px',
+              fill: hemelblauw.darker,
+            }}
+            flyoutStyle={{
+              strokeWidth: 0.5,
+              stroke: hemelblauw.darker,
+              fill: wit,
+            }}
+          />
+        }
+      />,
+    ]
+  }
+
+  console.log('dataGroupsList', dataGroupsList)
 
   return (
     <DataChartComp>
@@ -140,10 +208,11 @@ const DataChartContainer = ({
           domainPadding={chartDomainPadding}
           containerComponent={<VictoryVoronoiContainer />}
         >
-          <Gradient />
+          {chartColors.map(({ color, colorId }) => (
+            <Gradient color={color} colorId={colorId} key={colorId} />
+          ))}
           <VictoryAxis
             dependentAxis
-            fixLabelOverlap
             label={get('unit')(topic)}
             tickFormat={formatNumber(get('decimals')(topic))}
             style={yAxisStyle}
@@ -151,46 +220,18 @@ const DataChartContainer = ({
           />
           <VictoryAxis
             fixLabelOverlap
-            tickValues={dataList.map(getPeriodDate)}
+            tickValues={dataGroupsList[0].dataEntryList.map(getPeriodDate)}
             tickFormat={formatPeriod('\n')}
             label={periodLabel}
             scale="time"
             style={xAxisStyle}
           />
-          <VictoryArea
-            data={dataList}
-            x={getPeriodDate}
-            y={getTopicValue}
-            style={areaStyle}
-          />
-          <VictoryScatter
-            data={dataList}
-            x={getPeriodDate}
-            y={getTopicValue}
-            style={scatterStyle}
-            size={2}
-            labels={({ x, y }) => [
-              `${formatPeriod(' ')(x)}`,
-              `${formatNumber(get('decimals')(topic))(y)}`,
-            ]}
-            labelComponent={
-              <VictoryTooltip
-                cornerRadius={1}
-                dy={-2}
-                pointerLength={4}
-                pointerWidth={4}
-                style={{
-                  fontSize: '5px',
-                  fill: hemelblauw.darker,
-                }}
-                flyoutStyle={{
-                  strokeWidth: 0.5,
-                  stroke: hemelblauw.darker,
-                  fill: wit,
-                }}
-              />
-            }
-          />
+          {dataGroupsList.map((props, index) =>
+            Area({ ...props, ...chartColors[index] })
+          )}
+          {dataGroupsList.map((props, index) =>
+            Line({ ...props, ...chartColors[index] })
+          )}
         </VictoryChart>
         <DataSource />
       </Rectangle>
