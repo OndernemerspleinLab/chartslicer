@@ -67,7 +67,7 @@ const getThirdMetadaPromise = (id: DatasetId) => (
   }
 }
 
-export const getMetadataPromise = (id: DatasetId): Promise<*> =>
+export const getMetadataPromise = (id: DatasetId) =>
   getFirstMetadataPromise(id)
     .then(getSecondMetadataPromise(id))
     .then(getThirdMetadaPromise(id))
