@@ -10,7 +10,6 @@ import {
   VictoryVoronoiContainer,
   VictoryTooltip,
   VictoryLabel,
-  VictoryGroup,
   VictoryLegend,
 } from 'victory'
 import glamorous from 'glamorous'
@@ -29,10 +28,9 @@ import {
 } from './enhancers/visibleDataInfoEnhancer'
 import { onlyWhenVisibleDataset } from './enhancers/datasetEnhancer'
 import { get, getIn } from './helpers/getset'
-import { dataEntriesConnector } from './connectors/visibleDatasetQueryConnector'
 import { connect } from 'react-redux'
 import { formatCbsPeriod, getCbsPeriodLabel } from './cbsPeriod'
-import { formatNumber } from './helpers/helpers'
+import { formatNumber, existing } from './helpers/helpers'
 import { DataSource } from './DataSource'
 import { tableLanguageConnector } from './connectors/tableInfoConnectors'
 
@@ -136,13 +134,13 @@ const getLegendData = ({ symbol, color, title }) => ({
 })
 
 const DataChartContainer = ({
-  topic,
   language,
   periodType,
   dataEntries,
   dataGroupsList,
+  unit,
+  decimals,
 }) => {
-  const topicKey = get('key')(topic)
   const getValue = dataEntry => get('value')(dataEntry)
   const getPeriodDate = dataEntry => get('periodDate')(dataEntry)
 
@@ -157,7 +155,16 @@ const DataChartContainer = ({
     </linearGradient>
   )
 
-  const Area = ({ dataEntryList, color, colorDarker, colorId, title }) => {
+  const formatTooltipUnit = unit => (existing(unit) ? ` (${unit})` : '')
+
+  const Area = ({
+    dataEntryList,
+    color,
+    colorDarker,
+    colorId,
+    title,
+    unit,
+  }) => {
     return (
       <VictoryArea
         key={`area-${colorId}`}
@@ -167,7 +174,7 @@ const DataChartContainer = ({
         style={areaStyle({ color, colorId })}
         labels={({ x, y }) => [
           `${formatPeriod(' ')(x)}`,
-          `${title}: ${formatNumber(get('decimals')(topic))(y)}`,
+          `${title}${formatTooltipUnit(unit)}: ${formatNumber(decimals)(y)}`,
         ]}
         labelComponent={
           <VictoryTooltip
@@ -189,8 +196,6 @@ const DataChartContainer = ({
       />
     )
   }
-
-  const Wrapper = ({ children }) => children
 
   const Line = ({ dataEntryList, color, colorId, colorDarker, symbol }) => {
     return [
@@ -232,8 +237,8 @@ const DataChartContainer = ({
           ))}
           <VictoryAxis
             dependentAxis
-            label={get('unit')(topic)}
-            tickFormat={formatNumber(get('decimals')(topic))}
+            label={unit}
+            tickFormat={formatNumber(decimals)}
             style={yAxisStyle}
             axisLabelComponent={<VictoryLabel x={20} y={46} angle={0} />}
           />
@@ -246,7 +251,7 @@ const DataChartContainer = ({
             style={xAxisStyle}
           />
           {dataGroupsList.map((props, index) =>
-            Area({ ...props, ...chartColors[index] })
+            Area({ ...props, ...chartColors[index], unit })
           )}
           {dataGroupsList.map((props, index) =>
             Line({ ...props, ...chartColors[index] })

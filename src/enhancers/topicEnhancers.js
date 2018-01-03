@@ -4,7 +4,7 @@ import {
   topicsGetConnector,
   topicGroupsGetConnector,
   selectedTopicListConnector,
-  selectedUnitConnector,
+  selectedUnitAndDecimalsConnector,
 } from '../connectors/topicConnectors'
 import {
   configGetInConnector,
@@ -16,23 +16,44 @@ import { flatten } from 'lodash/fp'
 import { unexisting } from '../helpers/helpers'
 import { maxDimensions, DIMENSION_TOPIC } from '../config'
 
-const canSelectTopic = ({ topicUnit, selectedUnit }) =>
-  unexisting(selectedUnit) || selectedUnit === topicUnit
+const canSelectTopic = ({
+  topicUnit,
+  selectedUnit,
+  selectedDecimals,
+  topicDecimals,
+}) =>
+  (unexisting(selectedUnit) && unexisting(selectedUnit)) ||
+  (selectedUnit === topicUnit && selectedDecimals === topicDecimals)
 
 export const topicEnhancer = connect((state, { topicKey }) => {
   const topic = topicsGetConnector(topicKey)(state)
   const { multiDimension } = multiDimensionConnector(state)
   const isMultiDimension = multiDimension === DIMENSION_TOPIC
   const value = configGetInConnector(['topicKeys'])(state)
-  const { unit: selectedUnit } = selectedUnitConnector(state)
-  const { unit: topicUnit } = topic
+  const {
+    unit: selectedUnit,
+    decimals: selectedDecimals,
+  } = selectedUnitAndDecimalsConnector(state)
+  const { unit: topicUnit, decimals: topicDecimals } = topic
 
   return merge(topic)({
     isMultiDimension,
     differentSelectionGroup:
-      isMultiDimension && !canSelectTopic({ topicUnit, selectedUnit }),
+      isMultiDimension &&
+      !canSelectTopic({
+        topicUnit,
+        selectedUnit,
+        selectedDecimals,
+        topicDecimals,
+      }),
     replaceValue:
-      !isMultiDimension || !canSelectTopic({ topicUnit, selectedUnit }),
+      !isMultiDimension ||
+      !canSelectTopic({
+        topicUnit,
+        selectedUnit,
+        selectedDecimals,
+        topicDecimals,
+      }),
     multiValue: true,
     inputValue: topic.key,
     name: 'topicKey',

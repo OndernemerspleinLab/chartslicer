@@ -15,11 +15,13 @@ import { get } from './helpers/getset'
 import { formatCbsPeriod, getCbsPeriodLabel } from './cbsPeriod'
 import { formatNumber } from './helpers/helpers'
 import { tableLanguageConnector } from './connectors/tableInfoConnectors'
+import { visibleDataAsTableEnhancer } from './enhancers/visibleDataTableEnhancer'
+import { onlyWhenChildren } from './enhancers/onlyWhenChildren'
 
 const enhancer = compose(
   onlyWhenVisibleDataset,
   connect(tableLanguageConnector),
-  connect(visibleDatasetInfoConnector)
+  visibleDataAsTableEnhancer
 )
 
 const DataTableComp = glamorous.div({
@@ -47,31 +49,43 @@ const HeadingRow = glamorous.tr({
 const cellStyle = {
   padding: '0.2rem 1.2rem',
 }
+
 const Cell = glamorous.td(cellStyle)
 
 const HeadingCell = glamorous.th(cellStyle)
 
-const TopicHeadingCell = connect(topicConnector)(({ unit }) => (
-  <HeadingCell>{unit}</HeadingCell>
-))
+const UnitElement = glamorous.span({
+  fontSize: '0.7em',
+})
 
-const DataRow = connect((state, ownProps) => {
-  return {
-    topic: topicConnector(state, ownProps),
-    ...dataEntryConnector(state, ownProps),
-  }
-})(props => (
+const UnitContainer = ({ children }) => <UnitElement>({children})</UnitElement>
+
+const Unit = onlyWhenChildren(UnitContainer)
+
+const ValueHeadingCell = ({ children, unit }) => (
+  <HeadingCell>
+    {children} <Unit>{unit}</Unit>
+  </HeadingCell>
+)
+
+const DataRow = ({ periodType, periodDate, values, decimals }) => (
   <Row>
-    <Cell>{formatCbsPeriod(props.periodType)(' ')(props.periodDate)}</Cell>
-    <Cell>{formatNumber(props.topic.decimals)(props[props.topicKey])}</Cell>
+    <Cell>{formatCbsPeriod(periodType)(' ')(periodDate)}</Cell>
+    {values.map((value, index) => (
+      <Cell key={index}>{formatNumber(decimals)(value)}</Cell>
+    ))}
   </Row>
-))
+)
 
 const DataTableContainer = ({
   topicKeys,
-  dataList = [],
+  titles = [],
+  tableRows = [],
+  columnCount,
   periodType,
   language,
+  unit,
+  decimals,
 }) => {
   const topicKey = get(0)(topicKeys)
   const periodLabel = getCbsPeriodLabel({ language, periodType })
@@ -83,12 +97,20 @@ const DataTableContainer = ({
           <TableHead>
             <HeadingRow>
               <HeadingCell>{periodLabel}</HeadingCell>
-              <TopicHeadingCell topicKey={topicKey} />
+              {titles.map((title, index) => (
+                <ValueHeadingCell key={index} unit={unit}>
+                  {title}
+                </ValueHeadingCell>
+              ))}
             </HeadingRow>
           </TableHead>
           <Tablebody>
-            {dataList.map(entryId => (
-              <DataRow topicKey={topicKey} entryId={entryId} key={entryId} />
+            {tableRows.map(tableRow => (
+              <DataRow
+                key={tableRow.periodDate}
+                {...tableRow}
+                decimals={decimals}
+              />
             ))}
           </Tablebody>
         </Table>

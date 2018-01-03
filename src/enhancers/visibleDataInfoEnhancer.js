@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import { first, mapValues } from 'lodash/fp'
-import { get, set } from '../helpers/getset'
+import { get, set, getIn } from '../helpers/getset'
 import {
   visibleDatasetInfoConnector,
   dataEntriesConnector,
@@ -9,7 +9,7 @@ import { existing } from '../helpers/helpers'
 import { DIMENSION_TOPIC, minPeriodLength } from '../config'
 import { topicsGetConnector } from '../connectors/topicConnectors'
 import { categoriesGetInConnector } from '../connectors/categoryConnectors'
-import { branch, renderNothing } from 'recompose'
+import { branch, renderNothing, compose } from 'recompose'
 
 const dataEntryFilter = ({
   dataEntries,
@@ -129,12 +129,26 @@ const arrangeDataEntries = ({
   })
 }
 
+const sortDataGroupsList = dataGroupsList => {
+  return dataGroupsList.sort((list1, list2) => {
+    const firstValue1 = getIn(['dataEntryList', '0', 'value'])(list1)
+    const firstValue2 = getIn(['dataEntryList', '0', 'value'])(list2)
+
+    return firstValue1 > firstValue2 ? -1 : firstValue1 < firstValue2 ? 1 : 0
+  })
+}
 const filterDataGroupsList = dataGroupsList =>
   dataGroupsList.filter(
     ({ dataEntryList }) => dataEntryList.length >= minPeriodLength
   )
 
-export const visibleDataInfoEnhancer = connect(state => {
+const getDataGroupsList = compose(
+  sortDataGroupsList,
+  filterDataGroupsList,
+  arrangeDataEntries
+)
+
+export const visibleDataInfoConnector = state => {
   const visibleDatasetInfo = visibleDatasetInfoConnector(state)
   const { dataEntries } = dataEntriesConnector(state)
   const {
@@ -144,22 +158,25 @@ export const visibleDataInfoEnhancer = connect(state => {
     dataList,
   } = visibleDatasetInfo
 
-  const dataGroupsList = filterDataGroupsList(
-    arrangeDataEntries({
-      multiDimension,
-      topicKeys,
-      categoryKeys,
-      dataEntries,
-      dataList,
-      state,
-    })
-  )
+  const dataGroupsList = getDataGroupsList({
+    multiDimension,
+    topicKeys,
+    categoryKeys,
+    dataEntries,
+    dataList,
+    state,
+  })
+
+  const { unit, decimals } = topicsGetConnector(first(topicKeys))(state)
 
   return {
     ...visibleDatasetInfo,
     dataGroupsList,
+    unit,
+    decimals,
   }
-})
+}
+export const visibleDataInfoEnhancer = connect(visibleDataInfoConnector)
 
 export const onlyWhenDataGroupsList = branch(
   ({ dataGroupsList }) => dataGroupsList.length <= 0,

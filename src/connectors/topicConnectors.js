@@ -72,9 +72,9 @@ export const selectedTopicsConnector = (state: State) => {
   }
 }
 
-export const selectedUnitConnector = (state: State) => {
+export const selectedUnitAndDecimalsConnector = (state: State) => {
   const topicKeys = configGetInConnector(['topicKeys'])(state)
   const firstTopicKey = first(topicKeys)
 
-  return pick(['unit'])(topicsGetConnector(firstTopicKey)(state))
+  return pick(['unit', 'decimals'])(topicsGetConnector(firstTopicKey)(state))
 }
