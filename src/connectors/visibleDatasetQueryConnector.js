@@ -1,5 +1,9 @@
-import { getIn, get } from '../helpers/getset'
+import { getIn, get, setIn } from '../helpers/getset'
 import { activeDatasetGetIdConnector } from './activeDatasetIdConnector'
+import { MULTI_DIMENSION_CHANGED } from '../actions/actions'
+import { dataQueryLoadingStateConnectorFor } from './datasetsLoadingStateConnectors'
+import { activeDatasetGetQueryConnector } from './activeDatasetQueryConnector'
+import { reduceFor } from '../reducers/reducerHelpers'
 
 export const visibleDatasetGetQueryConnectorFor = activeDatasetId => state => {
   return getIn(['visibleDatasetQueries', activeDatasetId])(state)
@@ -34,3 +38,27 @@ export const dataEntriesConnector = state => {
 export const dataEntryConnector = (state, { entryId }) => {
   return get(entryId)(dataEntriesGetConnector(state))
 }
+
+const reduceMultiDimensionChangeVisibleDataset = (
+  state,
+  { activeDatasetId, multiDimension }
+) => {
+  const query = activeDatasetGetQueryConnector(state)
+  const loadingState = dataQueryLoadingStateConnectorFor({
+    id: activeDatasetId,
+    query,
+  })(state)
+
+  if (get('loaded')(loadingState)) {
+    return setIn(
+      ['dataQueries', activeDatasetId, query, 'multiDimension'],
+      multiDimension
+    )(state)
+  }
+
+  return state
+}
+
+export const multiDimensionChangeVisibleDatasetReducer = reduceFor(
+  MULTI_DIMENSION_CHANGED
+)(reduceMultiDimensionChangeVisibleDataset)

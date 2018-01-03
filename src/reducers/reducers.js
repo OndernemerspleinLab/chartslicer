@@ -6,8 +6,10 @@ import { metadataReducer } from './metadataReducer'
 import { datasetReselectingReducer } from './datasetReselectingReducer'
 import { datasetLoadErrorReducer } from './datasetLoadErrorReducer'
 import { datasetLoadSuccessReducer } from './datasetLoadSuccessReducer'
+import { multiDimensionChangeVisibleDatasetReducer } from '../connectors/visibleDatasetQueryConnector'
 
 export const reducers = composeReducers(
+  multiDimensionChangeVisibleDatasetReducer,
   datasetReselectingReducer,
   datasetLoadSuccessReducer,
   datasetLoadErrorReducer,

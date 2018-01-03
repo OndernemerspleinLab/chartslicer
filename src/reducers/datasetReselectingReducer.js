@@ -52,7 +52,7 @@ const setVisibleDatasetQueries = (state, { queryString, id }) =>
     ? setIn(['visibleDatasetQueries', id], queryString)(state)
     : state
 
-const reduceDatasetReselecting = (state: State): State => {
+const reduceDatasetReselecting = (state: State, { type }): State => {
   const queryString = getDatasetQueryString(getConfigWithDateAndLanguage(state))
   const id = activeDatasetGetIdConnector(state)
 
