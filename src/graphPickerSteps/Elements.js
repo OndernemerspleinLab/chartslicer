@@ -449,6 +449,14 @@ export const Center = glamorous.div({
   justifyContent: 'center',
 })
 
+export const AlignRight = glamorous.div({
+  display: 'flex',
+  height: '100%',
+  width: '100%',
+  flexDirection: 'column',
+  alignItems: 'flex-end',
+  justifyContent: 'flex-start',
+})
 export const CoverPage = glamorous.div({
   position: 'absolute',
   height: '100%',

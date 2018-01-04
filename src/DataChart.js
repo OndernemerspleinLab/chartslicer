@@ -261,8 +261,8 @@ const DataChartContainer = ({
           )}
           <VictoryLegend
             {...legendProps}
-            data={dataGroupsList.map((props, index) =>
-              getLegendData({ ...props, ...chartColors[index] })
+            data={dataGroupsList.map(({ title }, index) =>
+              getLegendData({ title, ...chartColors[index] })
             )}
           />
         </VictoryChart>

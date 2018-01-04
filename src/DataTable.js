@@ -11,6 +11,7 @@ import { formatNumber } from './helpers/helpers'
 import { tableLanguageConnector } from './connectors/tableInfoConnectors'
 import { visibleDataAsTableEnhancer } from './enhancers/visibleDataTableEnhancer'
 import { onlyWhenChildren } from './enhancers/onlyWhenChildren'
+import { LabelEditButton } from './LabelEditButton'
 
 const enhancer = compose(
   onlyWhenVisibleDataset,
@@ -58,9 +59,25 @@ const UnitContainer = ({ children }) => <UnitElement>({children})</UnitElement>
 
 const Unit = onlyWhenChildren(UnitContainer)
 
-const ValueHeadingCell = ({ children, unit }) => (
+const ValueHeadingCell = ({
+  title,
+  info,
+  type,
+  unit,
+  activeDatasetId,
+  index,
+}) => (
   <HeadingCell>
-    {children} <Unit>{unit}</Unit>
+    <LabelEditButton
+      title={title}
+      info={info}
+      type={type}
+      activeDatasetId={activeDatasetId}
+      index={index}
+    >
+      Label aanpassen
+    </LabelEditButton>{' '}
+    {title} <Unit>{unit}</Unit>
   </HeadingCell>
 )
 
@@ -82,6 +99,7 @@ const DataTableContainer = ({
   language,
   unit,
   decimals,
+  id,
 }) => {
   const periodLabel = getCbsPeriodLabel({ language, periodType })
 
@@ -92,10 +110,16 @@ const DataTableContainer = ({
           <TableHead>
             <HeadingRow>
               <HeadingCell>{periodLabel}</HeadingCell>
-              {titles.map((title, index) => (
-                <ValueHeadingCell key={index} unit={unit}>
-                  {title}
-                </ValueHeadingCell>
+              {titles.map(({ title, type, info }, index) => (
+                <ValueHeadingCell
+                  activeDatasetId={id}
+                  key={index}
+                  index={index}
+                  unit={unit}
+                  title={title}
+                  info={info}
+                  type={type}
+                />
               ))}
             </HeadingRow>
           </TableHead>

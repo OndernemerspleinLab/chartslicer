@@ -43,7 +43,7 @@ const TextAreaLabelElement = glamorous.label({
 const TextareaLabel = ({ children, htmlFor }) => (
   <TextAreaLabelElement htmlFor={htmlFor}>
     <Hidden>{children}</Hidden>
-    <Pencil />
+    <Pencil fill={hemelblauw.darker} opacity={0.3} />
   </TextAreaLabelElement>
 )
 

@@ -10,6 +10,7 @@ import { DIMENSION_TOPIC, minPeriodLength } from '../config'
 import { topicsGetConnector } from '../connectors/topicConnectors'
 import { categoriesGetInConnector } from '../connectors/categoryConnectors'
 import { branch, renderNothing, compose } from 'recompose'
+import { labelAliasConnector } from '../connectors/configConnectors'
 
 const dataEntryFilter = ({
   dataEntries,
@@ -67,11 +68,14 @@ const arrangeDataEntries = ({
   if (!multiDimension) {
     const topicKey = first(topicKeys)
     const categoryKeyForDimensions = mapValues(first)(categoryKeys)
-    const { title } = topicsGetConnector(topicKey)(state)
+    const topic = topicsGetConnector(topicKey)(state)
+    const type = 'topic'
 
     return [
       {
-        title,
+        type,
+        info: topic,
+        title: labelAliasConnector(type)(topic)(state),
         dataEntryList: getFilteredDataEntryList({
           dataList,
           dataEntries,
@@ -86,10 +90,13 @@ const arrangeDataEntries = ({
     const categoryKeyForDimensions = mapValues(first)(categoryKeys)
 
     return topicKeys.map(topicKey => {
-      const { title } = topicsGetConnector(topicKey)(state)
+      const topic = topicsGetConnector(topicKey)(state)
+      const type = 'topic'
 
       return {
-        title,
+        type,
+        info: topic,
+        title: labelAliasConnector(type)(topic)(state),
         dataEntryList: getFilteredDataEntryList({
           dataList,
           dataEntries,
@@ -107,18 +114,21 @@ const arrangeDataEntries = ({
   const categoryKeyForAllDimensions = mapValues(first)(categoryKeys)
 
   return multiDimensionCategoryKeys.map(multiDimensionCategoryKey => {
+    const type = 'category'
     const categoryKeyForDimensions = set(
       multiDimension,
       multiDimensionCategoryKey
     )(categoryKeyForAllDimensions)
 
-    const { title } = categoriesGetInConnector([
+    const category = categoriesGetInConnector([
       multiDimension,
       multiDimensionCategoryKey,
     ])(state)
 
     return {
-      title,
+      type,
+      info: category,
+      title: labelAliasConnector(type)(category)(state),
       dataEntryList: getFilteredDataEntryList({
         dataList,
         dataEntries,

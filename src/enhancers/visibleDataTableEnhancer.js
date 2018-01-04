@@ -1,5 +1,5 @@
 import { visibleDataInfoConnector } from './visibleDataInfoEnhancer'
-import { fill } from 'lodash/fp'
+import { fill, pick } from 'lodash/fp'
 import { connect } from 'react-redux'
 import { compareAsc, isEqual } from 'date-fns'
 import { get, set } from '../helpers/getset'
@@ -39,7 +39,7 @@ const dataEntryReducer = ({ column, columnCount }) => (
 }
 
 const convertDataGroupsListToTable = ({ dataGroupsList }) => {
-  const titles = dataGroupsList.map(get('title'))
+  const titles = dataGroupsList.map(pick(['info', 'type', 'title']))
   const columnCount = dataGroupsList.length
   const dataEntryLists = dataGroupsList.map(get('dataEntryList'))
 
@@ -57,6 +57,7 @@ const convertDataGroupsListToTable = ({ dataGroupsList }) => {
     compareAsc(getDate(tableRow1), getDate(tableRow2))
   )
 
+  console.log('titles', titles)
   console.log('tableRows', tableRows)
 
   return { titles, columnCount, tableRows }

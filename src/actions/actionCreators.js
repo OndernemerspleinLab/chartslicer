@@ -7,6 +7,7 @@ export {
   invalidDatasetIdSelected,
   metadataLoadSuccess,
   metadataLoadError,
+  labelAliasChanged,
 } from './simpleActionCreators'
 export {
   datasetLoadSuccess,

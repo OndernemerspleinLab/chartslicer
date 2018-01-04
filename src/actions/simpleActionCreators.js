@@ -6,6 +6,7 @@ import {
   INVALID_DATASET_ID_SELECTED,
   CONFIG_CHANGED,
   MULTI_DIMENSION_CHANGED,
+  LABEL_ALIAS_CHANGED,
 } from './actions'
 import { createSimpleAction } from './actionHelpers'
 import { dataGetterActionEnhancer } from './dataGetterActionEnhancer'
@@ -59,4 +60,13 @@ export const metadataLoadError = createSimpleAction(
   METADATA_LOAD_ERROR,
   'id',
   'error'
+)
+
+export const labelAliasChanged = createSimpleAction(
+  LABEL_ALIAS_CHANGED,
+  'activeDatasetId',
+  'aliasType',
+  'dimensionKey',
+  'key',
+  'value'
 )

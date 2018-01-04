@@ -2,6 +2,7 @@ import {
   CONFIG_CHANGED,
   METADATA_LOAD_SUCCESS,
   MULTI_DIMENSION_CHANGED,
+  LABEL_ALIAS_CHANGED,
 } from '../actions/actions'
 import {
   reduceFor,
@@ -20,6 +21,7 @@ import {
   updateIn,
   addLast,
   omitFromArray,
+  omit,
 } from '../helpers/getset'
 import { defaultPeriodLength, DIMENSION_TOPIC } from '../config'
 import { findFirstEntryInGroups } from '../helpers/findFirstEntryInGroups'
@@ -28,6 +30,54 @@ import { existing } from '../helpers/helpers'
 ///////// Selector /////////
 
 const configSelector = compose(reduceIn('config'), defaultState({}))
+
+///////// Label Aliases Reducer /////////
+
+const setCategoryLabelAlias = ({ dimensionKey, key, value }) => (
+  state = {}
+) => {
+  const aliasKey = `category/${dimensionKey}/${key}`
+
+  if (!value) {
+    return omit(aliasKey)(state)
+  }
+
+  return set(aliasKey, value)(state)
+}
+
+const setTopicLabelAlias = ({ key, value }) => (state = {}) => {
+  const aliasKey = `topic/${key}`
+
+  if (!value) {
+    return omit(aliasKey)(state)
+  }
+
+  return set(aliasKey, value)(state)
+}
+
+const reduceLabelAliases = (
+  state = {},
+  { value, key, dimensionKey, aliasType, activeDatasetId }
+) => {
+  switch (aliasType) {
+    case 'category':
+      return updateIn(
+        [activeDatasetId, 'labelAliases'],
+        setCategoryLabelAlias({ value, key, dimensionKey })
+      )(state)
+    case 'topic':
+    default:
+      return updateIn(
+        [activeDatasetId, 'labelAliases'],
+        setTopicLabelAlias({ value, key })
+      )(state)
+  }
+}
+
+const labelAliasesReducer = compose(
+  configSelector,
+  reduceFor(LABEL_ALIAS_CHANGED)
+)(reduceLabelAliases)
 
 ///////// Set Config Reducer /////////
 
@@ -195,5 +245,6 @@ const initialConfigForDatasetReducer = compose(
 export const configReducer = composeReducers(
   setConfigReducer,
   setMultiDimensionReducer,
-  initialConfigForDatasetReducer
+  initialConfigForDatasetReducer,
+  labelAliasesReducer
 )
