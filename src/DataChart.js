@@ -117,10 +117,10 @@ const scatterStyle = ({ color, colorDarker }) => ({
 
 const legendProps = {
   orientation: 'vertical',
-  rowGutter: -4,
-  x: 4,
-  y: 4,
-  symbolSpacer: 5,
+  rowGutter: 0,
+  x: 46,
+  y: 6,
+  symbolSpacer: 4,
   style: {
     labels: {
       fontSize: 7,
