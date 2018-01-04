@@ -70,12 +70,14 @@ const arrangeDataEntries = ({
     const categoryKeyForDimensions = mapValues(first)(categoryKeys)
     const topic = topicsGetConnector(topicKey)(state)
     const type = 'topic'
+    const alias = labelAliasConnector(type)(topic)(state)
 
     return [
       {
         type,
         info: topic,
-        title: labelAliasConnector(type)(topic)(state),
+        alias,
+        title: alias || topic.title,
         dataEntryList: getFilteredDataEntryList({
           dataList,
           dataEntries,
@@ -92,11 +94,13 @@ const arrangeDataEntries = ({
     return topicKeys.map(topicKey => {
       const topic = topicsGetConnector(topicKey)(state)
       const type = 'topic'
+      const alias = labelAliasConnector(type)(topic)(state)
 
       return {
         type,
         info: topic,
-        title: labelAliasConnector(type)(topic)(state),
+        alias,
+        title: alias || topic.title,
         dataEntryList: getFilteredDataEntryList({
           dataList,
           dataEntries,
@@ -125,10 +129,13 @@ const arrangeDataEntries = ({
       multiDimensionCategoryKey,
     ])(state)
 
+    const alias = labelAliasConnector(type)(category)(state)
+
     return {
       type,
       info: category,
-      title: labelAliasConnector(type)(category)(state),
+      alias,
+      title: alias || category.title,
       dataEntryList: getFilteredDataEntryList({
         dataList,
         dataEntries,

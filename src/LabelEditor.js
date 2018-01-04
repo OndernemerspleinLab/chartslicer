@@ -121,7 +121,7 @@ const LabelEditorElement = ({
 
 export const LabelEditor = compose(
   connectActions,
-  withStateHandlers(({ title }) => ({ value: title || '' }), {
+  withStateHandlers(({ alias }) => ({ value: alias || '' }), {
     setValue: () => event => ({ value: event.target.value }),
     refInputDomElement: () => inputDomElement => ({ inputDomElement }),
   }),

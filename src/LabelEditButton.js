@@ -20,7 +20,7 @@ const LabelEditButtonElement = ({
   children,
   type,
   info,
-  title,
+  alias,
   editorOpened,
   activeDatasetId,
   toggle,
@@ -37,7 +37,7 @@ const LabelEditButtonElement = ({
         <LabelEditor
           info={info}
           type={type}
-          title={title}
+          alias={alias}
           activeDatasetId={activeDatasetId}
           close={close}
           index={index}

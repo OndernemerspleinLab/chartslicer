@@ -39,7 +39,7 @@ const dataEntryReducer = ({ column, columnCount }) => (
 }
 
 const convertDataGroupsListToTable = ({ dataGroupsList }) => {
-  const titles = dataGroupsList.map(pick(['info', 'type', 'title']))
+  const titles = dataGroupsList.map(pick(['info', 'type', 'title', 'alias']))
   const columnCount = dataGroupsList.length
   const dataEntryLists = dataGroupsList.map(get('dataEntryList'))
 

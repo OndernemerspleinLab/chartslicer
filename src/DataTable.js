@@ -60,6 +60,7 @@ const UnitContainer = ({ children }) => <UnitElement>({children})</UnitElement>
 const Unit = onlyWhenChildren(UnitContainer)
 
 const ValueHeadingCell = ({
+  alias,
   title,
   info,
   type,
@@ -69,7 +70,7 @@ const ValueHeadingCell = ({
 }) => (
   <HeadingCell>
     <LabelEditButton
-      title={title}
+      alias={alias}
       info={info}
       type={type}
       activeDatasetId={activeDatasetId}
@@ -110,13 +111,14 @@ const DataTableContainer = ({
           <TableHead>
             <HeadingRow>
               <HeadingCell>{periodLabel}</HeadingCell>
-              {titles.map(({ title, type, info }, index) => (
+              {titles.map(({ title, type, info, alias }, index) => (
                 <ValueHeadingCell
                   activeDatasetId={id}
                   key={index}
                   index={index}
                   unit={unit}
                   title={title}
+                  alias={alias}
                   info={info}
                   type={type}
                 />

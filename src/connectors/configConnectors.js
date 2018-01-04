@@ -20,20 +20,12 @@ export const configMapConnector = mapFromActiveSubstate(configConnector)
 
 export const multiDimensionConnector = configPickConnector(['multiDimension'])
 
-export const topicLabelAliasConnector = ({ key, title }) => state => {
-  return (
-    getIn(['labelAliases', `topic/${key}`])(configConnector(state)) || title
-  )
+export const topicLabelAliasConnector = ({ key }) => state => {
+  return getIn(['labelAliases', `topic/${key}`])(configConnector(state))
 }
-export const categoryLabelAliasConnector = ({
-  key,
-  dimensionKey,
-  title,
-}) => state => {
-  return (
-    getIn(['labelAliases', `category/${dimensionKey}/${key}`])(
-      configConnector(state)
-    ) || title
+export const categoryLabelAliasConnector = ({ key, dimensionKey }) => state => {
+  return getIn(['labelAliases', `category/${dimensionKey}/${key}`])(
+    configConnector(state)
   )
 }
 export const labelAliasConnector = type => {
