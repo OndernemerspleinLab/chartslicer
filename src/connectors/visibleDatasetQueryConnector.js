@@ -4,6 +4,7 @@ import { MULTI_DIMENSION_CHANGED } from '../actions/actions'
 import { dataQueryLoadingStateConnectorFor } from './datasetsLoadingStateConnectors'
 import { activeDatasetGetQueryConnector } from './activeDatasetQueryConnector'
 import { reduceFor } from '../reducers/reducerHelpers'
+import { shouldFetch } from '../helpers/loadingStateHelpers'
 
 export const visibleDatasetGetQueryConnectorFor = activeDatasetId => state => {
   return getIn(['visibleDatasetQueries', activeDatasetId])(state)
@@ -49,7 +50,7 @@ const reduceMultiDimensionChangeVisibleDataset = (
     query,
   })(state)
 
-  if (get('loaded')(loadingState)) {
+  if (!shouldFetch(loadingState)) {
     return setIn(
       ['dataQueries', activeDatasetId, query, 'multiDimension'],
       multiDimension

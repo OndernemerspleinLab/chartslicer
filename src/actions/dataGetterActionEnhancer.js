@@ -12,9 +12,7 @@ import {
   datasetLoadSuccess,
   datasetLoadError,
 } from './dataGetterActionCreators'
-
-const shouldFetch = loadingState =>
-  !get('loaded')(loadingState) && !get('loading')(loadingState)
+import { shouldFetch } from '../helpers/loadingStateHelpers'
 
 export const dataGetterActionEnhancer = (actionCreator: ActionCreator) => (
   action: Action

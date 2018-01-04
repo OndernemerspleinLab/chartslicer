@@ -2,7 +2,7 @@ import { visibleDataInfoConnector } from './visibleDataInfoEnhancer'
 import { fill } from 'lodash/fp'
 import { connect } from 'react-redux'
 import { compareAsc, isEqual } from 'date-fns'
-import { get, set, getIn } from '../helpers/getset'
+import { get, set } from '../helpers/getset'
 
 const getDate = get('periodDate')
 

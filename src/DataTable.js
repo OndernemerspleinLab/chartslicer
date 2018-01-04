@@ -5,13 +5,7 @@ import { hemelblauw, wit } from './colors'
 import { InsideMargin } from './graphPickerSteps/Elements'
 import { fadeInAnimation } from './styles'
 import { onlyWhenVisibleDataset } from './enhancers/datasetEnhancer'
-import {
-  visibleDatasetInfoConnector,
-  dataEntryConnector,
-} from './connectors/visibleDatasetQueryConnector'
 import { connect } from 'react-redux'
-import { topicConnector } from './connectors/topicConnectors'
-import { get } from './helpers/getset'
 import { formatCbsPeriod, getCbsPeriodLabel } from './cbsPeriod'
 import { formatNumber } from './helpers/helpers'
 import { tableLanguageConnector } from './connectors/tableInfoConnectors'
@@ -29,7 +23,9 @@ const DataTableComp = glamorous.div({
   animation: fadeInAnimation,
 })
 
-const Table = glamorous.table({})
+const Table = glamorous.table({
+  lineHeight: 1.2,
+})
 
 const TableHead = glamorous.thead()
 const Tablebody = glamorous.tbody()
@@ -87,7 +83,6 @@ const DataTableContainer = ({
   unit,
   decimals,
 }) => {
-  const topicKey = get(0)(topicKeys)
   const periodLabel = getCbsPeriodLabel({ language, periodType })
 
   return (
