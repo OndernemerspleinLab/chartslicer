@@ -5,6 +5,7 @@ import { activeDatasetGetIdConnector } from './../connectors/activeDatasetIdConn
 import { configConnector } from './../connectors/configConnectors'
 import { first } from 'lodash/fp'
 import { tableLanguageGetter } from '../connectors/tableInfoConnectors'
+import { allSelectedCategoriesConnector } from '../connectors/categoryConnectors'
 
 const getFieldFromOpener = opener => {
   const getView = getIn(['$display', 'getView'])(opener)
@@ -101,7 +102,11 @@ export const getPersistentData = () => {
     ? {
         activeDatasetId: tridionData.id,
         config: {
-          [tridionData.id]: omit(['selectedTopics', 'language'])(tridionData),
+          [tridionData.id]: omit([
+            'selectedTopics',
+            'selectedCategories',
+            'language',
+          ])(tridionData),
         },
       }
     : {}
@@ -121,6 +126,12 @@ export const setPersistentData = state => {
   }
   const language = tableLanguageGetter(state)
   const { selectedTopics } = selectedTopicsConnector(state)
+  const { selectedCategories } = allSelectedCategoriesConnector(state)
 
-  setJsonValue({ language, selectedTopics, ...activeConfig })
+  setJsonValue({
+    language,
+    selectedTopics,
+    selectedCategories,
+    ...activeConfig,
+  })
 }

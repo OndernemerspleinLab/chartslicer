@@ -6,6 +6,8 @@ import {
 import { visibleDatasetInfoConnector } from './visibleDatasetQueryConnector'
 import type { DimensionKey } from '../store/stateShape'
 import { configGetInConnector } from './configConnectors'
+import { orderedDimensionsConnector } from './dimensionConnectors'
+import { set } from '../helpers/getset'
 
 export const categoriesConnector = getActiveSubstate('categories')
 
@@ -47,6 +49,25 @@ export const selectedCategoriesConnector = (dimensionKey: DimensionKey) => (
   return {
     selectedCategories: categoryKeys.map(categoryKey =>
       categoriesGetInConnector([dimensionKey, categoryKey])(state)
+    ),
+  }
+}
+
+const allSelectedCategoriesReducer = (state: State) => (memo, dimensionKey) => {
+  const { selectedCategories } = selectedCategoriesConnector(dimensionKey)(
+    state
+  )
+
+  return set(dimensionKey, selectedCategories)(memo)
+}
+
+export const allSelectedCategoriesConnector = (state: State) => {
+  const { dimensionKeys } = orderedDimensionsConnector(state)
+
+  return {
+    selectedCategories: dimensionKeys.reduce(
+      allSelectedCategoriesReducer(state),
+      {}
     ),
   }
 }
