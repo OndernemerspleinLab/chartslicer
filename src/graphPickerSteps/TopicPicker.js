@@ -9,6 +9,7 @@ import {
   AccordionButton,
   CloseAccordion,
   Checkbox,
+  Alias,
 } from './Elements'
 import glamorous from 'glamorous'
 import { violet } from '../colors'
@@ -45,6 +46,7 @@ const TopicRadioComp = ({
   value,
   isMultiDimension,
   differentSelectionGroup,
+  alias,
 }) =>
   isMultiDimension ? (
     <Checkbox
@@ -56,6 +58,7 @@ const TopicRadioComp = ({
       differentSelectionGroup={differentSelectionGroup}
     >
       {title} <RadioTopicUnit>{unit}</RadioTopicUnit>
+      <Alias>{alias}</Alias>
     </Checkbox>
   ) : (
     <Radio
@@ -67,6 +70,7 @@ const TopicRadioComp = ({
       differentSelectionGroup={differentSelectionGroup}
     >
       {title} <RadioTopicUnit>{unit}</RadioTopicUnit>
+      <Alias>{alias}</Alias>
     </Radio>
   )
 

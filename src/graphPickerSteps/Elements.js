@@ -5,9 +5,10 @@ import { violet, wit } from '../colors'
 import { square } from '../helpers/styleHelpers'
 import { resetMarginStyle } from '../marginStyle'
 import { css } from 'glamor'
-import { withProps, nest } from 'recompose'
+import { withProps, nest, branch, renderNothing } from 'recompose'
 import { borderRadius, fadeInAnimation } from '../styles'
 import { mqSmall, mqBig } from '../config'
+import { unexisting } from '../helpers/helpers'
 
 const hiddenStyle = {
   position: 'absolute',
@@ -190,6 +191,20 @@ export const Input = glamorous.input(borderRadius, {
   },
 })
 
+const AliasStyled = glamorous.span({
+  fontSize: '0.8rem',
+  display: 'block',
+})
+
+const AliasComp = ({ children }) => {
+  return <AliasStyled>Alias: ‘{children}’</AliasStyled>
+}
+
+export const Alias = branch(
+  ({ children }) => unexisting(children),
+  renderNothing
+)(AliasComp)
+
 export const NumberInput = withProps({
   type: 'number',
   css: css({
@@ -200,12 +215,14 @@ export const NumberInput = withProps({
 
 const RadioComp = glamorous.span({
   display: 'inline-block',
+  verticalAlign: 'top',
   margin: '0.5rem 0.3rem 0 0',
   position: 'relative',
 })
 
 const SingleRadioComp = glamorous.span({
   display: 'inline-block',
+  verticalAlign: 'top',
   margin: '0 0.3rem 0.5rem 0',
   position: 'relative',
 })

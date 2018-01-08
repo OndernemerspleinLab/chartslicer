@@ -7,6 +7,7 @@ import {
 import {
   configGetInConnector,
   multiDimensionConnector,
+  categoryLabelAliasConnector,
 } from '../connectors/configConnectors'
 import { configChangeHandlersEnhancer } from './configEnhancers'
 import { activeDatasetGetIdConnector } from '../connectors/activeDatasetIdConnector'
@@ -25,6 +26,10 @@ export const categoryEnhancer = compose(
     const { multiDimension } = multiDimensionConnector(state)
     const isMultiDimension = multiDimension === dimensionKey
     const value = configGetInConnector(['categoryKeys', dimensionKey])(state)
+    const alias = categoryLabelAliasConnector({
+      dimensionKey,
+      key: categoryKey,
+    })(state)
 
     return {
       isMultiDimension,
@@ -35,6 +40,7 @@ export const categoryEnhancer = compose(
       replaceValue: !isMultiDimension,
       keyPath: ['categoryKeys', dimensionKey],
       value,
+      alias,
       maxLength: maxDimensions,
       datasetId: activeDatasetGetIdConnector(state),
     }

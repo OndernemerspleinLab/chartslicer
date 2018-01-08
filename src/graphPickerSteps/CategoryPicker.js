@@ -9,6 +9,7 @@ import {
   FormRow,
   AccordionButton,
   CloseAccordion,
+  Alias,
 } from './Elements'
 import glamorous from 'glamorous'
 import { violet } from '../colors'
@@ -33,24 +34,31 @@ const CategoryRadioComp = ({
   name,
   value = [],
   isMultiDimension,
+  alias,
 }) =>
-  isMultiDimension
-    ? Checkbox({
-        id: `category-${dimensionKey}-${inputValue}`,
-        name,
-        value: inputValue,
-        onChange,
-        checked: value.includes(inputValue),
-        children: title,
-      })
-    : Radio({
-        id: `category-${dimensionKey}-${inputValue}`,
-        name,
-        value: inputValue,
-        onChange,
-        checked: first(value) === inputValue,
-        children: title,
-      })
+  isMultiDimension ? (
+    <Checkbox
+      id={`category-${dimensionKey}-${inputValue}`}
+      name={name}
+      value={inputValue}
+      onChange={onChange}
+      checked={value.includes(inputValue)}
+    >
+      {title}
+      <Alias>{alias}</Alias>
+    </Checkbox>
+  ) : (
+    <Radio
+      id={`category-${dimensionKey}-${inputValue}`}
+      name={name}
+      value={inputValue}
+      onChange={onChange}
+      checked={first(value) === inputValue}
+    >
+      {title}
+      <Alias>{alias}</Alias>
+    </Radio>
+  )
 
 const CategoryRadio = compose(categoryEnhancer, configChangeEnhancer)(
   CategoryRadioComp

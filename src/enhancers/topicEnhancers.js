@@ -9,6 +9,7 @@ import {
 import {
   configGetInConnector,
   multiDimensionConnector,
+  topicLabelAliasConnector,
 } from '../connectors/configConnectors'
 import { isAccordion, accordionEnhancer } from './accordionEnhancer'
 import { compose } from 'recompose'
@@ -29,6 +30,7 @@ export const topicEnhancer = connect((state, { topicKey }) => {
   const topic = topicsGetConnector(topicKey)(state)
   const { multiDimension } = multiDimensionConnector(state)
   const isMultiDimension = multiDimension === DIMENSION_TOPIC
+  const alias = topicLabelAliasConnector({ key: topicKey })(state)
   const value = configGetInConnector(['topicKeys'])(state)
   const {
     unit: selectedUnit,
@@ -56,6 +58,7 @@ export const topicEnhancer = connect((state, { topicKey }) => {
       }),
     multiValue: true,
     inputValue: topic.key,
+    alias,
     name: 'topicKey',
     keyPath: ['topicKeys'],
     maxLength: maxDimensions,
