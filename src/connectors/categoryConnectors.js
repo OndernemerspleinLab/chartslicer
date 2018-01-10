@@ -53,10 +53,27 @@ export const selectedCategoriesConnector = (dimensionKey: DimensionKey) => (
   }
 }
 
-const allSelectedCategoriesReducer = (state: State) => (memo, dimensionKey) => {
-  const { selectedCategories } = selectedCategoriesConnector(dimensionKey)(
+const selectedCategoriesObjectConnector = (dimensionKey: DimensionKey) => (
+  state: State
+) => {
+  const categoryKeys = configGetInConnector(['categoryKeys', dimensionKey])(
     state
   )
+
+  return {
+    selectedCategories: categoryKeys.reduce((memo, categoryKey) => {
+      const category = categoriesGetInConnector([dimensionKey, categoryKey])(
+        state
+      )
+      return set(categoryKey, category)(memo)
+    }, {}),
+  }
+}
+
+const allSelectedCategoriesReducer = (state: State) => (memo, dimensionKey) => {
+  const { selectedCategories } = selectedCategoriesObjectConnector(
+    dimensionKey
+  )(state)
 
   return set(dimensionKey, selectedCategories)(memo)
 }
