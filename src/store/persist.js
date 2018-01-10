@@ -97,9 +97,10 @@ export const managePersistence = store => {
   handleUrlChange(store)()
 
   window.logPersistentData = () => {
-    console.log(
-      'PersistentData',
-      persistTridion.gatherPersistentData(store.getState())
-    )
+    console.log(persistTridion.gatherPersistentData(store.getState()))
+  }
+
+  window.getJSON = () => {
+    return JSON.stringify(persistTridion.gatherPersistentData(store.getState()))
   }
 }
