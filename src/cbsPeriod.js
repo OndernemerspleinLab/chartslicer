@@ -1,7 +1,8 @@
-import { addYears, addQuarters, addMonths, format } from 'date-fns'
+import { addYears, addQuarters, addMonths, format, isSameYear } from 'date-fns'
 import nlLocale from 'date-fns/locale/nl'
 import { rangeNumber } from './helpers/helpers'
 import { minPeriodLength, maxPeriodLength } from './config'
+import { previous, last } from './helpers/arrayHelpers'
 
 const formatDate = (date, formatTemplate) =>
   format(date, formatTemplate, { locale: nlLocale })
@@ -80,11 +81,20 @@ export const getCbsPeriodLabel = ({ language, periodType }) =>
 const cbsPeriodFormatters = {
   Jaar: seperator => date => formatDate(date, 'YYYY'),
   Maanden: seperator => date => formatDate(date, `MMM[${seperator}]YYYY`),
-  Kwartalen: seperator => date => formatDate(date, `YYYY[${seperator}][Q]Q`),
+  Kwartalen: seperator => date => formatDate(date, `[Q]Q[${seperator}]YYYY`),
 }
 
 export const formatCbsPeriod = type => seperator => cbsPeriod =>
   cbsPeriodFormatters[type](seperator)(cbsPeriod)
+
+const cbsPeriodWithoutYearFormatters = {
+  Jaar: date => formatDate(date, 'YYYY'),
+  Maanden: date => formatDate(date, `MMM`),
+  Kwartalen: date => formatDate(date, `[Q]Q`),
+}
+
+export const formatCbsPeriodWithoutYear = type => cbsPeriod =>
+  cbsPeriodWithoutYearFormatters[type](cbsPeriod)
 
 const cbsPeriodCreators = {
   Jaar: date => formatDate(date, 'YYYY[JJ00]'),
@@ -114,4 +124,23 @@ export const createCbsPeriods = ({ endDate, periodType, periodLength }) => {
   }
 
   return memo
+}
+
+export const formatWithNewYearFactory = periodType => {
+  if (periodType === 'Jaar') {
+    return date => formatCbsPeriod(periodType)('\n')(date)
+  }
+
+  return (date, index, dateList) => {
+    const previousDate = previous(index)(dateList)
+
+    if (!previousDate) return formatCbsPeriod(periodType)('\n')(date)
+
+    if (last(dateList) === date) return formatCbsPeriod(periodType)('\n')(date)
+
+    if (!isSameYear(date, previousDate))
+      return formatCbsPeriod(periodType)('\n')(date)
+
+    return formatCbsPeriodWithoutYear(periodType)(date)
+  }
 }

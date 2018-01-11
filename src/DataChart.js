@@ -1,26 +1,21 @@
 import React from 'react'
 import { compose } from 'recompose'
 import {
-  VictoryTheme,
   VictoryAxis,
-  VictoryChart,
   VictoryArea,
   VictoryLine,
   VictoryScatter,
-  VictoryVoronoiContainer,
   VictoryTooltip,
   VictoryLabel,
   VictoryLegend,
 } from 'victory'
 import glamorous from 'glamorous'
-import { hemelblauw, wit } from './colors'
 import { fadeInAnimation } from './styles'
 import {
   chartAspectRatio,
-  chartWidth,
-  chartHeight,
   chartMaxWidth,
   chartColors,
+  chartXAxisTickCount,
 } from './config'
 import {
   visibleDataInfoEnhancer,
@@ -29,10 +24,25 @@ import {
 import { onlyWhenVisibleDataset } from './enhancers/datasetEnhancer'
 import { get, getIn } from './helpers/getset'
 import { connect } from 'react-redux'
-import { formatCbsPeriod, getCbsPeriodLabel } from './cbsPeriod'
+import { formatCbsPeriod, formatWithNewYearFactory } from './cbsPeriod'
 import { formatNumber, existing } from './helpers/helpers'
 import { DataSource } from './DataSource'
 import { tableLanguageConnector } from './connectors/tableInfoConnectors'
+import { ChartWrapper, ChartLineGradient } from './DataChartElements'
+import {
+  xAxisStyleFactory,
+  xAxisLineTickLabelLineHeight,
+  yAxisStyleFactory,
+  legendPropsFactory,
+  lineStyleFactory,
+  areaStyleFactory,
+  scatterStyleFactory,
+  tooltipPropsFactory,
+  tooltipLineHeight,
+  getTooltipXDelta,
+  getTooltipYDelta,
+  getTooltipOrientation,
+} from './chartStyle'
 
 const enhancer = compose(
   onlyWhenVisibleDataset,
@@ -40,16 +50,6 @@ const enhancer = compose(
   visibleDataInfoEnhancer,
   onlyWhenDataGroupsList
 )
-
-const chartParentStyle = {
-  position: 'absolute',
-  left: 0,
-  top: 0,
-  width: '100%',
-  height: '100%',
-  background: wit,
-  border: `1px solid ${hemelblauw.light}`,
-}
 
 const Rectangle = glamorous.div({
   position: 'relative',
@@ -64,69 +64,9 @@ const Rectangle = glamorous.div({
 })
 const DataChartComp = glamorous.div({
   animation: fadeInAnimation,
-  maxWidth: '60rem',
+  maxWidth: '40rem',
   position: 'relative',
 })
-
-const yAxisStyle = {
-  tickLabels: {
-    fontSize: '7px',
-    padding: 5,
-  },
-  axisLabel: {
-    fontSize: '7px',
-    textAnchor: 'start',
-    fontWeight: 'bold',
-  },
-}
-
-const xAxisStyle = {
-  tickLabels: {
-    fontSize: '7px',
-    padding: 5,
-  },
-  axisLabel: {
-    fontSize: '7px',
-    padding: 28,
-    fontWeight: 'bold',
-  },
-}
-
-const chartStyle = { parent: chartParentStyle }
-const chartDomainPadding = { y: [10, 10], x: [0, 0] }
-
-const areaStyle = ({ colorId }) => ({
-  data: {
-    fill: `url(#${colorId})`,
-  },
-})
-
-const lineStyle = ({ color, colorId }) => ({
-  data: {
-    strokeWidth: 1,
-    strokeLinejoin: 'round',
-    stroke: color,
-  },
-})
-
-const scatterStyle = ({ color, colorDarker }) => ({
-  data: {
-    fill: (data, active) => (active ? colorDarker : color),
-  },
-})
-
-const legendProps = {
-  orientation: 'vertical',
-  rowGutter: 0,
-  x: 46,
-  y: 6,
-  symbolSpacer: 4,
-  style: {
-    labels: {
-      fontSize: 7,
-    },
-  },
-}
 
 const getLegendData = ({ symbol, color, title }) => ({
   name: title,
@@ -149,15 +89,6 @@ const DataChartContainer = ({
 
   const formatPeriod = formatCbsPeriod(periodType)
 
-  const periodLabel = getCbsPeriodLabel({ language, periodType })
-
-  const Gradient = ({ color, colorId }) => (
-    <linearGradient id={colorId} x1="0" x2="0" y1="0" y2="1">
-      <stop offset="0%" stopColor={color} stopOpacity={0.3} />
-      <stop offset="50%" stopColor={color} stopOpacity={0} />
-    </linearGradient>
-  )
-
   const formatTooltipUnit = unit => (existing(unit) ? ` (${unit})` : '')
 
   const Area = ({
@@ -174,26 +105,18 @@ const DataChartContainer = ({
         data={dataEntryList}
         x={getPeriodDate}
         y={getValue}
-        style={areaStyle({ color, colorId })}
+        style={areaStyleFactory({ color, colorId })}
         labels={({ x, y }) => [
           `${formatPeriod(' ')(x)}`,
           `${title}${formatTooltipUnit(unit)}: ${formatNumber(decimals)(y)}`,
         ]}
         labelComponent={
           <VictoryTooltip
-            cornerRadius={1}
-            dy={-2}
-            pointerLength={4}
-            pointerWidth={4}
-            style={{
-              fontSize: '5px',
-              fill: colorDarker,
-            }}
-            flyoutStyle={{
-              strokeWidth: 0.5,
-              stroke: colorDarker,
-              fill: wit,
-            }}
+            {...tooltipPropsFactory({ color, colorDarker })}
+            labelComponent={<VictoryLabel lineHeight={tooltipLineHeight} />}
+            dx={getTooltipXDelta(dataEntryList)}
+            dy={getTooltipYDelta(dataEntryList)}
+            orientation={getTooltipOrientation(dataEntryList)}
           />
         }
       />
@@ -207,51 +130,58 @@ const DataChartContainer = ({
         data={dataEntryList}
         x={getPeriodDate}
         y={getValue}
-        style={lineStyle({ color, colorId })}
+        style={lineStyleFactory({ color, colorId })}
       />,
       <VictoryScatter
         key={`scatter-${colorId}`}
         data={dataEntryList}
         x={getPeriodDate}
         y={getValue}
-        style={scatterStyle({ color, colorDarker })}
-        size={2}
+        style={scatterStyleFactory({ color, colorDarker })}
         symbol={symbol}
       />,
     ]
   }
 
-  console.log('dataGroupsList', dataGroupsList)
   const firstDataEntryList = getIn(['0', 'dataEntryList'])(dataGroupsList)
 
   return (
     <DataChartComp>
       <Rectangle>
-        <VictoryChart
-          width={chartWidth}
-          height={chartHeight}
-          style={chartStyle}
-          theme={VictoryTheme.material}
-          domainPadding={chartDomainPadding}
-          containerComponent={<VictoryVoronoiContainer />}
-        >
-          {chartColors.map(({ color, colorId }) => (
-            <Gradient color={color} colorId={colorId} key={colorId} />
-          ))}
+        <ChartWrapper>
+          {dataGroupsList.map(({ min, max }, index) => {
+            const chartColor = chartColors[index]
+
+            return (
+              <ChartLineGradient
+                key={`gradient-${chartColor.colorId}`}
+                {...chartColor}
+                min={min}
+                max={max}
+              />
+            )
+          })}
+          <VictoryLegend
+            {...legendPropsFactory({})}
+            data={dataGroupsList.map(({ title }, index) =>
+              getLegendData({ title, ...chartColors[index] })
+            )}
+          />
+          <VictoryAxis
+            tickValues={firstDataEntryList.map(getPeriodDate)}
+            tickFormat={formatWithNewYearFactory(periodType)}
+            scale="time"
+            style={xAxisStyleFactory({})}
+            tickCount={chartXAxisTickCount}
+            tickLabelComponent={
+              <VictoryLabel lineHeight={xAxisLineTickLabelLineHeight} />
+            }
+          />
           <VictoryAxis
             dependentAxis
             label={unit}
-            tickFormat={formatNumber(decimals)}
-            style={yAxisStyle}
-            axisLabelComponent={<VictoryLabel x={20} y={46} angle={0} />}
-          />
-          <VictoryAxis
-            fixLabelOverlap
-            tickValues={firstDataEntryList.map(getPeriodDate)}
-            tickFormat={formatPeriod('\n')}
-            label={periodLabel}
-            scale="time"
-            style={xAxisStyle}
+            tickFormat={number => formatNumber({ decimals, number })}
+            style={yAxisStyleFactory({})}
           />
           {dataGroupsList.map((props, index) =>
             Area({ ...props, ...chartColors[index], unit })
@@ -259,13 +189,7 @@ const DataChartContainer = ({
           {dataGroupsList.map((props, index) =>
             Line({ ...props, ...chartColors[index] })
           )}
-          <VictoryLegend
-            {...legendProps}
-            data={dataGroupsList.map(({ title }, index) =>
-              getLegendData({ title, ...chartColors[index] })
-            )}
-          />
-        </VictoryChart>
+        </ChartWrapper>
         <DataSource />
       </Rectangle>
     </DataChartComp>

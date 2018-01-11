@@ -71,7 +71,7 @@ const selectedCategoriesObjectConnector = (dimensionKey: DimensionKey) => (
 }
 
 const allSelectedCategoriesReducer = (state: State) => (memo, dimensionKey) => {
-  const { selectedCategories } = selectedCategoriesObjectConnector(
+  const { selectedCategories = [] } = selectedCategoriesObjectConnector(
     dimensionKey
   )(state)
 
@@ -79,7 +79,7 @@ const allSelectedCategoriesReducer = (state: State) => (memo, dimensionKey) => {
 }
 
 export const allSelectedCategoriesConnector = (state: State) => {
-  const { dimensionKeys } = orderedDimensionsConnector(state)
+  const { dimensionKeys = [] } = orderedDimensionsConnector(state)
 
   return {
     selectedCategories: dimensionKeys.reduce(

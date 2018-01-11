@@ -57,9 +57,6 @@ const convertDataGroupsListToTable = ({ dataGroupsList }) => {
     compareAsc(getDate(tableRow1), getDate(tableRow2))
   )
 
-  console.log('titles', titles)
-  console.log('tableRows', tableRows)
-
   return { titles, columnCount, tableRows }
 }
 

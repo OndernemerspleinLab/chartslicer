@@ -6,6 +6,7 @@ import { configConnector } from './../connectors/configConnectors'
 import { first } from 'lodash/fp'
 import { tableLanguageGetter } from '../connectors/tableInfoConnectors'
 import { allSelectedCategoriesConnector } from '../connectors/categoryConnectors'
+import { metadataIsLoadedConnector } from '../connectors/metadataLoadingStateConnectors'
 
 const getFieldFromOpener = opener => {
   const getView = getIn(['$display', 'getView'])(opener)
@@ -85,8 +86,17 @@ export const isWritable = () => {
   return existing(field) && !field.getReadOnly()
 }
 
-export const shouldPersist = ({ activeDatasetId, activeConfig }) => {
-  return isWritable() && existing(activeDatasetId) && existing(activeConfig)
+export const shouldPersist = ({
+  activeDatasetId,
+  activeConfig,
+  loadedMetadata,
+}) => {
+  return (
+    isWritable() &&
+    loadedMetadata &&
+    existing(activeDatasetId) &&
+    existing(activeConfig)
+  )
 }
 
 export const canPersist = () => {
@@ -129,11 +139,13 @@ export const gatherPersistentData = state => {
 export const setPersistentData = state => {
   const activeDatasetId = activeDatasetGetIdConnector(state)
   const activeConfig = configConnector(state)
+  const loadedMetadata = metadataIsLoadedConnector(state)
 
   if (
     !shouldPersist({
       activeDatasetId,
       activeConfig,
+      loadedMetadata,
     })
   ) {
     return
