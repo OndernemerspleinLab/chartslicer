@@ -112,6 +112,20 @@ export const getPersistentData = () => {
     : {}
 }
 
+export const gatherPersistentData = state => {
+  const activeConfig = configConnector(state)
+  const language = tableLanguageGetter(state)
+  const { selectedTopics } = selectedTopicsConnector(state)
+  const { selectedCategories } = allSelectedCategoriesConnector(state)
+
+  return {
+    language,
+    selectedTopics,
+    selectedCategories,
+    ...activeConfig,
+  }
+}
+
 export const setPersistentData = state => {
   const activeDatasetId = activeDatasetGetIdConnector(state)
   const activeConfig = configConnector(state)
@@ -124,14 +138,7 @@ export const setPersistentData = state => {
   ) {
     return
   }
-  const language = tableLanguageGetter(state)
-  const { selectedTopics } = selectedTopicsConnector(state)
-  const { selectedCategories } = allSelectedCategoriesConnector(state)
+  const data = gatherPersistentData(state)
 
-  setJsonValue({
-    language,
-    selectedTopics,
-    selectedCategories,
-    ...activeConfig,
-  })
+  setJsonValue(data)
 }

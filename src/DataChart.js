@@ -126,7 +126,7 @@ const DataChartContainer = ({
   const Line = ({ dataEntryList, color, colorId, colorDarker, symbol }) => {
     return [
       <VictoryLine
-        key={`area-${colorId}`}
+        key={`line-${colorId}`}
         data={dataEntryList}
         x={getPeriodDate}
         y={getValue}

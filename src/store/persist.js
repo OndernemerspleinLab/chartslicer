@@ -95,4 +95,12 @@ export const managePersistence = store => {
   listenOn('hashchange', handleUrlChange(store))(window)
   manageUrl(store)()
   handleUrlChange(store)()
+
+  window.logPersistentData = () => {
+    console.log(persistTridion.gatherPersistentData(store.getState()))
+  }
+
+  window.getJSON = () => {
+    return JSON.stringify(persistTridion.gatherPersistentData(store.getState()))
+  }
 }
