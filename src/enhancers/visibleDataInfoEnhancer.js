@@ -11,6 +11,7 @@ import { topicsGetConnector } from '../connectors/topicConnectors'
 import { categoriesGetInConnector } from '../connectors/categoryConnectors'
 import { branch, renderNothing, compose } from 'recompose'
 import { labelAliasConnector } from '../connectors/configConnectors'
+import { getDataEntryListProperties } from './getDataEntryListProperties'
 
 const dataEntryFilter = ({
   dataEntries,
@@ -72,18 +73,23 @@ const arrangeDataEntries = ({
     const type = 'topic'
     const alias = labelAliasConnector(type)(topic)(state)
 
+    const dataEntryList = getFilteredDataEntryList({
+      dataList,
+      dataEntries,
+      topicKey,
+      categoryKeyForDimensions,
+    })
+
+    const dataEntryListProperties = getDataEntryListProperties(dataEntryList)
+
     return [
       {
         type,
         info: topic,
         alias,
         title: alias || topic.title,
-        dataEntryList: getFilteredDataEntryList({
-          dataList,
-          dataEntries,
-          topicKey,
-          categoryKeyForDimensions,
-        }),
+        dataEntryList,
+        ...dataEntryListProperties,
       },
     ]
   }
@@ -95,18 +101,22 @@ const arrangeDataEntries = ({
       const topic = topicsGetConnector(topicKey)(state)
       const type = 'topic'
       const alias = labelAliasConnector(type)(topic)(state)
+      const dataEntryList = getFilteredDataEntryList({
+        dataList,
+        dataEntries,
+        topicKey,
+        categoryKeyForDimensions,
+      })
+
+      const dataEntryListProperties = getDataEntryListProperties(dataEntryList)
 
       return {
         type,
         info: topic,
         alias,
         title: alias || topic.title,
-        dataEntryList: getFilteredDataEntryList({
-          dataList,
-          dataEntries,
-          topicKey,
-          categoryKeyForDimensions,
-        }),
+        dataEntryList,
+        ...dataEntryListProperties,
       }
     })
   }
@@ -130,18 +140,22 @@ const arrangeDataEntries = ({
     ])(state)
 
     const alias = labelAliasConnector(type)(category)(state)
+    const dataEntryList = getFilteredDataEntryList({
+      dataList,
+      dataEntries,
+      topicKey,
+      categoryKeyForDimensions,
+    })
+
+    const dataEntryListProperties = getDataEntryListProperties(dataEntryList)
 
     return {
       type,
       info: category,
       alias,
       title: alias || category.title,
-      dataEntryList: getFilteredDataEntryList({
-        dataList,
-        dataEntries,
-        topicKey,
-        categoryKeyForDimensions,
-      }),
+      dataEntryList,
+      ...dataEntryListProperties,
     }
   })
 }
