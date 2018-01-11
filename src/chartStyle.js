@@ -150,7 +150,7 @@ export const tooltipPropsFactory = ({ canvasSizeName, colorDarker }) => ({
   pointerLength: 12,
   pointerWidth: 12,
   style: {
-    fontSize: 12,
+    fontSize: 24,
     fill: colorDarker,
     fontFamily: 'RijksSans, tahoma, sans-serif',
   },

@@ -138,13 +138,11 @@ const DataChartContainer = ({
         x={getPeriodDate}
         y={getValue}
         style={scatterStyleFactory({ color, colorDarker })}
-        size={2}
         symbol={symbol}
       />,
     ]
   }
 
-  console.log('dataGroupsList', dataGroupsList)
   const firstDataEntryList = getIn(['0', 'dataEntryList'])(dataGroupsList)
 
   return (

@@ -5,13 +5,10 @@ export const autofocusEnhancer = Element =>
     constructor(props) {
       super(props)
       this.refInputDomElement = inputDomElement => {
-        console.log('ref', inputDomElement)
         this.inputDomElement = inputDomElement
       }
     }
     componentDidMount() {
-      console.log('mount', this.inputDomElement)
-
       if (this.inputDomElement) {
         requestAnimationFrame(() => this.inputDomElement.focus())
       }
