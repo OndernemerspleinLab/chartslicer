@@ -1,6 +1,5 @@
 import { hemelblauw, wit, grijs } from './colors'
 import { first, last } from './helpers/arrayHelpers'
-import { get } from './helpers/getset'
 
 // CHART
 
@@ -111,18 +110,24 @@ export const scatterStyleFactory = ({ color, colorDarker }) => ({
 
 // TOOLTIP
 
-const getPeriodDate = dataEntry => get('periodDate')(dataEntry)
+export const tooltipScatterStyleFactory = ({ color, colorDarker }) => ({
+  data: {
+    strokeWidth: 0, //eslint-disable-line
+    stroke: 'none',
+    fill: 'none',
+  },
+})
 
-export const getTooltipOrientation = dataEntryList => ({ x }) => {
-  if (getPeriodDate(first(dataEntryList)) === x) return 'right'
+export const getTooltipOrientation = periodDatesInRange => ({ x }) => {
+  if (first(periodDatesInRange) === x) return 'right'
 
-  if (getPeriodDate(last(dataEntryList)) === x) return 'left'
+  if (last(periodDatesInRange) === x) return 'left'
 
   return 'top'
 }
 
-export const getTooltipXDelta = dataEntryList => coordinate => {
-  switch (getTooltipOrientation(dataEntryList)(coordinate)) {
+export const getTooltipXDelta = periodDatesInRange => coordinate => {
+  switch (getTooltipOrientation(periodDatesInRange)(coordinate)) {
     case 'left':
     case 'right':
       return 8
@@ -133,8 +138,8 @@ export const getTooltipXDelta = dataEntryList => coordinate => {
   }
 }
 
-export const getTooltipYDelta = dataEntryList => coordinate => {
-  switch (getTooltipOrientation(dataEntryList)(coordinate)) {
+export const getTooltipYDelta = periodDatesInRange => coordinate => {
+  switch (getTooltipOrientation(periodDatesInRange)(coordinate)) {
     case 'left':
     case 'right':
       return coordinate.y < 0 ? 10 : -10
@@ -155,7 +160,7 @@ export const tooltipPropsFactory = ({ canvasSizeName, colorDarker }) => ({
     fontFamily: 'RijksSans, tahoma, sans-serif',
   },
   flyoutStyle: {
-    strokeWidth: 2,
+    strokeWidth: 1,
     stroke: colorDarker,
     fill: wit,
   },

@@ -11,21 +11,16 @@ import {
 } from 'victory'
 import glamorous from 'glamorous'
 import { fadeInAnimation } from './styles'
+import { chartAspectRatio, chartMaxWidth, chartXAxisTickCount } from './config'
 import {
-  chartAspectRatio,
-  chartMaxWidth,
-  chartColors,
-  chartXAxisTickCount,
-} from './config'
-import {
-  visibleDataInfoEnhancer,
-  onlyWhenDataGroupsList,
-} from './enhancers/visibleDataInfoEnhancer'
+  visibleDatasetEnhancer,
+  onlyWhenValidDimension,
+} from './enhancers/visibleDatasetEnhancer'
 import { onlyWhenVisibleDataset } from './enhancers/datasetEnhancer'
-import { get, getIn } from './helpers/getset'
+import { getIn } from './helpers/getset'
 import { connect } from 'react-redux'
 import { formatCbsPeriod, formatWithNewYearFactory } from './cbsPeriod'
-import { formatNumber, existing } from './helpers/helpers'
+import { formatNumber, existing, unexisting } from './helpers/helpers'
 import { DataSource } from './DataSource'
 import { tableLanguageConnector } from './connectors/tableInfoConnectors'
 import { ChartWrapper, ChartLineGradient } from './DataChartElements'
@@ -37,6 +32,7 @@ import {
   lineStyleFactory,
   areaStyleFactory,
   scatterStyleFactory,
+  tooltipScatterStyleFactory,
   tooltipPropsFactory,
   tooltipLineHeight,
   getTooltipXDelta,
@@ -47,8 +43,8 @@ import {
 const enhancer = compose(
   onlyWhenVisibleDataset,
   connect(tableLanguageConnector),
-  visibleDataInfoEnhancer,
-  onlyWhenDataGroupsList
+  visibleDatasetEnhancer,
+  onlyWhenValidDimension
 )
 
 const Rectangle = glamorous.div({
@@ -68,90 +64,127 @@ const DataChartComp = glamorous.div({
   position: 'relative',
 })
 
-const getLegendData = ({ symbol, color, title }) => ({
-  name: title,
+const getLegendData = ({ symbol, color, dimensionLabel }) => ({
+  name: dimensionLabel,
   symbol: {
     type: symbol,
     fill: color,
   },
 })
 
-const DataChartContainer = ({
-  language,
+const getPeriodDate = periodDate => periodDate
+const formatTooltipUnit = unit => (existing(unit) ? ` (${unit})` : '')
+
+const Tooltips = ({
+  periodDatesInRange,
+  valuesByDimension,
+  dimensionKey,
+  dimensionLabel,
+  chartColor: { color, colorDarker, colorId, symbol },
   periodType,
-  dataEntries,
-  dataGroupsList,
   unit,
   decimals,
 }) => {
-  const getValue = dataEntry => get('value')(dataEntry)
-  const getPeriodDate = dataEntry => get('periodDate')(dataEntry)
-
   const formatPeriod = formatCbsPeriod(periodType)
+  const getValue = periodDate =>
+    getIn([dimensionKey, periodDate])(valuesByDimension) || null
 
-  const formatTooltipUnit = unit => (existing(unit) ? ` (${unit})` : '')
-
-  const Area = ({
-    dataEntryList,
-    color,
-    colorDarker,
-    colorId,
-    title,
-    unit,
-  }) => {
-    return (
-      <VictoryArea
-        key={`area-${colorId}`}
-        data={dataEntryList}
-        x={getPeriodDate}
-        y={getValue}
-        style={areaStyleFactory({ color, colorId })}
-        labels={({ x, y }) => [
+  return (
+    <VictoryScatter
+      key={`tooltipScatter-${colorId}`}
+      data={periodDatesInRange.filter(periodDate =>
+        existing(getValue(periodDate))
+      )}
+      x={getPeriodDate}
+      y={getValue}
+      style={tooltipScatterStyleFactory({ color, colorDarker })}
+      symbol={symbol}
+      labels={({ x, y }) => {
+        if (unexisting(y)) return ''
+        return [
           `${formatPeriod(' ')(x)}`,
-          `${title}${formatTooltipUnit(unit)}: ${formatNumber(decimals)(y)}`,
-        ]}
-        labelComponent={
-          <VictoryTooltip
-            {...tooltipPropsFactory({ color, colorDarker })}
-            labelComponent={<VictoryLabel lineHeight={tooltipLineHeight} />}
-            dx={getTooltipXDelta(dataEntryList)}
-            dy={getTooltipYDelta(dataEntryList)}
-            orientation={getTooltipOrientation(dataEntryList)}
-          />
-        }
-      />
-    )
-  }
+          `${dimensionLabel}${formatTooltipUnit(unit)}: ${formatNumber(
+            decimals
+          )(y)}`,
+        ]
+      }}
+      labelComponent={
+        <VictoryTooltip
+          {...tooltipPropsFactory({ color, colorDarker })}
+          labelComponent={<VictoryLabel lineHeight={tooltipLineHeight} />}
+          dx={getTooltipXDelta(periodDatesInRange)}
+          dy={getTooltipYDelta(periodDatesInRange)}
+          orientation={getTooltipOrientation(periodDatesInRange)}
+        />
+      }
+    />
+  )
+}
+const Area = ({
+  periodDatesInRange,
+  valuesByDimension,
+  dimensionKey,
+  dimensionLabel,
+  chartColor: { color, colorDarker, colorId },
+}) => {
+  const getValue = periodDate =>
+    getIn([dimensionKey, periodDate])(valuesByDimension) || null
+  return (
+    <VictoryArea
+      key={`area-${colorId}`}
+      data={periodDatesInRange}
+      x={getPeriodDate}
+      y={getValue}
+      style={areaStyleFactory({ color, colorId })}
+    />
+  )
+}
 
-  const Line = ({ dataEntryList, color, colorId, colorDarker, symbol }) => {
-    return [
-      <VictoryLine
-        key={`line-${colorId}`}
-        data={dataEntryList}
-        x={getPeriodDate}
-        y={getValue}
-        style={lineStyleFactory({ color, colorId })}
-      />,
-      <VictoryScatter
-        key={`scatter-${colorId}`}
-        data={dataEntryList}
-        x={getPeriodDate}
-        y={getValue}
-        style={scatterStyleFactory({ color, colorDarker })}
-        symbol={symbol}
-      />,
-    ]
-  }
+const Line = ({
+  periodDatesInRange,
+  valuesByDimension,
+  dimensionKey,
+  dimensionLabel,
+  chartColor: { color, colorDarker, colorId, symbol },
+}) => {
+  const getValue = periodDate =>
+    getIn([dimensionKey, periodDate])(valuesByDimension) || null
 
-  const firstDataEntryList = getIn(['0', 'dataEntryList'])(dataGroupsList)
+  return [
+    <VictoryLine
+      key={`line-${colorId}`}
+      data={periodDatesInRange}
+      x={getPeriodDate}
+      y={getValue}
+      style={lineStyleFactory({ color, colorId })}
+    />,
+    <VictoryScatter
+      key={`scatter-${colorId}`}
+      data={periodDatesInRange.filter(periodDate =>
+        existing(getValue(periodDate))
+      )}
+      x={getPeriodDate}
+      y={getValue}
+      style={scatterStyleFactory({ color, colorDarker })}
+      symbol={symbol}
+    />,
+  ]
+}
 
+const DataChartContainer = ({
+  language,
+  periodType,
+  dimensionInfo,
+  periodDatesInRange,
+  valuesByDimension,
+  unit,
+  decimals,
+}) => {
   return (
     <DataChartComp>
       <Rectangle>
         <ChartWrapper>
-          {dataGroupsList.map(({ min, max }, index) => {
-            const chartColor = chartColors[index]
-
+          {dimensionInfo.map(({ min, max, chartColor }, index) => {
             return (
               <ChartLineGradient
                 key={`gradient-${chartColor.colorId}`}
@@ -163,12 +196,12 @@ const DataChartContainer = ({
           })}
           <VictoryLegend
             {...legendPropsFactory({})}
-            data={dataGroupsList.map(({ title }, index) =>
-              getLegendData({ title, ...chartColors[index] })
+            data={dimensionInfo.map(({ dimensionLabel, chartColor }, index) =>
+              getLegendData({ dimensionLabel, ...chartColor })
             )}
           />
           <VictoryAxis
-            tickValues={firstDataEntryList.map(getPeriodDate)}
+            tickValues={periodDatesInRange}
             tickFormat={formatWithNewYearFactory(periodType)}
             scale="time"
             style={xAxisStyleFactory({})}
@@ -183,11 +216,35 @@ const DataChartContainer = ({
             tickFormat={number => formatNumber({ decimals, number })}
             style={yAxisStyleFactory({})}
           />
-          {dataGroupsList.map((props, index) =>
-            Area({ ...props, ...chartColors[index], unit })
+          {dimensionInfo.map(singleDimensionInfo =>
+            Tooltips({
+              ...singleDimensionInfo,
+              unit,
+              decimals,
+              periodType,
+              periodDatesInRange,
+              valuesByDimension,
+            })
           )}
-          {dataGroupsList.map((props, index) =>
-            Line({ ...props, ...chartColors[index] })
+          {dimensionInfo.map(singleDimensionInfo =>
+            Area({
+              ...singleDimensionInfo,
+              unit,
+              decimals,
+              periodType,
+              periodDatesInRange,
+              valuesByDimension,
+            })
+          )}
+          {dimensionInfo.map(singleDimensionInfo =>
+            Line({
+              ...singleDimensionInfo,
+              unit,
+              decimals,
+              periodType,
+              periodDatesInRange,
+              valuesByDimension,
+            })
           )}
         </ChartWrapper>
         <DataSource />

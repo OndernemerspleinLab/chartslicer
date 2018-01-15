@@ -8,15 +8,20 @@ import { onlyWhenVisibleDataset } from './enhancers/datasetEnhancer'
 import { connect } from 'react-redux'
 import { formatCbsPeriod, getCbsPeriodLabel } from './cbsPeriod'
 import { formatNumber } from './helpers/helpers'
+import { getIn } from './helpers/getset'
 import { tableLanguageConnector } from './connectors/tableInfoConnectors'
-import { visibleDataAsTableEnhancer } from './enhancers/visibleDataTableEnhancer'
 import { onlyWhenChildren } from './enhancers/onlyWhenChildren'
 import { LabelEditButton } from './LabelEditButton'
+import {
+  visibleDatasetEnhancer,
+  onlyWhenValidDimension,
+} from './enhancers/visibleDatasetEnhancer'
 
 const enhancer = compose(
   onlyWhenVisibleDataset,
   connect(tableLanguageConnector),
-  visibleDataAsTableEnhancer
+  visibleDatasetEnhancer,
+  onlyWhenValidDimension
 )
 
 const DataTableComp = glamorous.div({
@@ -63,7 +68,7 @@ const ValueHeadingCell = ({
   alias,
   title,
   info,
-  type,
+  dimensionType,
   unit,
   activeDatasetId,
   index,
@@ -72,7 +77,7 @@ const ValueHeadingCell = ({
     <LabelEditButton
       alias={alias}
       info={info}
-      type={type}
+      dimensionType={dimensionType}
       activeDatasetId={activeDatasetId}
       index={index}
     >
@@ -82,22 +87,29 @@ const ValueHeadingCell = ({
   </HeadingCell>
 )
 
-const DataRow = ({ periodType, periodDate, values, decimals }) => (
+const DataRow = ({
+  periodType,
+  periodDate,
+  dimensionInfo,
+  valuesByDimension,
+  decimals,
+}) => (
   <Row>
     <Cell>{formatCbsPeriod(periodType)(' ')(periodDate)}</Cell>
-    {values.map((value, index) => (
-      <Cell key={index}>{formatNumber(decimals)(value)}</Cell>
-    ))}
+    {dimensionInfo.map(({ dimensionKey, type, info, alias }, index) => {
+      const value = getIn([dimensionKey, periodDate])(valuesByDimension)
+
+      return <Cell key={index}>{formatNumber(decimals)(value)}</Cell>
+    })}
   </Row>
 )
 
 const DataTableContainer = ({
-  topicKeys,
-  titles = [],
-  tableRows = [],
-  columnCount,
-  periodType,
   language,
+  periodType,
+  dimensionInfo,
+  periodDatesInRange,
+  valuesByDimension,
   unit,
   decimals,
   id,
@@ -111,26 +123,40 @@ const DataTableContainer = ({
           <TableHead>
             <HeadingRow>
               <HeadingCell>{periodLabel}</HeadingCell>
-              {titles.map(({ title, type, info, alias }, index) => (
-                <ValueHeadingCell
-                  activeDatasetId={id}
-                  key={index}
-                  index={index}
-                  unit={unit}
-                  title={title}
-                  alias={alias}
-                  info={info}
-                  type={type}
-                />
-              ))}
+              {dimensionInfo.map(
+                (
+                  {
+                    dimensionLabel,
+                    dimensionLabelAlias,
+                    dimensionType,
+                    info,
+                    alias,
+                  },
+                  index
+                ) => (
+                  <ValueHeadingCell
+                    activeDatasetId={id}
+                    key={index}
+                    index={index}
+                    unit={unit}
+                    title={dimensionLabel}
+                    alias={dimensionLabelAlias}
+                    info={info}
+                    dimensionType={dimensionType}
+                  />
+                )
+              )}
             </HeadingRow>
           </TableHead>
           <Tablebody>
-            {tableRows.map(tableRow => (
+            {periodDatesInRange.map(periodDate => (
               <DataRow
-                key={tableRow.periodDate}
-                {...tableRow}
+                key={periodDate}
+                periodDate={periodDate}
                 decimals={decimals}
+                periodType={periodType}
+                dimensionInfo={dimensionInfo}
+                valuesByDimension={valuesByDimension}
               />
             ))}
           </Tablebody>

@@ -28,13 +28,14 @@ export const categoryLabelAliasConnector = ({ key, dimensionKey }) => state => {
     configConnector(state)
   )
 }
-export const labelAliasConnector = type => {
-  switch (type) {
+export const labelAliasConnector = aliasType => {
+  switch (aliasType) {
     case 'category':
       return categoryLabelAliasConnector
 
     case 'topic':
-    default:
       return topicLabelAliasConnector
+    default:
+      throw new Error(`Invalid aliasType: ${aliasType}`)
   }
 }

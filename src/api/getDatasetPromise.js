@@ -32,9 +32,10 @@ const mapDataEntry = ({
     periodDate: convertCbsPeriodToDate(periodType)(
       cbsDataEntry.Perioden || cbsDataEntry.Periods
     ),
+    categories: pick(Object.keys(categoryKeys))(cbsDataEntry),
+
     // add topics and dimensions
-    ...pick(topicKeys)(cbsDataEntry),
-    ...pick(Object.keys(categoryKeys))(cbsDataEntry),
+    values: pick(topicKeys)(cbsDataEntry),
   }
 }
 

@@ -10,9 +10,8 @@ import { hemelblauw } from './colors'
 import { InsideMargin, Hidden } from './graphPickerSteps/Elements'
 import { fadeInAnimation } from './styles'
 import { onlyWhenVisibleDataset } from './enhancers/datasetEnhancer'
-import { visibleDataInfoEnhancer } from './enhancers/visibleDataInfoEnhancer'
 
-const enhancer = compose(onlyWhenVisibleDataset, visibleDataInfoEnhancer)
+const enhancer = compose(onlyWhenVisibleDataset)
 
 const DataInfoComp = glamorous.div({
   backgroundColor: hemelblauw.lighter,

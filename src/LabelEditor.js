@@ -129,7 +129,7 @@ export const LabelEditor = compose(
     onReset: ({
       labelAliasChanged,
       info: { key, dimensionKey },
-      type,
+      dimensionType,
       close,
       activeDatasetId,
     }) => event => {
@@ -139,7 +139,7 @@ export const LabelEditor = compose(
         value: undefined,
         key,
         dimensionKey,
-        aliasType: type,
+        aliasType: dimensionType,
       })
       close()
     },
@@ -147,7 +147,7 @@ export const LabelEditor = compose(
       labelAliasChanged,
       value,
       info: { key, dimensionKey },
-      type,
+      dimensionType,
       close,
       activeDatasetId,
     }) => event => {
@@ -157,7 +157,7 @@ export const LabelEditor = compose(
         value,
         key,
         dimensionKey,
-        aliasType: type,
+        aliasType: dimensionType,
       })
       close()
     },

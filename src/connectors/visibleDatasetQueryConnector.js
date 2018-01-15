@@ -26,18 +26,14 @@ export const visibleDatasetInfoConnector = state => {
   )
 }
 
-export const dataEntriesGetConnector = state => {
+export const dataEntriesConnector = state => {
   const activeDatasetId = activeDatasetGetIdConnector(state)
 
   return getIn(['dataEntries', activeDatasetId])(state) || {}
 }
 
-export const dataEntriesConnector = state => {
-  return { dataEntries: dataEntriesGetConnector(state) }
-}
-
 export const dataEntryConnector = (state, { entryId }) => {
-  return get(entryId)(dataEntriesGetConnector(state))
+  return get(entryId)(dataEntriesConnector(state))
 }
 
 const reduceMultiDimensionChangeVisibleDataset = (

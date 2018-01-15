@@ -18,7 +18,7 @@ const Wrapper = ({ children }) => children
 
 const LabelEditButtonElement = ({
   children,
-  type,
+  dimensionType,
   info,
   alias,
   editorOpened,
@@ -36,7 +36,7 @@ const LabelEditButtonElement = ({
       {editorOpened ? (
         <LabelEditor
           info={info}
-          type={type}
+          dimensionType={dimensionType}
           alias={alias}
           activeDatasetId={activeDatasetId}
           close={close}
