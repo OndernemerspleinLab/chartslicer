@@ -1,6 +1,8 @@
+import { sortBy } from 'lodash/fp'
 import { getDimensionLabel } from './getDimensionLabel'
 import { getDimensionDataProperties } from './getDimensionDataProperties'
 import { chartColors } from '../../config'
+import { set } from '../../helpers/getset'
 
 export const getDimensionInfo = ({
   dimensionKeys,
@@ -10,7 +12,7 @@ export const getDimensionInfo = ({
   selectedCategories,
   labelAliases,
 }) => {
-  const dimensionInfo = dimensionKeys.map((dimensionKey, index) => {
+  const dimensionInfo = dimensionKeys.map(dimensionKey => {
     const dimensionLabel = getDimensionLabel({
       multiDimension,
       selectedTopics,
@@ -18,8 +20,6 @@ export const getDimensionInfo = ({
       labelAliases,
       dimensionKey,
     })
-
-    const chartColor = chartColors[index]
 
     const dimensionDataProperties = getDimensionDataProperties({
       dimensionKey,
@@ -30,9 +30,15 @@ export const getDimensionInfo = ({
       dimensionKey,
       ...dimensionLabel,
       ...dimensionDataProperties,
-      chartColor,
     }
   })
 
-  return dimensionInfo
+  const sortedDimensionInfo = sortBy(({ average }) => -average)(dimensionInfo)
+
+  const sortedDimensionInfoWithChartColors = sortedDimensionInfo.map(
+    (singleDimensionInfo, index) =>
+      set('chartColor', chartColors[index])(singleDimensionInfo)
+  )
+
+  return sortedDimensionInfoWithChartColors
 }

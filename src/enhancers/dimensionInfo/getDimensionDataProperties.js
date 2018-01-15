@@ -1,5 +1,6 @@
 import { isNumber } from '../../helpers/helpers'
 import { getIn, set, update } from '../../helpers/getset'
+import { compose } from 'recompose'
 
 export const getDimensionDataProperties = ({
   dimensionKey,
@@ -7,9 +8,8 @@ export const getDimensionDataProperties = ({
 }) => {
   const valueObject = getIn([dimensionKey])(valuesByDimension)
   const valueList = Object.values(valueObject)
-  const { length } = valueList
 
-  if (length <= 0) return {}
+  if (valueList.length <= 0) return {}
 
   const dataProperties = valueList.reduce(
     (memo, value) => {
@@ -17,7 +17,10 @@ export const getDimensionDataProperties = ({
         return memo
       }
 
-      const nextMemo = update('total', total => total + value)(memo)
+      const nextMemo = compose(
+        update('total', total => total + value),
+        update('length', length => length + 1)
+      )(memo)
 
       if (value < 0) {
         const min = Math.min(value, nextMemo.min)
@@ -27,8 +30,12 @@ export const getDimensionDataProperties = ({
       const max = Math.max(value, nextMemo.max)
       return set('max', max)(nextMemo)
     },
-    { min: 0, max: 0, total: 0 }
+    { min: 0, max: 0, total: 0, length: 0 }
   )
 
-  return set('average', dataProperties.total / length)(dataProperties)
+  const { total, length } = dataProperties
+
+  return length > 0
+    ? set('average', total / length)(dataProperties)
+    : dataProperties
 }
