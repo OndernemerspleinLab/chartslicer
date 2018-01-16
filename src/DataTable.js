@@ -6,7 +6,7 @@ import { InsideMargin } from './graphPickerSteps/Elements'
 import { fadeInAnimation } from './styles'
 import { onlyWhenVisibleDataset } from './enhancers/datasetEnhancer'
 import { connect } from 'react-redux'
-import { formatCbsPeriod, getCbsPeriodLabel } from './cbsPeriod'
+import { formatSingleLineCbsPeriod, getCbsPeriodLabel } from './cbsPeriod'
 import { formatNumber } from './helpers/helpers'
 import { getIn } from './helpers/getset'
 import { tableLanguageConnector } from './connectors/tableInfoConnectors'
@@ -95,7 +95,7 @@ const DataRow = ({
   decimals,
 }) => (
   <Row>
-    <Cell>{formatCbsPeriod(periodType)(' ')(periodDate)}</Cell>
+    <Cell>{formatSingleLineCbsPeriod(periodType)(periodDate)}</Cell>
     {dimensionInfo.map(({ dimensionKey, type, info, alias }, index) => {
       const value = getIn([dimensionKey, periodDate])(valuesByDimension)
 

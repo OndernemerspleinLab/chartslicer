@@ -51,6 +51,11 @@ export const legendPropsFactory = ({ canvasSizeName }) => ({
   },
 })
 
+export const legendLabelPropsFactory = () => ({
+  verticalAnchor: 'start',
+  dy: -11,
+})
+
 const tickLabelStyleFactory = () => ({
   fontSize: 26,
   padding: 8,
@@ -112,7 +117,7 @@ export const scatterStyleFactory = ({ color, colorDarker }) => ({
 
 export const tooltipScatterStyleFactory = ({ color, colorDarker }) => ({
   data: {
-    strokeWidth: 0, //eslint-disable-line
+    strokeWidth: 0,
     stroke: 'none',
     fill: 'none',
   },

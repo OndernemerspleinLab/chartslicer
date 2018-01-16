@@ -1,5 +1,12 @@
-import { accordionFromLength, rootAccordionFromLength } from '../config'
-import { compose, withState, withHandlers, branch } from 'recompose'
+import {
+  accordionFromLength,
+  rootAccordionFromLength,
+  DIMENSION_TOPIC,
+} from '../config'
+import { compose, withHandlers, branch } from 'recompose'
+import { connectActions } from '../connectors/actionConnectors'
+import { activeDatasetIdConnector } from '../connectors/activeDatasetIdConnector'
+import { connect } from 'react-redux'
 
 export const isAccordion = ({ id, lists }) => {
   const childrenLength = lists.reduce(
@@ -12,12 +19,41 @@ export const isAccordion = ({ id, lists }) => {
     : childrenLength >= accordionFromLength
 }
 
+const open = ({
+  activeDatasetId,
+  id,
+  accordionOpened,
+  dimensionKey = DIMENSION_TOPIC,
+}) => () => accordionOpened({ activeDatasetId, dimensionKey, id })
+
+const close = ({
+  activeDatasetId,
+  id,
+  accordionClosed,
+  dimensionKey = DIMENSION_TOPIC,
+}) => () => accordionClosed({ activeDatasetId, dimensionKey, id })
+
+const openAll = ({
+  activeDatasetId,
+  dimensionKey = DIMENSION_TOPIC,
+  accordionAllOpened,
+}) => () => accordionAllOpened({ activeDatasetId, dimensionKey })
+
+const closeAll = ({
+  activeDatasetId,
+  dimensionKey = DIMENSION_TOPIC,
+  accordionAllClosed,
+}) => () => accordionAllClosed({ activeDatasetId, dimensionKey })
+
 export const openCloseEnhancer = compose(
-  withState('opened', 'setOpened', false),
+  connect(activeDatasetIdConnector),
+  connectActions,
   withHandlers({
-    toggle: ({ opened, setOpened }) => () => setOpened(!opened),
-    open: ({ setOpened }) => () => setOpened(true),
-    close: ({ setOpened }) => () => setOpened(false),
+    open,
+    close,
+    toggle: props => (props.opened ? close(props) : open(props)),
+    openAll,
+    closeAll,
   })
 )
 

@@ -7,6 +7,10 @@ import {
   CONFIG_CHANGED,
   MULTI_DIMENSION_CHANGED,
   LABEL_ALIAS_CHANGED,
+  ACCORDION_OPENED,
+  ACCORDION_CLOSED,
+  ACCORDION_ALL_OPENED,
+  ACCORDION_ALL_CLOSED,
 } from './actions'
 import { createSimpleAction } from './actionHelpers'
 import { dataGetterActionEnhancer } from './dataGetterActionEnhancer'
@@ -67,6 +71,31 @@ export const labelAliasChanged = createSimpleAction(
   'activeDatasetId',
   'aliasType',
   'dimensionKey',
-  'key',
+  'id',
   'value'
+)
+
+export const accordionOpened = createSimpleAction(
+  ACCORDION_OPENED,
+  'activeDatasetId',
+  'dimensionKey',
+  'id'
+)
+
+export const accordionClosed = createSimpleAction(
+  ACCORDION_CLOSED,
+  'activeDatasetId',
+  'dimensionKey',
+  'id'
+)
+export const accordionAllOpened = createSimpleAction(
+  ACCORDION_ALL_OPENED,
+  'activeDatasetId',
+  'dimensionKey'
+)
+
+export const accordionAllClosed = createSimpleAction(
+  ACCORDION_ALL_CLOSED,
+  'activeDatasetId',
+  'dimensionKey'
 )

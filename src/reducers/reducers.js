@@ -7,10 +7,12 @@ import { datasetReselectingReducer } from './datasetReselectingReducer'
 import { datasetLoadErrorReducer } from './datasetLoadErrorReducer'
 import { datasetLoadSuccessReducer } from './datasetLoadSuccessReducer'
 import { multiDimensionChangeVisibleDatasetReducer } from '../connectors/visibleDatasetQueryConnector'
+import { accordionReducer } from './accordionReducer'
 
 export const reducers = composeReducers(
   multiDimensionChangeVisibleDatasetReducer,
   datasetReselectingReducer,
+  accordionReducer,
   datasetLoadSuccessReducer,
   datasetLoadErrorReducer,
   metadataReducer,

@@ -10,6 +10,7 @@ import {
   CloseAccordion,
   Checkbox,
   Alias,
+  Sticky,
 } from './Elements'
 import glamorous from 'glamorous'
 import { violet } from '../colors'
@@ -22,6 +23,8 @@ import { fadeInAnimation } from '../styles'
 import { MultiDimensionOption } from './MultiDimensionPicker'
 import { first } from 'lodash/fp'
 import { maxDimensions, DIMENSION_TOPIC } from '../config'
+import { MediaText, MediaFigure, Media } from '../Media'
+import { OpenCloseAll } from './OpenCloseAll'
 
 const RadioTopicUnit = compose(
   branch(({ children }) => unexisting(children), renderNothing)
@@ -144,7 +147,16 @@ const TopicGroup = topicGroupEnhancer(TopicGroupContainer)
 
 export const TopicPicker = onlyWhenMetadataLoaded(() => (
   <Step>
-    <StepTitle sticky>Kies het onderwerp</StepTitle>
+    <Sticky>
+      <Media>
+        <MediaText>
+          <StepTitle>Kies het onderwerp</StepTitle>
+        </MediaText>
+        <MediaFigure>
+          <OpenCloseAll dimensionKey={DIMENSION_TOPIC} />
+        </MediaFigure>
+      </Media>
+    </Sticky>
     <MultiDimensionOption inputValue={DIMENSION_TOPIC}>
       Meerdere onderwerpen selecteren (maximaal {maxDimensions})
     </MultiDimensionOption>

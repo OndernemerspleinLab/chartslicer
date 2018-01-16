@@ -10,6 +10,7 @@ import {
   AccordionButton,
   CloseAccordion,
   Alias,
+  Sticky,
 } from './Elements'
 import glamorous from 'glamorous'
 import { violet } from '../colors'
@@ -25,6 +26,8 @@ import { fadeInAnimation } from '../styles'
 import { MultiDimensionOption } from './MultiDimensionPicker'
 import { first } from 'lodash/fp'
 import { maxDimensions } from '../config'
+import { OpenCloseAll } from './OpenCloseAll'
+import { Media, MediaText, MediaFigure } from '../Media'
 
 const CategoryRadioComp = ({
   title,
@@ -148,7 +151,16 @@ export const CategoryPicker = compose(
   dimensionForKeyEnhancer
 )(({ dimensionKey, title }) => (
   <Step>
-    <StepTitle sticky>Filter op ‘{title}’</StepTitle>
+    <Sticky>
+      <Media>
+        <MediaText>
+          <StepTitle sticky>Filter op ‘{title}’</StepTitle>
+        </MediaText>
+        <MediaFigure>
+          <OpenCloseAll dimensionKey={dimensionKey} />
+        </MediaFigure>
+      </Media>
+    </Sticky>
     <MultiDimensionOption inputValue={dimensionKey}>
       Meerdere ‘{title}’ selecteren (maximaal {maxDimensions})
     </MultiDimensionOption>

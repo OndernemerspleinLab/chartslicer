@@ -88,24 +88,19 @@ const StepInsideMargin = withProps({ top: '0.5rem', bottom: '1rem' })(
 
 export const Step = nest(StepComp, StepInsideMargin)
 
-export const StepTitle = glamorous.h2(
-  resetMarginStyle,
-  {
-    lineHeight: 1.15,
-    fontSize: '1.3rem',
-    padding: '0.2rem 0',
-    marginBottom: '0.8rem',
-  },
-  ({ sticky }) =>
-    sticky
-      ? {
-          position: 'sticky',
-          top: 0,
-          backgroundColor: violet.lightest,
-          zIndex: 2,
-        }
-      : undefined
-)
+export const StepTitle = glamorous.h2(resetMarginStyle, {
+  lineHeight: 1.15,
+  fontSize: '1.3rem',
+  padding: '0.2rem 0',
+  marginBottom: '0.8rem',
+})
+
+export const Sticky = glamorous.div({
+  position: 'sticky',
+  top: 0,
+  backgroundColor: violet.lightest,
+  zIndex: 2,
+})
 
 export const Paragraph = glamorous.p({
   margin: 0,

@@ -8,6 +8,10 @@ export {
   metadataLoadSuccess,
   metadataLoadError,
   labelAliasChanged,
+  accordionOpened,
+  accordionClosed,
+  accordionAllOpened,
+  accordionAllClosed,
 } from './simpleActionCreators'
 export {
   datasetLoadSuccess,

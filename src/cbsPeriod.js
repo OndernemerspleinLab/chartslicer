@@ -78,23 +78,32 @@ const cbsPeriodLabels = {
 export const getCbsPeriodLabel = ({ language, periodType }) =>
   cbsPeriodLabels[language][periodType]
 
-const cbsPeriodFormatters = {
-  Jaar: seperator => date => formatDate(date, 'YYYY'),
-  Maanden: seperator => date => formatDate(date, `MMM[${seperator}]YYYY`),
-  Kwartalen: seperator => date => formatDate(date, `[Q]Q[${seperator}]YYYY`),
+const cbsPeriodSingleLineFormatters = {
+  Jaar: date => formatDate(date, 'YYYY'),
+  Maanden: date => formatDate(date, `MMM YYYY`),
+  Kwartalen: date => formatDate(date, `YYYY [Q]Q`),
 }
 
-export const formatCbsPeriod = type => seperator => cbsPeriod =>
-  cbsPeriodFormatters[type](seperator)(cbsPeriod)
+export const formatSingleLineCbsPeriod = type => cbsPeriod =>
+  cbsPeriodSingleLineFormatters[type](cbsPeriod)
 
-const cbsPeriodWithoutYearFormatters = {
+const cbsPeriodMultiLineFormatters = {
+  Jaar: date => formatDate(date, 'YYYY'),
+  Maanden: date => formatDate(date, `MMM[\n]YYYY`),
+  Kwartalen: date => formatDate(date, `[Q]Q[\n]YYYY`),
+}
+
+export const formatMultiLineCbsPeriod = type => cbsPeriod =>
+  cbsPeriodMultiLineFormatters[type](cbsPeriod)
+
+const cbsPeriodShortFormatters = {
   Jaar: date => formatDate(date, 'YYYY'),
   Maanden: date => formatDate(date, `MMM`),
   Kwartalen: date => formatDate(date, `[Q]Q`),
 }
 
-export const formatCbsPeriodWithoutYear = type => cbsPeriod =>
-  cbsPeriodWithoutYearFormatters[type](cbsPeriod)
+export const formatShortCbsPeriod = type => cbsPeriod =>
+  cbsPeriodShortFormatters[type](cbsPeriod)
 
 const cbsPeriodCreators = {
   Jaar: date => formatDate(date, 'YYYY[JJ00]'),
@@ -128,19 +137,20 @@ export const createCbsPeriods = ({ endDate, periodType, periodLength }) => {
 
 export const formatWithNewYearFactory = periodType => {
   if (periodType === 'Jaar') {
-    return date => formatCbsPeriod(periodType)('\n')(date)
+    return date => formatMultiLineCbsPeriod(periodType)(date)
   }
 
   return (date, index, dateList) => {
     const previousDate = previous(index)(dateList)
 
-    if (!previousDate) return formatCbsPeriod(periodType)('\n')(date)
+    if (!previousDate) return formatMultiLineCbsPeriod(periodType)(date)
 
-    if (last(dateList) === date) return formatCbsPeriod(periodType)('\n')(date)
+    if (last(dateList) === date)
+      return formatMultiLineCbsPeriod(periodType)(date)
 
     if (!isSameYear(date, previousDate))
-      return formatCbsPeriod(periodType)('\n')(date)
+      return formatMultiLineCbsPeriod(periodType)(date)
 
-    return formatCbsPeriodWithoutYear(periodType)(date)
+    return formatShortCbsPeriod(periodType)(date)
   }
 }

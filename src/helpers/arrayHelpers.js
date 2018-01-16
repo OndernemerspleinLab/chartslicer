@@ -11,3 +11,5 @@ export const getOffset = offset => index => (iterable = []) => {
 }
 export const next = getOffset(1)
 export const previous = getOffset(-1)
+
+export const push = value => (iterable = []) => iterable.concat([value])
