@@ -99,6 +99,13 @@ export const ChartWrapper = ({ children, dimensionInfo }) => {
 }
 
 const getPeriodDate = periodDate => periodDate
+
+const getValueFactory = ({ dimensionKey, valuesByDimension }) => periodDate => {
+  const value = getIn([dimensionKey, periodDate])(valuesByDimension)
+
+  return existing(value) ? value : null
+}
+
 const formatTooltipUnit = unit => (existing(unit) ? ` (${unit})` : '')
 
 export const Tooltips = ({
@@ -112,8 +119,10 @@ export const Tooltips = ({
   decimals,
 }) => {
   const formatPeriod = formatSingleLineCbsPeriod(periodType)
-  const getValue = periodDate =>
-    getIn([dimensionKey, periodDate])(valuesByDimension) || null
+  const getValue = getValueFactory({
+    dimensionKey,
+    valuesByDimension,
+  })
 
   return (
     <VictoryScatter
@@ -155,8 +164,11 @@ export const Area = ({
   dimensionLabel,
   chartColor: { color, colorDarker, colorId },
 }) => {
-  const getValue = periodDate =>
-    getIn([dimensionKey, periodDate])(valuesByDimension) || null
+  const getValue = getValueFactory({
+    dimensionKey,
+    valuesByDimension,
+  })
+
   return (
     <VictoryArea
       name={`area-${colorId}`}
@@ -178,8 +190,10 @@ export const Line = ({
   unit,
   decimals,
 }) => {
-  const getValue = periodDate =>
-    getIn([dimensionKey, periodDate])(valuesByDimension) || null
+  const getValue = getValueFactory({
+    dimensionKey,
+    valuesByDimension,
+  })
 
   return [
     <VictoryLine
