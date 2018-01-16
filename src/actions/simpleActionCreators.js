@@ -71,7 +71,7 @@ export const labelAliasChanged = createSimpleAction(
   'activeDatasetId',
   'aliasType',
   'dimensionKey',
-  'id',
+  'key',
   'value'
 )
 

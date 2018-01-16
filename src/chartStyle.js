@@ -64,7 +64,6 @@ const tickLabelStyleFactory = () => ({
 })
 
 export const xAxisLineTickLabelLineHeight = 1
-export const tooltipLineHeight = 1.2
 
 export const yAxisStyleFactory = () => ({
   axis: axisStyle,
@@ -155,6 +154,12 @@ export const getTooltipYDelta = periodDatesInRange => coordinate => {
   }
 }
 
+const tooltipLabelStyleFactory = ({ colorDarker }) => ({
+  fontSize: 24,
+  fill: colorDarker,
+  fontFamily: 'RijksSans, tahoma, sans-serif',
+})
+
 export const tooltipPropsFactory = ({
   periodDatesInRange,
   canvasSizeName,
@@ -166,14 +171,18 @@ export const tooltipPropsFactory = ({
   cornerRadius: 1,
   pointerLength: 12,
   pointerWidth: 12,
-  style: {
-    fontSize: 24,
-    fill: colorDarker,
-    fontFamily: 'RijksSans, tahoma, sans-serif',
-  },
+  style: tooltipLabelStyleFactory({ colorDarker }),
   flyoutStyle: {
     strokeWidth: 1,
     stroke: colorDarker,
     fill: wit,
   },
 })
+
+export const tooltipLabelPropsFactory = ({ colorDarker }) => {
+  const tooltipLabelStyle = tooltipLabelStyleFactory({ colorDarker })
+  return {
+    lineHeight: 1.2,
+    style: [{ ...tooltipLabelStyle, fontWeight: 'bold' }, tooltipLabelStyle],
+  }
+}

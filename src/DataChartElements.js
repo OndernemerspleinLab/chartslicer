@@ -21,7 +21,7 @@ import {
   scatterStyleFactory,
   tooltipScatterStyleFactory,
   tooltipPropsFactory,
-  tooltipLineHeight,
+  tooltipLabelPropsFactory,
 } from './chartStyle'
 
 const getStops = ({ min, max }) => {
@@ -143,8 +143,14 @@ export const Tooltips = ({
       }}
       labelComponent={
         <VictoryTooltip
-          {...tooltipPropsFactory({ periodDatesInRange, color, colorDarker })}
-          labelComponent={<VictoryLabel lineHeight={tooltipLineHeight} />}
+          {...tooltipPropsFactory({
+            color,
+            colorDarker,
+            periodDatesInRange,
+          })}
+          labelComponent={
+            <VictoryLabel {...tooltipLabelPropsFactory({ colorDarker })} />
+          }
         />
       }
     />
