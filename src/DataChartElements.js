@@ -22,9 +22,6 @@ import {
   tooltipScatterStyleFactory,
   tooltipPropsFactory,
   tooltipLineHeight,
-  getTooltipXDelta,
-  getTooltipYDelta,
-  getTooltipOrientation,
 } from './chartStyle'
 
 const getStops = ({ min, max }) => {
