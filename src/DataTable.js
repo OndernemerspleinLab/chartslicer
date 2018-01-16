@@ -96,7 +96,7 @@ const DataRow = ({
 }) => (
   <Row>
     <Cell>{formatSingleLineCbsPeriod(periodType)(periodDate)}</Cell>
-    {dimensionInfo.map(({ dimensionKey, type, info, alias }, index) => {
+    {dimensionInfo.map(({ dimensionKey }, index) => {
       const value = getIn([dimensionKey, periodDate])(valuesByDimension)
 
       return <Cell key={index}>{formatNumber(decimals)(value)}</Cell>

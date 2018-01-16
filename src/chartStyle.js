@@ -155,7 +155,14 @@ export const getTooltipYDelta = periodDatesInRange => coordinate => {
   }
 }
 
-export const tooltipPropsFactory = ({ canvasSizeName, colorDarker }) => ({
+export const tooltipPropsFactory = ({
+  periodDatesInRange,
+  canvasSizeName,
+  colorDarker,
+}) => ({
+  dx: getTooltipXDelta(periodDatesInRange),
+  dy: getTooltipYDelta(periodDatesInRange),
+  orientation: getTooltipOrientation(periodDatesInRange),
   cornerRadius: 1,
   pointerLength: 12,
   pointerWidth: 12,

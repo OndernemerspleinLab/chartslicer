@@ -146,11 +146,8 @@ export const Tooltips = ({
       }}
       labelComponent={
         <VictoryTooltip
-          {...tooltipPropsFactory({ color, colorDarker })}
+          {...tooltipPropsFactory({ periodDatesInRange, color, colorDarker })}
           labelComponent={<VictoryLabel lineHeight={tooltipLineHeight} />}
-          dx={getTooltipXDelta(periodDatesInRange)}
-          dy={getTooltipYDelta(periodDatesInRange)}
-          orientation={getTooltipOrientation(periodDatesInRange)}
         />
       }
     />

@@ -15,5 +15,5 @@ export const wordBreak = ({ sentence = '', lineLength }) => {
     return push(word)(lines)
   }, [])
 
-  return splitSentence
+  return splitSentence.join('\n')
 }

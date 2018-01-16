@@ -100,7 +100,7 @@ const DataChartContainer = ({
           })}
           <VictoryLegend
             {...legendPropsFactory({})}
-            data={dimensionInfo.map(({ dimensionLabel, chartColor }, index) =>
+            data={dimensionInfo.map(({ dimensionLabel, chartColor }) =>
               getLegendData({ dimensionLabel, ...chartColor })
             )}
             labelComponent={<VictoryLabel {...legendLabelPropsFactory({})} />}
