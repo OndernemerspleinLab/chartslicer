@@ -186,9 +186,12 @@ const tooltipLabelStyleFactory = ({
   ]
 }
 
-const addLineHeightToCount = (heightMemo, { fontSize }) => {
+const addTooltipLineHeightToCount = (heightMemo, { fontSize }) => {
   return heightMemo + fontSize * tooltipLineHeight
 }
+
+const getTooltipHeight = tooltipLabelStyleList =>
+  1.2 * tooltipLabelStyleList.reduce(addTooltipLineHeightToCount, 0)
 
 export const tooltipPropsFactory = ({
   periodDatesInRange,
@@ -203,7 +206,8 @@ export const tooltipPropsFactory = ({
     color,
     dimensionLabelLineCount,
   })
-  const height = tooltipLabelStyleList.reduce(addLineHeightToCount, 30)
+  const height = getTooltipHeight(tooltipLabelStyleList)
+
   return {
     height,
     dy: getTooltipYDelta(globalMiddle),
@@ -230,7 +234,8 @@ export const tooltipLabelPropsFactory = ({
     color,
     dimensionLabelLineCount,
   })
-  const height = tooltipLabelStyleList.reduce(addLineHeightToCount, 30)
+  const height = getTooltipHeight(tooltipLabelStyleList)
+
   return {
     dy: height / 4.4, // to compensate for misplacement op text in flyout
     lineHeight: tooltipLineHeight,
