@@ -2,7 +2,7 @@ import React from 'react'
 import { flatten } from 'lodash/fp'
 import { chartDomainPadding, chartPadding, chartStyle } from './chartStyle'
 import { pure } from 'recompose'
-import { chartWidth, chartHeight } from './config'
+import { chartWidth, chartHeight, chartTooltipLineLength } from './config'
 import {
   VictoryArea,
   VictoryLine,
@@ -23,6 +23,7 @@ import {
   tooltipPropsFactory,
   tooltipLabelPropsFactory,
 } from './chartStyle'
+import { wordBreakIntoArray } from './helpers/stringHelpers'
 
 const getStops = ({ min, max }) => {
   const cutoffPercentage = max / (max - min) * 100
@@ -114,12 +115,20 @@ export const Tooltips = ({
   periodType,
   unit,
   decimals,
+  globalMiddle,
 }) => {
   const formatPeriod = formatSingleLineCbsPeriod(periodType)
   const getValue = getValueFactory({
     dimensionKey,
     valuesByDimension,
   })
+
+  const dimensionLabelBrokenIntoArray = wordBreakIntoArray({
+    lineLength: chartTooltipLineLength,
+    sentence: dimensionLabel,
+  })
+  const formattedUnit = formatTooltipUnit(unit)
+  const dimensionLabelLineCount = dimensionLabelBrokenIntoArray.length
 
   return (
     <VictoryScatter
@@ -135,10 +144,11 @@ export const Tooltips = ({
       labels={({ x, y }) => {
         if (unexisting(y)) return ''
         return [
-          `${formatPeriod(x)}`,
-          `${dimensionLabel}${formatTooltipUnit(unit)}: ${formatNumber(
-            decimals
-          )(y)}`,
+          formatNumber(decimals)(y),
+          formattedUnit,
+          ' ', // empty line for vertical spacing
+          ...dimensionLabelBrokenIntoArray,
+          formatPeriod(x),
         ]
       }}
       labelComponent={
@@ -147,9 +157,17 @@ export const Tooltips = ({
             color,
             colorDarker,
             periodDatesInRange,
+            dimensionLabelLineCount,
+            globalMiddle,
           })}
           labelComponent={
-            <VictoryLabel {...tooltipLabelPropsFactory({ colorDarker })} />
+            <VictoryLabel
+              {...tooltipLabelPropsFactory({
+                color,
+                colorDarker,
+                dimensionLabelLineCount,
+              })}
+            />
           }
         />
       }

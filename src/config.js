@@ -17,6 +17,7 @@ export const chartHeight = chartWidth / chartAspectRatio
 export const chartMaxWidth = `${100 * chartAspectRatio}vh`
 export const chartXAxisTickCount = 9
 export const chartLegendLineLength = 25
+export const chartTooltipLineLength = 15
 
 export const sidebarWidth = '25rem'
 

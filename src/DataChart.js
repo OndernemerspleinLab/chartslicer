@@ -78,6 +78,7 @@ const DataChartContainer = ({
   valuesByDimension,
   unit,
   decimals,
+  globalMiddle,
 }) => {
   return (
     <DataChartComp>
@@ -129,6 +130,7 @@ const DataChartContainer = ({
               periodType,
               periodDatesInRange,
               valuesByDimension,
+              globalMiddle,
             })
           )}
           {dimensionInfo.map(singleDimensionInfo =>

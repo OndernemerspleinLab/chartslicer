@@ -1,6 +1,4 @@
 import { hemelblauw, wit, grijs } from './colors'
-import { first, last } from './helpers/arrayHelpers'
-
 // CHART
 
 const chartParentStyle = {
@@ -122,67 +120,116 @@ export const tooltipScatterStyleFactory = ({ color, colorDarker }) => ({
   },
 })
 
-export const getTooltipOrientation = periodDatesInRange => ({ x }) => {
-  if (first(periodDatesInRange) === x) return 'right'
-
-  if (last(periodDatesInRange) === x) return 'left'
-
-  return 'top'
+const getTooltipOrientation = globalMiddle => ({ y }) => {
+  return y < globalMiddle ? 'top' : 'bottom'
 }
 
-export const getTooltipXDelta = periodDatesInRange => coordinate => {
-  switch (getTooltipOrientation(periodDatesInRange)(coordinate)) {
-    case 'left':
-    case 'right':
-      return 8
+const getTooltipYDelta = globalMiddle => datum => {
+  const { y } = datum
+
+  switch (getTooltipOrientation(globalMiddle)(datum)) {
+    case 'bottom':
+      // compensate for wrong position when above or on x-axis
+      return y >= 0 ? 20 : 0
 
     case 'top':
-    default:
-      return 0
+      // compensate for wrong position when below x-axis
+      return y < 0 ? 20 : 0
   }
 }
 
-export const getTooltipYDelta = periodDatesInRange => coordinate => {
-  switch (getTooltipOrientation(periodDatesInRange)(coordinate)) {
-    case 'left':
-    case 'right':
-      return coordinate.y < 0 ? 10 : -10
+const tooltipLineHeight = 1.3
 
-    case 'top':
-    default:
-      return coordinate.y < 0 ? 20 : 0
-  }
-}
-
-const tooltipLabelStyleFactory = ({ colorDarker }) => ({
-  fontSize: 24,
-  fill: colorDarker,
+const tooltipLabelStyleBase = {
+  fontSize: 20,
   fontFamily: 'RijksSans, tahoma, sans-serif',
-})
+}
+
+const tooltipLabelStyleFactory = ({
+  colorDarker,
+  color,
+  dimensionLabelLineCount,
+}) => {
+  const periodStyle = {
+    ...tooltipLabelStyleBase,
+    fontStyle: 'italic',
+    fill: colorDarker,
+  }
+  const unitStyle = {
+    ...tooltipLabelStyleBase,
+    fill: color,
+    fontWeight: 'bold',
+  }
+  const valueStyle = {
+    ...tooltipLabelStyleBase,
+    fontWeight: 'bold',
+    fontSize: 32,
+    fill: color,
+  }
+  const dimensionLabelStyle = { ...tooltipLabelStyleBase, fill: colorDarker }
+  const dimensionLabelStyleList = Array(dimensionLabelLineCount).fill(
+    dimensionLabelStyle
+  )
+  const emptyLineStyle = {
+    fontSize: 10, // for vertical spacing
+  }
+
+  return [
+    valueStyle,
+    unitStyle,
+    emptyLineStyle, // for vertical spacing
+    ...dimensionLabelStyleList,
+    periodStyle,
+  ]
+}
+
+const addLineHeightToCount = (heightMemo, { fontSize }) => {
+  return heightMemo + fontSize * tooltipLineHeight
+}
 
 export const tooltipPropsFactory = ({
   periodDatesInRange,
   canvasSizeName,
   colorDarker,
-}) => ({
-  dx: getTooltipXDelta(periodDatesInRange),
-  dy: getTooltipYDelta(periodDatesInRange),
-  orientation: getTooltipOrientation(periodDatesInRange),
-  cornerRadius: 1,
-  pointerLength: 12,
-  pointerWidth: 12,
-  style: tooltipLabelStyleFactory({ colorDarker }),
-  flyoutStyle: {
-    strokeWidth: 1,
-    stroke: colorDarker,
-    fill: wit,
-  },
-})
-
-export const tooltipLabelPropsFactory = ({ colorDarker }) => {
-  const tooltipLabelStyle = tooltipLabelStyleFactory({ colorDarker })
+  color,
+  dimensionLabelLineCount,
+  globalMiddle,
+}) => {
+  const tooltipLabelStyleList = tooltipLabelStyleFactory({
+    colorDarker,
+    color,
+    dimensionLabelLineCount,
+  })
+  const height = tooltipLabelStyleList.reduce(addLineHeightToCount, 30)
   return {
-    lineHeight: 1.2,
-    style: [{ ...tooltipLabelStyle, fontWeight: 'bold' }, tooltipLabelStyle],
+    height,
+    dy: getTooltipYDelta(globalMiddle),
+    orientation: getTooltipOrientation(globalMiddle),
+    cornerRadius: 1,
+    pointerLength: 12,
+    pointerWidth: 12,
+    flyoutStyle: {
+      strokeWidth: 1,
+      stroke: colorDarker,
+      fill: wit,
+    },
+    style: tooltipLabelStyleList,
+  }
+}
+
+export const tooltipLabelPropsFactory = ({
+  colorDarker,
+  color,
+  dimensionLabelLineCount,
+}) => {
+  const tooltipLabelStyleList = tooltipLabelStyleFactory({
+    colorDarker,
+    color,
+    dimensionLabelLineCount,
+  })
+  const height = tooltipLabelStyleList.reduce(addLineHeightToCount, 30)
+  return {
+    dy: height / 4.4, // to compensate for misplacement op text in flyout
+    lineHeight: tooltipLineHeight,
   }
 }

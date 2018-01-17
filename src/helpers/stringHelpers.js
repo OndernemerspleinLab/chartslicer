@@ -1,7 +1,8 @@
 import { last, push } from './arrayHelpers'
 
 const seperator = ' '
-export const wordBreak = ({ sentence = '', lineLength }) => {
+
+export const wordBreakIntoArray = ({ sentence = '', lineLength }) => {
   const words = sentence.split(seperator)
 
   const splitSentence = words.reduce((lines, word) => {
@@ -15,5 +16,8 @@ export const wordBreak = ({ sentence = '', lineLength }) => {
     return push(word)(lines)
   }, [])
 
-  return splitSentence.join('\n')
+  return splitSentence
+}
+export const wordBreak = ({ sentence = '', lineLength }) => {
+  return wordBreakIntoArray({ sentence, lineLength }).join('\n')
 }

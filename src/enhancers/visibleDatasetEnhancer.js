@@ -24,6 +24,7 @@ import { branch, renderNothing } from 'recompose'
 import { configConnector } from '../connectors/configConnectors'
 import { getDimensionInfo } from './dimensionInfo/getDimensionInfo'
 import { weakMemoize } from '../helpers/weakMemoize'
+import { getGlobalDataProperties } from './dimensionInfo/getGlobalDataProperties'
 
 const getPeriodDate = get('periodDate')
 
@@ -223,6 +224,8 @@ export const visibleDataInfoConnector = weakMemoize(state => {
     labelAliases,
   })
 
+  const globalDataProperties = getGlobalDataProperties(dimensionInfo)
+
   const periodDatesInRange = getPeriodDatesInRange({
     allPeriodDates,
     dimensionKeys,
@@ -234,6 +237,7 @@ export const visibleDataInfoConnector = weakMemoize(state => {
 
   return {
     ...visibleDatasetInfo,
+    ...globalDataProperties,
     valuesByDimension,
     dimensionInfo,
     periodDatesInRange,
