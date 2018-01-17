@@ -135,6 +135,9 @@ const getTooltipYDelta = globalMiddle => datum => {
     case 'top':
       // compensate for wrong position when below x-axis
       return y < 0 ? 20 : 0
+
+    default:
+      return 0
   }
 }
 
