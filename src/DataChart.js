@@ -28,10 +28,10 @@ import {
 } from './DataChartElements'
 import {
   xAxisStyleFactory,
-  xAxisLineTickLabelLineHeight,
   yAxisStyleFactory,
   legendPropsFactory,
   legendLabelPropsFactory,
+  xAxisTickLabelPropsFactory,
 } from './chartStyle'
 import { wordBreak } from './helpers/stringHelpers'
 
@@ -113,7 +113,7 @@ const DataChartContainer = ({
             style={xAxisStyleFactory({})}
             tickCount={chartXAxisTickCount}
             tickLabelComponent={
-              <VictoryLabel lineHeight={xAxisLineTickLabelLineHeight} />
+              <VictoryLabel {...xAxisTickLabelPropsFactory({})} />
             }
           />
           <VictoryAxis

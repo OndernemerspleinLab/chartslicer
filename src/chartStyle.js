@@ -58,10 +58,18 @@ const tickLabelStyleFactory = () => ({
   fontSize: 26,
   padding: 8,
   fill: hemelblauw.darker,
-  fontFamily: 'RijksSans, tahoma, sans-serif',
 })
 
-export const xAxisLineTickLabelLineHeight = 1
+const xAxisLineTickLabelLineHeight = 1.1
+
+export const xAxisTickLabelPropsFactory = () => {
+  const tickLableStyle = tickLabelStyleFactory({})
+
+  return {
+    lineHeight: xAxisLineTickLabelLineHeight,
+    style: [tickLableStyle, { ...tickLableStyle, fontSize: 22 }],
+  }
+}
 
 export const yAxisStyleFactory = () => ({
   axis: axisStyle,
@@ -71,14 +79,12 @@ export const yAxisStyleFactory = () => ({
     padding: 100,
     fontWeight: 'bold',
     fill: hemelblauw.darker,
-    fontFamily: 'RijksSans, tahoma, sans-serif',
   },
   grid: gridStyle,
 })
 
 export const xAxisStyleFactory = () => ({
   axis: axisStyle,
-  tickLabels: tickLabelStyleFactory(),
   grid: gridStyle,
 })
 
@@ -145,7 +151,6 @@ const tooltipLineHeight = 1.3
 
 const tooltipLabelStyleBase = {
   fontSize: 20,
-  fontFamily: 'RijksSans, tahoma, sans-serif',
 }
 
 const tooltipLabelStyleFactory = ({
