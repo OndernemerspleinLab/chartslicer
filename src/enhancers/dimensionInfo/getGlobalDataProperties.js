@@ -1,4 +1,8 @@
 export const getGlobalDataProperties = (dimensionInfo = []) => {
+  if (dimensionInfo.length <= 0) {
+    return {}
+  }
+
   const {
     min: globalMin,
     max: globalMax,
