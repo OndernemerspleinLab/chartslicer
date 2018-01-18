@@ -1,4 +1,7 @@
 import { hemelblauw, wit, grijs } from './colors'
+
+const fontFamily = 'sans-serif'
+
 // CHART
 
 const chartParentStyle = {
@@ -45,6 +48,7 @@ export const legendPropsFactory = ({ canvasSizeName }) => ({
 	style: {
 		labels: {
 			fontSize: 22,
+			fontFamily,
 		},
 	},
 })
@@ -58,6 +62,7 @@ const tickLabelStyleFactory = () => ({
 	fontSize: 26,
 	padding: 8,
 	fill: hemelblauw.darker,
+	fontFamily,
 })
 
 const xAxisLineTickLabelLineHeight = 1.1
@@ -79,6 +84,7 @@ export const yAxisStyleFactory = () => ({
 		padding: 100,
 		fontWeight: 'bold',
 		fill: hemelblauw.darker,
+		fontFamily,
 	},
 	grid: gridStyle,
 })
@@ -151,6 +157,7 @@ const tooltipLineHeight = 1.3
 
 const tooltipLabelStyleBase = {
 	fontSize: 20,
+	fontFamily,
 }
 
 const tooltipLabelStyleFactory = ({
