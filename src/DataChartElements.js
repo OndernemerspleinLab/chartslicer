@@ -116,8 +116,9 @@ export const Tooltips = ({
 	unit,
 	decimals,
 	globalMiddle,
+	language,
 }) => {
-	const formatPeriod = formatSingleLineCbsPeriod(periodType)
+	const formatPeriod = formatSingleLineCbsPeriod({ periodType, language })
 	const getValue = getValueFactory({
 		dimensionKey,
 		valuesByDimension,

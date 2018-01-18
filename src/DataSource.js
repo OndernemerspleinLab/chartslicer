@@ -46,10 +46,12 @@ const DataSourceComp = glamorous.div({
 	fontSize: '0.8rem',
 })
 
+const getSourceLabel = language => (language === 'nl' ? 'Bron:' : 'Source')
+
 const DataSourceContainer = ({ activeDatasetId, language }) => (
 	<DataSourceComp css={{ marginTop: '2rem' }}>
-		Bron: <CbsLink id={activeDatasetId} language={language} />{' '}
-		<CreativeCommonsLink />
+		{getSourceLabel(language)}:{' '}
+		<CbsLink id={activeDatasetId} language={language} /> <CreativeCommonsLink />
 	</DataSourceComp>
 )
 

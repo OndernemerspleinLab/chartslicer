@@ -108,7 +108,7 @@ const DataChartContainer = ({
 					/>
 					<VictoryAxis
 						tickValues={periodDatesInRange}
-						tickFormat={formatWithNewYearFactory(periodType)}
+						tickFormat={formatWithNewYearFactory({ language, periodType })}
 						scale="time"
 						style={xAxisStyleFactory({})}
 						tickCount={chartXAxisTickCount}
@@ -131,6 +131,7 @@ const DataChartContainer = ({
 							periodDatesInRange,
 							valuesByDimension,
 							globalMiddle,
+							language,
 						}),
 					)}
 					{dimensionInfo.map(singleDimensionInfo =>

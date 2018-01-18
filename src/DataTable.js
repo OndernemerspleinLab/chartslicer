@@ -93,9 +93,12 @@ const DataRow = ({
 	dimensionInfo,
 	valuesByDimension,
 	decimals,
+	language,
 }) => (
 	<Row>
-		<Cell>{formatSingleLineCbsPeriod(periodType)(periodDate)}</Cell>
+		<Cell>
+			{formatSingleLineCbsPeriod({ language, periodType })(periodDate)}
+		</Cell>
 		{dimensionInfo.map(({ dimensionKey }, index) => {
 			const value = getIn([dimensionKey, periodDate])(valuesByDimension)
 
@@ -151,6 +154,7 @@ const DataTableContainer = ({
 					<Tablebody>
 						{periodDatesInRange.map(periodDate => (
 							<DataRow
+								language={language}
 								key={periodDate}
 								periodDate={periodDate}
 								decimals={decimals}
