@@ -1,9 +1,40 @@
 import { hemelblauw, wit, grijs } from './colors'
+import { chartWidth, chartHeight } from './config'
+import { TextSize } from 'victory'
+import { formatNumber } from './helpers/helpers'
 
-const fontFamily = 'sans-serif'
+const fontFamilyProps = {
+	fontFamily: 'sans-serif',
+	characterConstant: 2.35,
+}
 
+const tickLabelStyle = {
+	fontSize: 26,
+	fill: hemelblauw.darker,
+	...fontFamilyProps,
+}
+
+const yAxisLabelSpace = 30
+const yAxisLabelPadding = 20
+
+const chartLeftPaddingMinimum = 100
+
+const getYAxisLabelOffset = ({ decimals, globalMax }) => {
+	const globalMaxFormatted = formatNumber(decimals)(globalMax)
+	const { width } = TextSize.approximateTextSize(
+		globalMaxFormatted,
+		tickLabelStyle,
+	)
+	return width + yAxisLabelPadding
+}
+
+const getChartLeftPadding = ({ decimals, globalMax }) => {
+	return Math.max(
+		yAxisLabelSpace + getYAxisLabelOffset({ decimals, globalMax }),
+		chartLeftPaddingMinimum,
+	)
+}
 // CHART
-
 const chartParentStyle = {
 	position: 'absolute',
 	left: 0,
@@ -14,18 +45,33 @@ const chartParentStyle = {
 	border: `1px solid ${hemelblauw.light}`,
 }
 
-export const chartStyle = { parent: chartParentStyle }
+export const chartPaddingFactory = ({ decimals, globalMax }) => {
+	return {
+		top: 60,
+		left: getChartLeftPadding({
+			decimals,
+			globalMax,
+		}),
+		bottom: 110,
+		right: 100,
+	}
+}
+
 const chartYDomainPadding = 40
-export const chartDomainPadding = {
-	y: [chartYDomainPadding, chartYDomainPadding],
-	x: [0, 0],
-}
-export const chartPadding = {
-	top: 60,
-	left: 130,
-	bottom: 110,
-	right: 100,
-}
+
+export const chartPropsFactory = ({ decimals, globalMax }) => ({
+	width: chartWidth,
+	height: chartHeight,
+	style: { parent: chartParentStyle },
+	padding: chartPaddingFactory({
+		decimals,
+		globalMax,
+	}),
+	domainPadding: {
+		y: [chartYDomainPadding, chartYDomainPadding],
+		x: [0, 0],
+	},
+})
 
 // AXIS
 
@@ -48,7 +94,7 @@ export const legendPropsFactory = ({ canvasSizeName }) => ({
 	style: {
 		labels: {
 			fontSize: 22,
-			fontFamily,
+			...fontFamilyProps,
 		},
 	},
 })
@@ -58,33 +104,27 @@ export const legendLabelPropsFactory = () => ({
 	dy: -11,
 })
 
-const tickLabelStyleFactory = () => ({
-	fontSize: 26,
-	padding: 8,
-	fill: hemelblauw.darker,
-	fontFamily,
-})
-
 const xAxisLineTickLabelLineHeight = 1.1
 
 export const xAxisTickLabelPropsFactory = () => {
-	const tickLableStyle = tickLabelStyleFactory({})
-
 	return {
 		lineHeight: xAxisLineTickLabelLineHeight,
-		style: [tickLableStyle, { ...tickLableStyle, fontSize: 22 }],
+		style: [tickLabelStyle, { ...tickLabelStyle, fontSize: 22 }],
 	}
 }
 
-export const yAxisStyleFactory = () => ({
+export const yAxisStyleFactory = ({ decimals, globalMax }) => ({
 	axis: axisStyle,
-	tickLabels: tickLabelStyleFactory(),
+	tickLabels: tickLabelStyle,
 	axisLabel: {
 		fontSize: 28,
-		padding: 100,
+		padding: getYAxisLabelOffset({
+			decimals,
+			globalMax,
+		}),
 		fontWeight: 'bold',
 		fill: hemelblauw.darker,
-		fontFamily,
+		...fontFamilyProps,
 	},
 	grid: gridStyle,
 })
@@ -114,11 +154,13 @@ export const lineStyleFactory = ({ color }) => ({
 
 // SCATTER
 
-export const scatterStyleFactory = ({ color, colorDarker }) => ({
-	data: {
-		strokeWidth: 4, //eslint-disable-line
-		stroke: (data, active) => (active ? colorDarker : color),
-		fill: (data, active) => (active ? colorDarker : color),
+export const scatterPropsFactory = ({ color, colorDarker, symbol }) => ({
+	size: 6,
+	symbol,
+	style: {
+		data: {
+			fill: (data, active) => (active ? colorDarker : color),
+		},
 	},
 })
 
@@ -157,7 +199,7 @@ const tooltipLineHeight = 1.3
 
 const tooltipLabelStyleBase = {
 	fontSize: 20,
-	fontFamily,
+	...fontFamilyProps,
 }
 
 const tooltipLabelStyleFactory = ({

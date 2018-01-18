@@ -1,8 +1,8 @@
 import React from 'react'
 import { flatten } from 'lodash/fp'
-import { chartDomainPadding, chartPadding, chartStyle } from './chartStyle'
+import { chartPropsFactory } from './chartStyle'
 import { pure } from 'recompose'
-import { chartWidth, chartHeight, chartTooltipLineLength } from './config'
+import { chartTooltipLineLength } from './config'
 import {
 	VictoryArea,
 	VictoryLine,
@@ -17,7 +17,7 @@ import { formatNumber, existing, unexisting } from './helpers/helpers'
 import {
 	lineStyleFactory,
 	areaStyleFactory,
-	scatterStyleFactory,
+	scatterPropsFactory,
 	tooltipScatterStyleFactory,
 	tooltipPropsFactory,
 	tooltipLabelPropsFactory,
@@ -79,6 +79,7 @@ export const ChartWrapper = ({
 	dimensionInfo,
 	globalMax,
 	globalMin,
+	decimals,
 }) => {
 	const containerComponent = (
 		<VictoryVoronoiContainer
@@ -86,13 +87,13 @@ export const ChartWrapper = ({
 			voronoiBlacklist={getVoronoiBlacklist(dimensionInfo)}
 		/>
 	)
+
 	return (
 		<VictoryChart
-			width={chartWidth}
-			height={chartHeight}
-			style={chartStyle}
-			padding={chartPadding}
-			domainPadding={chartDomainPadding}
+			{...chartPropsFactory({
+				globalMax,
+				decimals,
+			})}
 			containerComponent={containerComponent}
 			domain={{ y: [globalMin, globalMax] }}
 		>
@@ -206,8 +207,7 @@ export const Line = ({
 			name={`scatter-${colorId}`}
 			key={`scatter-${colorId}`}
 			data={filteredDimensionData}
-			style={scatterStyleFactory({ color, colorDarker })}
-			symbol={symbol}
+			{...scatterPropsFactory({ color, colorDarker, symbol })}
 		/>,
 	]
 }

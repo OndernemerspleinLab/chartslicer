@@ -123,8 +123,11 @@ const DataChartContainer = ({
 					<VictoryAxis
 						dependentAxis
 						label={unit}
-						tickFormat={number => formatNumber({ decimals, number })}
-						style={yAxisStyleFactory({})}
+						tickFormat={formatNumber(decimals)}
+						style={yAxisStyleFactory({
+							decimals,
+							globalMax,
+						})}
 					/>
 					{dimensionInfo.map(singleDimensionInfo =>
 						Tooltips({
