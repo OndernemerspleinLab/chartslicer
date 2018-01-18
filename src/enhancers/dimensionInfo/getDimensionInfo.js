@@ -3,6 +3,7 @@ import { getDimensionLabel } from './getDimensionLabel'
 import { getDimensionDataProperties } from './getDimensionDataProperties'
 import { chartColors } from '../../config'
 import { set } from '../../helpers/getset'
+import { getDimensionData } from './getDimensionData'
 
 export const getDimensionInfo = ({
 	dimensionKeys,
@@ -11,6 +12,7 @@ export const getDimensionInfo = ({
 	selectedTopics,
 	selectedCategories,
 	labelAliases,
+	periodDatesInRange,
 }) => {
 	const dimensionInfo = dimensionKeys.map(dimensionKey => {
 		const dimensionLabel = getDimensionLabel({
@@ -26,8 +28,16 @@ export const getDimensionInfo = ({
 			valuesByDimension,
 		})
 
+		const { dimensionData, filteredDimensionData } = getDimensionData({
+			periodDatesInRange,
+			dimensionKey,
+			valuesByDimension,
+		})
+
 		return {
 			dimensionKey,
+			dimensionData,
+			filteredDimensionData,
 			...dimensionLabel,
 			...dimensionDataProperties,
 		}

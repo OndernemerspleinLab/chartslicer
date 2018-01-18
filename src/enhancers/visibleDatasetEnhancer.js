@@ -215,6 +215,13 @@ export const visibleDataInfoConnector = weakMemoize(state => {
 	const categories = categoriesConnector(state)
 	const { labelAliases = {} } = configConnector(state)
 
+	const periodDatesInRange = getPeriodDatesInRange({
+		allPeriodDates,
+		dimensionKeys,
+		periodType,
+		valuesByDimension,
+	})
+
 	const dimensionInfo = getDimensionInfo({
 		dimensionKeys,
 		valuesByDimension,
@@ -222,16 +229,10 @@ export const visibleDataInfoConnector = weakMemoize(state => {
 		selectedTopics: topics,
 		selectedCategories: categories,
 		labelAliases,
+		periodDatesInRange,
 	})
 
 	const globalDataProperties = getGlobalDataProperties(dimensionInfo)
-
-	const periodDatesInRange = getPeriodDatesInRange({
-		allPeriodDates,
-		dimensionKeys,
-		periodType,
-		valuesByDimension,
-	})
 
 	const { unit, decimals } = topicsGetConnector(first(topicKeys))(state)
 

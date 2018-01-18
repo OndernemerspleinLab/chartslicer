@@ -12,7 +12,6 @@ import {
 	VictoryChart,
 	VictoryVoronoiContainer,
 } from 'victory'
-import { getIn } from './helpers/getset'
 import { formatSingleLineCbsPeriod } from './cbsPeriod'
 import { formatNumber, existing, unexisting } from './helpers/helpers'
 import {
@@ -75,7 +74,12 @@ const getVoronoiBlacklist = dimensionInfo =>
 			`line-${colorId}`,
 		]),
 	)
-export const ChartWrapper = ({ children, dimensionInfo }) => {
+export const ChartWrapper = ({
+	children,
+	dimensionInfo,
+	globalMax,
+	globalMin,
+}) => {
 	const containerComponent = (
 		<VictoryVoronoiContainer
 			containerId={1}
@@ -90,18 +94,11 @@ export const ChartWrapper = ({ children, dimensionInfo }) => {
 			padding={chartPadding}
 			domainPadding={chartDomainPadding}
 			containerComponent={containerComponent}
+			domain={{ y: [globalMin, globalMax] }}
 		>
 			{children}
 		</VictoryChart>
 	)
-}
-
-const getPeriodDate = periodDate => periodDate
-
-const getValueFactory = ({ dimensionKey, valuesByDimension }) => periodDate => {
-	const value = getIn([dimensionKey, periodDate])(valuesByDimension)
-
-	return existing(value) ? value : null
 }
 
 const formatTooltipUnit = unit => (existing(unit) ? ` (${unit})` : '')
@@ -111,6 +108,7 @@ export const Tooltips = ({
 	valuesByDimension,
 	dimensionKey,
 	dimensionLabel,
+	filteredDimensionData,
 	chartColor: { color, colorDarker, colorId, symbol },
 	periodType,
 	unit,
@@ -119,10 +117,6 @@ export const Tooltips = ({
 	language,
 }) => {
 	const formatPeriod = formatSingleLineCbsPeriod({ periodType, language })
-	const getValue = getValueFactory({
-		dimensionKey,
-		valuesByDimension,
-	})
 
 	const dimensionLabelBrokenIntoArray = wordBreakIntoArray({
 		lineLength: chartTooltipLineLength,
@@ -135,11 +129,7 @@ export const Tooltips = ({
 		<VictoryScatter
 			name={`tooltipScatter-${colorId}`}
 			key={`tooltipScatter-${colorId}`}
-			data={periodDatesInRange.filter(periodDate =>
-				existing(getValue(periodDate)),
-			)}
-			x={getPeriodDate}
-			y={getValue}
+			data={filteredDimensionData}
 			style={tooltipScatterStyleFactory({ color, colorDarker })}
 			symbol={symbol}
 			labels={({ x, y }) => {
@@ -181,20 +171,14 @@ export const Area = ({
 	valuesByDimension,
 	dimensionKey,
 	dimensionLabel,
+	dimensionData,
 	chartColor: { color, colorDarker, colorId },
 }) => {
-	const getValue = getValueFactory({
-		dimensionKey,
-		valuesByDimension,
-	})
-
 	return (
 		<VictoryArea
 			name={`area-${colorId}`}
 			key={`area-${colorId}`}
-			data={periodDatesInRange}
-			x={getPeriodDate}
-			y={getValue}
+			data={dimensionData}
 			style={areaStyleFactory({ color, colorId })}
 		/>
 	)
@@ -205,32 +189,23 @@ export const Line = ({
 	valuesByDimension,
 	dimensionKey,
 	dimensionLabel,
+	dimensionData,
+	filteredDimensionData,
 	chartColor: { color, colorDarker, colorId, symbol },
 	unit,
 	decimals,
 }) => {
-	const getValue = getValueFactory({
-		dimensionKey,
-		valuesByDimension,
-	})
-
 	return [
 		<VictoryLine
 			name={`line-${colorId}`}
 			key={`line-${colorId}`}
-			data={periodDatesInRange}
-			x={getPeriodDate}
-			y={getValue}
+			data={dimensionData}
 			style={lineStyleFactory({ color, colorId })}
 		/>,
 		<VictoryScatter
 			name={`scatter-${colorId}`}
 			key={`scatter-${colorId}`}
-			data={periodDatesInRange.filter(periodDate =>
-				existing(getValue(periodDate)),
-			)}
-			x={getPeriodDate}
-			y={getValue}
+			data={filteredDimensionData}
 			style={scatterStyleFactory({ color, colorDarker })}
 			symbol={symbol}
 		/>,

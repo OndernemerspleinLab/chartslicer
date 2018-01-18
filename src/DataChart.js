@@ -79,6 +79,8 @@ const DataChartContainer = ({
 	unit,
 	decimals,
 	globalMiddle,
+	globalMax,
+	globalMin,
 }) => {
 	return (
 		<DataChartComp>
@@ -88,6 +90,8 @@ const DataChartContainer = ({
 					unit={unit}
 					decimals={decimals}
 					periodType={periodType}
+					globalMax={globalMax}
+					globalMin={globalMin}
 				>
 					{dimensionInfo.map(({ min, max, chartColor }, index) => {
 						return (
