@@ -1,10 +1,10 @@
 // @flow
 
 import {
-  getActiveSubstate,
-  pickFromActiveSubstate,
-  mapFromActiveSubstate,
-  getFromActiveSubstate,
+	getActiveSubstate,
+	pickFromActiveSubstate,
+	mapFromActiveSubstate,
+	getFromActiveSubstate,
 } from './connectorHelpers'
 
 export const tableInfoConnector = getActiveSubstate('tableInfo')

@@ -1,13 +1,13 @@
 // @flow
 import { reduce } from 'lodash/fp'
 import type {
-  Categories,
-  Category,
-  DatasetId,
-  DimensionKey,
-  CategoryGroups,
-  CategoryGroupsForDimension,
-  CategoryGroupId,
+	Categories,
+	Category,
+	DatasetId,
+	DimensionKey,
+	CategoryGroups,
+	CategoryGroupsForDimension,
+	CategoryGroupId,
 } from '../store/stateShape'
 import type { CbsCategoriesByDimension } from './getCbsCategoriesByDimensionPromise'
 import type { CbsCategory, CbsCategories } from './apiShape'
@@ -15,85 +15,85 @@ import { set, getIn, get } from '../helpers/getset'
 import { existing } from '../helpers/helpers'
 
 const getParentCategoryGroups = ({
-  parentId,
-  categoryGroupsForDimension,
+	parentId,
+	categoryGroupsForDimension,
 }: {
-  parentId: ?CategoryGroupId,
-  categoryGroupsForDimension: CategoryGroupsForDimension,
+	parentId: ?CategoryGroupId,
+	categoryGroupsForDimension: CategoryGroupsForDimension,
 }): CategoryGroupId[] => {
-  const memo = []
-  let nextParentId = parentId
+	const memo = []
+	let nextParentId = parentId
 
-  while (existing(nextParentId)) {
-    memo.push(((nextParentId: any): CategoryGroupId))
+	while (existing(nextParentId)) {
+		memo.push(((nextParentId: any): CategoryGroupId))
 
-    nextParentId = getIn([nextParentId, 'parentId'])(categoryGroupsForDimension)
-  }
+		nextParentId = getIn([nextParentId, 'parentId'])(categoryGroupsForDimension)
+	}
 
-  memo.push('root')
+	memo.push('root')
 
-  return memo
+	return memo
 }
 
 const mapCategory = ({
-  dimensionKey,
-  categoryGroupsForDimension,
+	dimensionKey,
+	categoryGroupsForDimension,
 }: {
-  dimensionKey: DimensionKey,
-  categoryGroupsForDimension: CategoryGroupsForDimension,
+	dimensionKey: DimensionKey,
+	categoryGroupsForDimension: CategoryGroupsForDimension,
 }) => ({ Key, Title, CategoryGroupID }: CbsCategory): Category => ({
-  dimensionKey: dimensionKey,
-  key: Key,
-  title: Title,
-  parentGroupIds: getParentCategoryGroups({
-    parentId: CategoryGroupID,
-    categoryGroupsForDimension,
-  }),
+	dimensionKey: dimensionKey,
+	key: Key,
+	title: Title,
+	parentGroupIds: getParentCategoryGroups({
+		parentId: CategoryGroupID,
+		categoryGroupsForDimension,
+	}),
 })
 const categoriesForDimensionReducer = ({
-  dimensionKey,
-  categoryGroupsForDimension,
+	dimensionKey,
+	categoryGroupsForDimension,
 }) => (memo, cbsCategory) =>
-  set(
-    cbsCategory.Key,
-    mapCategory({ dimensionKey, categoryGroupsForDimension })(cbsCategory)
-  )(memo)
+	set(
+		cbsCategory.Key,
+		mapCategory({ dimensionKey, categoryGroupsForDimension })(cbsCategory),
+	)(memo)
 
 const reduceCategoriesForDimension = categoryGroups => (
-  memo,
-  [dimensionKey, cbsCategoriesByDimension]: [DimensionKey, CbsCategories]
+	memo,
+	[dimensionKey, cbsCategoriesByDimension]: [DimensionKey, CbsCategories],
 ) => {
-  return set(
-    dimensionKey,
-    cbsCategoriesByDimension.reduce(
-      categoriesForDimensionReducer({
-        dimensionKey,
-        categoryGroupsForDimension: get(dimensionKey)(categoryGroups),
-      }),
-      {}
-    )
-  )(memo)
+	return set(
+		dimensionKey,
+		cbsCategoriesByDimension.reduce(
+			categoriesForDimensionReducer({
+				dimensionKey,
+				categoryGroupsForDimension: get(dimensionKey)(categoryGroups),
+			}),
+			{},
+		),
+	)(memo)
 }
 const reduceCbsCategoriesByDimension = ({
-  cbsCategoriesByDimension,
-  categoryGroups,
+	cbsCategoriesByDimension,
+	categoryGroups,
 }) =>
-  reduce(reduceCategoriesForDimension(categoryGroups), {})(
-    Object.entries(cbsCategoriesByDimension)
-  )
+	reduce(reduceCategoriesForDimension(categoryGroups), {})(
+		Object.entries(cbsCategoriesByDimension),
+	)
 
 export const getCategories = (id: DatasetId) => ({
-  cbsCategoriesByDimension,
-  categoryGroups,
+	cbsCategoriesByDimension,
+	categoryGroups,
 }: {
-  cbsCategoriesByDimension: CbsCategoriesByDimension,
-  categoryGroups: CategoryGroups,
+	cbsCategoriesByDimension: CbsCategoriesByDimension,
+	categoryGroups: CategoryGroups,
 }): Categories => {
-  return {
-    id,
-    ...reduceCbsCategoriesByDimension({
-      cbsCategoriesByDimension,
-      categoryGroups,
-    }),
-  }
+	return {
+		id,
+		...reduceCbsCategoriesByDimension({
+			cbsCategoriesByDimension,
+			categoryGroups,
+		}),
+	}
 }

@@ -11,29 +11,30 @@ import type { CbsTableInfo, CbsPeriods } from './apiShape'
 const onlySupportedPeriodTypes = intersection(supportedPeriodTypes)
 
 const getPeriodTypes = compose(
-  onlySupportedPeriodTypes,
-  reduce(
-    (periodTypes, { Key }) => union([getCbsPeriodType(Key)])(periodTypes),
-    []
-  )
+	onlySupportedPeriodTypes,
+	reduce(
+		(periodTypes, { Key }) => union([getCbsPeriodType(Key)])(periodTypes),
+		[],
+	),
 )
 
-const mapCbsTableInfo = (id: DatasetId) => (
-  [{ Title, GraphTypes, Language }: CbsTableInfo, cbsPeriods: CbsPeriods]
-): TableInfo => ({
-  id,
-  title: Title,
-  language: Language,
-  graphTypes: split(',')(GraphTypes),
-  periodTypes: getPeriodTypes(cbsPeriods),
+const mapCbsTableInfo = (id: DatasetId) => ([
+	{ Title, GraphTypes, Language }: CbsTableInfo,
+	cbsPeriods: CbsPeriods,
+]): TableInfo => ({
+	id,
+	title: Title,
+	language: Language,
+	graphTypes: split(',')(GraphTypes),
+	periodTypes: getPeriodTypes(cbsPeriods),
 })
 
 export const getTableInfoPromise = (id: DatasetId): Promise<TableInfo> =>
-  fetchTableInfo(id)
-    .then((cbsTableInfo: CbsTableInfo) => {
-      return Promise.all([
-        cbsTableInfo,
-        fetchPeriods({ id, language: cbsTableInfo.Language }),
-      ])
-    })
-    .then(mapCbsTableInfo(id))
+	fetchTableInfo(id)
+		.then((cbsTableInfo: CbsTableInfo) => {
+			return Promise.all([
+				cbsTableInfo,
+				fetchPeriods({ id, language: cbsTableInfo.Language }),
+			])
+		})
+		.then(mapCbsTableInfo(id))

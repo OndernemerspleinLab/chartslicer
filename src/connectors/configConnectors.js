@@ -1,9 +1,9 @@
 import {
-  getActiveSubstate,
-  pickFromActiveSubstate,
-  mapFromActiveSubstate,
-  getFromActiveSubstate,
-  getInFromActiveSubstate,
+	getActiveSubstate,
+	pickFromActiveSubstate,
+	mapFromActiveSubstate,
+	getFromActiveSubstate,
+	getInFromActiveSubstate,
 } from './connectorHelpers'
 import { getIn } from '../helpers/getset'
 
@@ -21,21 +21,21 @@ export const configMapConnector = mapFromActiveSubstate(configConnector)
 export const multiDimensionConnector = configPickConnector(['multiDimension'])
 
 export const topicLabelAliasConnector = ({ key }) => state => {
-  return getIn(['labelAliases', `topic/${key}`])(configConnector(state))
+	return getIn(['labelAliases', `topic/${key}`])(configConnector(state))
 }
 export const categoryLabelAliasConnector = ({ key, dimensionKey }) => state => {
-  return getIn(['labelAliases', `category/${dimensionKey}/${key}`])(
-    configConnector(state)
-  )
+	return getIn(['labelAliases', `category/${dimensionKey}/${key}`])(
+		configConnector(state),
+	)
 }
 export const labelAliasConnector = aliasType => {
-  switch (aliasType) {
-    case 'category':
-      return categoryLabelAliasConnector
+	switch (aliasType) {
+		case 'category':
+			return categoryLabelAliasConnector
 
-    case 'topic':
-      return topicLabelAliasConnector
-    default:
-      throw new Error(`Invalid aliasType: ${aliasType}`)
-  }
+		case 'topic':
+			return topicLabelAliasConnector
+		default:
+			throw new Error(`Invalid aliasType: ${aliasType}`)
+	}
 }

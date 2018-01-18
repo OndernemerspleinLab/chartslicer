@@ -10,13 +10,13 @@ import { multiDimensionChangeVisibleDatasetReducer } from '../connectors/visible
 import { accordionReducer } from './accordionReducer'
 
 export const reducers = composeReducers(
-  multiDimensionChangeVisibleDatasetReducer,
-  datasetReselectingReducer,
-  accordionReducer,
-  datasetLoadSuccessReducer,
-  datasetLoadErrorReducer,
-  metadataReducer,
-  metadataLoadingStateReducer,
-  activeDatasetReducer,
-  configReducer
+	multiDimensionChangeVisibleDatasetReducer,
+	datasetReselectingReducer,
+	accordionReducer,
+	datasetLoadSuccessReducer,
+	datasetLoadErrorReducer,
+	metadataReducer,
+	metadataLoadingStateReducer,
+	activeDatasetReducer,
+	configReducer,
 )

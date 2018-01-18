@@ -1,11 +1,11 @@
 // @flow
 
 import type {
-  DatasetId,
-  TopicGroups,
-  TopicGroup,
-  Key,
-  Id,
+	DatasetId,
+	TopicGroups,
+	TopicGroup,
+	Key,
+	Id,
 } from '../store/stateShape'
 import type { CbsDataProperties } from './getCbsDataPropertiesPromise'
 import type { CbsTopicGroup } from './apiShape'
@@ -23,59 +23,59 @@ type KeyMap = { [string]: Key[] }
 type IdMap = { [string]: Id[] }
 
 const topicGroupMapper = ({
-  topicMap,
-  topicGroupMap,
-  cbsTopicGroup: { ID, Title, ParentID },
+	topicMap,
+	topicGroupMap,
+	cbsTopicGroup: { ID, Title, ParentID },
 }: {
-  topicMap: KeyMap,
-  topicGroupMap: IdMap,
-  cbsTopicGroup: CbsTopicGroup,
+	topicMap: KeyMap,
+	topicGroupMap: IdMap,
+	cbsTopicGroup: CbsTopicGroup,
 }): TopicGroup => ({
-  id: ID,
-  topics: getArrayFromMap(ID)(topicMap).map(get('Key')),
-  topicGroups: getArrayFromMap(ID)(topicGroupMap).map(get('ID')),
-  title: Title,
-  parentId: ParentID,
+	id: ID,
+	topics: getArrayFromMap(ID)(topicMap).map(get('Key')),
+	topicGroups: getArrayFromMap(ID)(topicGroupMap).map(get('ID')),
+	title: Title,
+	parentId: ParentID,
 })
 
 const topicGroupReducer = ({
-  topicMap,
-  topicGroupMap,
+	topicMap,
+	topicGroupMap,
 }: {
-  topicMap: KeyMap,
-  topicGroupMap: IdMap,
+	topicMap: KeyMap,
+	topicGroupMap: IdMap,
 }) => (memo, cbsTopicGroup) =>
-  set(
-    cbsTopicGroup.ID,
-    topicGroupMapper({
-      topicMap,
-      topicGroupMap,
-      cbsTopicGroup,
-    })
-  )(memo)
+	set(
+		cbsTopicGroup.ID,
+		topicGroupMapper({
+			topicMap,
+			topicGroupMap,
+			cbsTopicGroup,
+		}),
+	)(memo)
 
 const reduceCbsTopicGroups = ({
-  Topic = [],
-  TopicGroup = [],
+	Topic = [],
+	TopicGroup = [],
 }: CbsDataProperties) => {
-  const topicMap: KeyMap = groupByParentID(Topic)
-  const topicGroupMap: IdMap = groupByParentID(TopicGroup)
+	const topicMap: KeyMap = groupByParentID(Topic)
+	const topicGroupMap: IdMap = groupByParentID(TopicGroup)
 
-  return {
-    root: pickBy(existing)(
-      topicGroupMapper({
-        topicMap,
-        topicGroupMap,
-        cbsTopicGroup: {
-          ID: 'root',
-          Type: 'TopicGroup',
-        },
-      })
-    ),
-    ...TopicGroup.reduce(topicGroupReducer({ topicMap, topicGroupMap }), {}),
-  }
+	return {
+		root: pickBy(existing)(
+			topicGroupMapper({
+				topicMap,
+				topicGroupMap,
+				cbsTopicGroup: {
+					ID: 'root',
+					Type: 'TopicGroup',
+				},
+			}),
+		),
+		...TopicGroup.reduce(topicGroupReducer({ topicMap, topicGroupMap }), {}),
+	}
 }
 
 export const getTopicGroups = (id: DatasetId) => (
-  cbsDataProperties: CbsDataProperties
+	cbsDataProperties: CbsDataProperties,
 ): TopicGroups => ({ id, ...reduceCbsTopicGroups(cbsDataProperties) })

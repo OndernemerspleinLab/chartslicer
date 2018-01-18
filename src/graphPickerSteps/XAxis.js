@@ -1,20 +1,20 @@
 import React from 'react'
 import {
-  Step,
-  StepTitle,
-  GroupLabel,
-  Label,
-  Radio,
-  Form,
-  FormRow,
-  NumberInput,
-  InputQuantifier,
+	Step,
+	StepTitle,
+	GroupLabel,
+	Label,
+	Radio,
+	Form,
+	FormRow,
+	NumberInput,
+	InputQuantifier,
 } from './Elements'
 import { Media, MediaFigure, MediaText } from '../Media'
 import { marginBottomHalfStyle } from '../marginStyle'
 import {
-  configPickConnector,
-  configMapConnector,
+	configPickConnector,
+	configMapConnector,
 } from '../connectors/configConnectors'
 import { onlyWhenMetadataLoaded } from '../enhancers/metadataEnhancers'
 import { tableInfoPickConnector } from '../connectors/tableInfoConnectors'
@@ -24,81 +24,84 @@ import { configChangeEnhancer } from '../enhancers/configEnhancers'
 import { compose, withProps } from 'recompose'
 import { minPeriodLength, maxPeriodLength } from '../config'
 
-const PeriodTypeRadioComp = ({ inputValue, onChange, name, value }) =>
-  <Radio
-    id={`xAxis-${inputValue}`}
-    name={name}
-    value={inputValue}
-    onChange={onChange}
-    checked={value === inputValue}
-  >
-    {inputValue}
-  </Radio>
+const PeriodTypeRadioComp = ({ inputValue, onChange, name, value }) => (
+	<Radio
+		id={`xAxis-${inputValue}`}
+		name={name}
+		value={inputValue}
+		onChange={onChange}
+		checked={value === inputValue}
+	>
+		{inputValue}
+	</Radio>
+)
 
 const PeriodTypeRadio = configChangeEnhancer(PeriodTypeRadioComp)
 
-const PeriodTypePickerContainer = ({ periodTypes, value }) =>
-  <FormRow role="radiogroup" aria-labelledby="periodTypeGroupLabel">
-    <GroupLabel id="periodTypeGroupLabel">Toon periode per</GroupLabel>
-    {periodTypes.map(periodType =>
-      <PeriodTypeRadio
-        key={periodType}
-        name="periodType"
-        keyPath={['periodType']}
-        inputValue={periodType}
-        value={value}
-      />
-    )}
-  </FormRow>
+const PeriodTypePickerContainer = ({ periodTypes, value }) => (
+	<FormRow role="radiogroup" aria-labelledby="periodTypeGroupLabel">
+		<GroupLabel id="periodTypeGroupLabel">Toon periode per</GroupLabel>
+		{periodTypes.map(periodType => (
+			<PeriodTypeRadio
+				key={periodType}
+				name="periodType"
+				keyPath={['periodType']}
+				inputValue={periodType}
+				value={value}
+			/>
+		))}
+	</FormRow>
+)
 
 const periodLengthPickerEnhancer = compose(
-  connect(configMapConnector({ value: ['periodLength'] })),
-  withProps({
-    min: minPeriodLength,
-    max: maxPeriodLength,
-  }),
-  configChangeEnhancer
+	connect(configMapConnector({ value: ['periodLength'] })),
+	withProps({
+		min: minPeriodLength,
+		max: maxPeriodLength,
+	}),
+	configChangeEnhancer,
 )
 
 const PeriodLengthInput = periodLengthPickerEnhancer(NumberInput)
 
 const periodTypePickerEnhancer = connect(
-  composeConnectors(
-    configMapConnector({ value: ['periodType'] }),
-    tableInfoPickConnector(['periodTypes'])
-  )
+	composeConnectors(
+		configMapConnector({ value: ['periodType'] }),
+		tableInfoPickConnector(['periodTypes']),
+	),
 )
 
 const PeriodTypePicker = periodTypePickerEnhancer(PeriodTypePickerContainer)
 
-const PeriodLengthPickerComp = ({ periodType }) =>
-  <FormRow>
-    <Label css={marginBottomHalfStyle} htmlFor="periodLength">
-      Toon de afgelopen
-    </Label>
-    <Media alignItems="center">
-      <MediaFigure>
-        <PeriodLengthInput
-          id="periodLength"
-          name="periodLength"
-          keyPath={['periodLength']}
-        />
-      </MediaFigure>
-      <MediaText>
-        <InputQuantifier htmlFor="periodLength">{periodType}</InputQuantifier>
-      </MediaText>
-    </Media>
-  </FormRow>
+const PeriodLengthPickerComp = ({ periodType }) => (
+	<FormRow>
+		<Label css={marginBottomHalfStyle} htmlFor="periodLength">
+			Toon de afgelopen
+		</Label>
+		<Media alignItems="center">
+			<MediaFigure>
+				<PeriodLengthInput
+					id="periodLength"
+					name="periodLength"
+					keyPath={['periodLength']}
+				/>
+			</MediaFigure>
+			<MediaText>
+				<InputQuantifier htmlFor="periodLength">{periodType}</InputQuantifier>
+			</MediaText>
+		</Media>
+	</FormRow>
+)
 const PeriodLengthPicker = connect(configPickConnector(['periodType']))(
-  PeriodLengthPickerComp
+	PeriodLengthPickerComp,
 )
 
-export const XAxis = onlyWhenMetadataLoaded(() =>
-  <Step>
-    <StepTitle>Configureer de x-as</StepTitle>
-    <Form>
-      <PeriodTypePicker />
-      <PeriodLengthPicker />
-    </Form>
-  </Step>
-)
+export const XAxis = onlyWhenMetadataLoaded(() => (
+	<Step>
+		<StepTitle>Configureer de x-as</StepTitle>
+		<Form>
+			<PeriodTypePicker />
+			<PeriodLengthPicker />
+		</Form>
+	</Step>
+))

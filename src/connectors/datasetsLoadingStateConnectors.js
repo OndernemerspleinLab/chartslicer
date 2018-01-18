@@ -9,17 +9,17 @@ import { activeDatasetGetQueryConnector } from './activeDatasetQueryConnector'
 export const allDataQueryLoadingStateConnector = get('dataQueryLoadingState')
 
 export const dataQueryLoadingStateConnectorFor = ({
-  id,
-  query,
+	id,
+	query,
 }: {
-  id: Id,
-  query: DatasetQuery,
+	id: Id,
+	query: DatasetQuery,
 }) => (state: State) =>
-  compose(getIn([id, query]), allDataQueryLoadingStateConnector)(state) || {}
+	compose(getIn([id, query]), allDataQueryLoadingStateConnector)(state) || {}
 
 export const dataQueryLoadingStateConnector = (state: State) => {
-  const id = activeDatasetGetIdConnector(state)
-  const query = activeDatasetGetQueryConnector(state)
+	const id = activeDatasetGetIdConnector(state)
+	const query = activeDatasetGetQueryConnector(state)
 
-  return dataQueryLoadingStateConnectorFor({ id, query })(state)
+	return dataQueryLoadingStateConnectorFor({ id, query })(state)
 }

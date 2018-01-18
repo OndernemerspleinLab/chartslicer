@@ -2,22 +2,22 @@ import { connect } from 'react-redux'
 import { first, findLast, pickBy } from 'lodash/fp'
 import { get, setIn, getIn } from '../helpers/getset'
 import {
-  isEqual,
-  isBefore,
-  compareAsc,
-  addMonths,
-  addQuarters,
-  addYears,
+	isEqual,
+	isBefore,
+	compareAsc,
+	addMonths,
+	addQuarters,
+	addYears,
 } from 'date-fns'
 import {
-  visibleDatasetInfoConnector,
-  dataEntriesConnector,
+	visibleDatasetInfoConnector,
+	dataEntriesConnector,
 } from '../connectors/visibleDatasetQueryConnector'
 import { existing } from '../helpers/helpers'
 import { DIMENSION_TOPIC, minPeriodLength } from '../config'
 import {
-  topicsGetConnector,
-  topicsConnector,
+	topicsGetConnector,
+	topicsConnector,
 } from '../connectors/topicConnectors'
 import { categoriesConnector } from '../connectors/categoryConnectors'
 import { branch, renderNothing } from 'recompose'
@@ -29,226 +29,226 @@ import { getGlobalDataProperties } from './dimensionInfo/getGlobalDataProperties
 const getPeriodDate = get('periodDate')
 
 const getAllPeriodDates = dataEntryList => {
-  return dataEntryList
-    .reduce((memo, dataEntry) => {
-      const periodDate = getPeriodDate(dataEntry)
+	return dataEntryList
+		.reduce((memo, dataEntry) => {
+			const periodDate = getPeriodDate(dataEntry)
 
-      if (!memo.some(memoDate => isEqual(memoDate, periodDate))) {
-        memo.push(periodDate)
-      }
+			if (!memo.some(memoDate => isEqual(memoDate, periodDate))) {
+				memo.push(periodDate)
+			}
 
-      return memo
-    }, [])
-    .sort(compareAsc)
+			return memo
+		}, [])
+		.sort(compareAsc)
 }
 
 const addValueForTopicKeyToMemo = ({ periodDate, dataEntry }) => (
-  memo,
-  topicKey
+	memo,
+	topicKey,
 ) => {
-  const value = getIn(['values', topicKey])(dataEntry)
-  if (existing(value)) {
-    return setIn([topicKey, periodDate], value)(memo)
-  }
+	const value = getIn(['values', topicKey])(dataEntry)
+	if (existing(value)) {
+		return setIn([topicKey, periodDate], value)(memo)
+	}
 
-  return memo
+	return memo
 }
 const addValueForCategoryKeyToMemo = ({
-  dataEntry,
-  periodDate,
-  topicKey,
-  categoryKey,
+	dataEntry,
+	periodDate,
+	topicKey,
+	categoryKey,
 }) => memo => {
-  const value = getIn(['values', topicKey])(dataEntry)
-  if (existing(value)) {
-    return setIn([categoryKey, periodDate], value)(memo)
-  }
+	const value = getIn(['values', topicKey])(dataEntry)
+	if (existing(value)) {
+		return setIn([categoryKey, periodDate], value)(memo)
+	}
 
-  return memo
+	return memo
 }
 
 const arrangeValuesByDimension = ({
-  dataEntryList,
-  multiDimension,
-  topicKeys,
-  categoryKeys,
+	dataEntryList,
+	multiDimension,
+	topicKeys,
+	categoryKeys,
 }) => {
-  if (!multiDimension) {
-    const topicKey = first(topicKeys)
+	if (!multiDimension) {
+		const topicKey = first(topicKeys)
 
-    const valuesByDimension = dataEntryList.reduce((memo, dataEntry) => {
-      const periodDate = getPeriodDate(dataEntry)
+		const valuesByDimension = dataEntryList.reduce((memo, dataEntry) => {
+			const periodDate = getPeriodDate(dataEntry)
 
-      return addValueForTopicKeyToMemo({ periodDate, dataEntry })(
-        memo,
-        topicKey
-      )
-    }, {})
+			return addValueForTopicKeyToMemo({ periodDate, dataEntry })(
+				memo,
+				topicKey,
+			)
+		}, {})
 
-    return valuesByDimension
-  }
+		return valuesByDimension
+	}
 
-  if (multiDimension === DIMENSION_TOPIC) {
-    const valuesByDimension = dataEntryList.reduce((memo, dataEntry) => {
-      const periodDate = getPeriodDate(dataEntry)
+	if (multiDimension === DIMENSION_TOPIC) {
+		const valuesByDimension = dataEntryList.reduce((memo, dataEntry) => {
+			const periodDate = getPeriodDate(dataEntry)
 
-      return topicKeys.reduce(
-        addValueForTopicKeyToMemo({ periodDate, dataEntry }),
-        memo
-      )
-    }, {})
+			return topicKeys.reduce(
+				addValueForTopicKeyToMemo({ periodDate, dataEntry }),
+				memo,
+			)
+		}, {})
 
-    return valuesByDimension
-  }
+		return valuesByDimension
+	}
 
-  const topicKey = first(topicKeys)
+	const topicKey = first(topicKeys)
 
-  const valuesByDimension = dataEntryList.reduce((memo, dataEntry) => {
-    const periodDate = getPeriodDate(dataEntry)
-    const categoryKey = getIn(['categories', multiDimension])(dataEntry)
+	const valuesByDimension = dataEntryList.reduce((memo, dataEntry) => {
+		const periodDate = getPeriodDate(dataEntry)
+		const categoryKey = getIn(['categories', multiDimension])(dataEntry)
 
-    return addValueForCategoryKeyToMemo({
-      dataEntry,
-      categoryKey,
-      periodDate,
-      topicKey,
-    })(memo)
-  }, {})
+		return addValueForCategoryKeyToMemo({
+			dataEntry,
+			categoryKey,
+			periodDate,
+			topicKey,
+		})(memo)
+	}, {})
 
-  return valuesByDimension
+	return valuesByDimension
 }
 
 const getDimensionKeys = valuesByDimension =>
-  Object.keys(
-    pickBy(
-      valuesForDimension =>
-        Object.keys(valuesForDimension).length > minPeriodLength
-    )(valuesByDimension)
-  )
+	Object.keys(
+		pickBy(
+			valuesForDimension =>
+				Object.keys(valuesForDimension).length > minPeriodLength,
+		)(valuesByDimension),
+	)
 
 const hasValueForPeriod = ({
-  periodDate,
-  valuesByDimension,
+	periodDate,
+	valuesByDimension,
 }) => dimensionKey => {
-  return existing(getIn([dimensionKey, periodDate])(valuesByDimension))
+	return existing(getIn([dimensionKey, periodDate])(valuesByDimension))
 }
 
 const getPeriodDateIncrementer = periodType => {
-  switch (periodType) {
-    case 'Maanden':
-      return addMonths
-    case 'Kwartalen':
-      return addQuarters
-    case 'Jaar':
-      return addYears
-    default:
-      throw new Error(`Invalid periodType: ${periodType}`)
-  }
+	switch (periodType) {
+		case 'Maanden':
+			return addMonths
+		case 'Kwartalen':
+			return addQuarters
+		case 'Jaar':
+			return addYears
+		default:
+			throw new Error(`Invalid periodType: ${periodType}`)
+	}
 }
 
 const getPeriodDatesInRange = ({
-  allPeriodDates,
-  periodType,
-  dimensionKeys,
-  valuesByDimension,
+	allPeriodDates,
+	periodType,
+	dimensionKeys,
+	valuesByDimension,
 }) => {
-  const startDate = allPeriodDates.find(periodDate => {
-    return dimensionKeys.some(
-      hasValueForPeriod({ periodDate, valuesByDimension })
-    )
-  })
+	const startDate = allPeriodDates.find(periodDate => {
+		return dimensionKeys.some(
+			hasValueForPeriod({ periodDate, valuesByDimension }),
+		)
+	})
 
-  if (!startDate) {
-    return []
-  }
+	if (!startDate) {
+		return []
+	}
 
-  const endDate = findLast(periodDate => {
-    return dimensionKeys.some(
-      hasValueForPeriod({ periodDate, valuesByDimension })
-    )
-  })(allPeriodDates)
+	const endDate = findLast(periodDate => {
+		return dimensionKeys.some(
+			hasValueForPeriod({ periodDate, valuesByDimension }),
+		)
+	})(allPeriodDates)
 
-  if (!endDate) {
-    return []
-  }
+	if (!endDate) {
+		return []
+	}
 
-  const dateIncrementer = getPeriodDateIncrementer(periodType)
+	const dateIncrementer = getPeriodDateIncrementer(periodType)
 
-  const periodDatesInRange = []
-  let date = startDate
+	const periodDatesInRange = []
+	let date = startDate
 
-  while (isBefore(date, endDate) || isEqual(date, endDate)) {
-    periodDatesInRange.push(date)
-    date = dateIncrementer(date, 1)
-  }
+	while (isBefore(date, endDate) || isEqual(date, endDate)) {
+		periodDatesInRange.push(date)
+		date = dateIncrementer(date, 1)
+	}
 
-  return periodDatesInRange
+	return periodDatesInRange
 }
 
 export const visibleDataInfoConnector = weakMemoize(state => {
-  const visibleDatasetInfo = visibleDatasetInfoConnector(state)
-  const dataEntries = dataEntriesConnector(state)
-  const {
-    multiDimension,
-    topicKeys,
-    categoryKeys,
-    dataList,
-    periodType,
-  } = visibleDatasetInfo
+	const visibleDatasetInfo = visibleDatasetInfoConnector(state)
+	const dataEntries = dataEntriesConnector(state)
+	const {
+		multiDimension,
+		topicKeys,
+		categoryKeys,
+		dataList,
+		periodType,
+	} = visibleDatasetInfo
 
-  const dataEntryList = dataList.map(dataEntryId =>
-    get(dataEntryId)(dataEntries)
-  )
+	const dataEntryList = dataList.map(dataEntryId =>
+		get(dataEntryId)(dataEntries),
+	)
 
-  const allPeriodDates = getAllPeriodDates(dataEntryList)
+	const allPeriodDates = getAllPeriodDates(dataEntryList)
 
-  const valuesByDimension = arrangeValuesByDimension({
-    dataEntryList,
-    multiDimension,
-    topicKeys,
-    categoryKeys,
-  })
+	const valuesByDimension = arrangeValuesByDimension({
+		dataEntryList,
+		multiDimension,
+		topicKeys,
+		categoryKeys,
+	})
 
-  const dimensionKeys = getDimensionKeys(valuesByDimension)
+	const dimensionKeys = getDimensionKeys(valuesByDimension)
 
-  const topics = topicsConnector(state)
-  const categories = categoriesConnector(state)
-  const { labelAliases = {} } = configConnector(state)
+	const topics = topicsConnector(state)
+	const categories = categoriesConnector(state)
+	const { labelAliases = {} } = configConnector(state)
 
-  const dimensionInfo = getDimensionInfo({
-    dimensionKeys,
-    valuesByDimension,
-    multiDimension,
-    selectedTopics: topics,
-    selectedCategories: categories,
-    labelAliases,
-  })
+	const dimensionInfo = getDimensionInfo({
+		dimensionKeys,
+		valuesByDimension,
+		multiDimension,
+		selectedTopics: topics,
+		selectedCategories: categories,
+		labelAliases,
+	})
 
-  const globalDataProperties = getGlobalDataProperties(dimensionInfo)
+	const globalDataProperties = getGlobalDataProperties(dimensionInfo)
 
-  const periodDatesInRange = getPeriodDatesInRange({
-    allPeriodDates,
-    dimensionKeys,
-    periodType,
-    valuesByDimension,
-  })
+	const periodDatesInRange = getPeriodDatesInRange({
+		allPeriodDates,
+		dimensionKeys,
+		periodType,
+		valuesByDimension,
+	})
 
-  const { unit, decimals } = topicsGetConnector(first(topicKeys))(state)
+	const { unit, decimals } = topicsGetConnector(first(topicKeys))(state)
 
-  return {
-    ...visibleDatasetInfo,
-    ...globalDataProperties,
-    valuesByDimension,
-    dimensionInfo,
-    periodDatesInRange,
-    unit,
-    decimals,
-  }
+	return {
+		...visibleDatasetInfo,
+		...globalDataProperties,
+		valuesByDimension,
+		dimensionInfo,
+		periodDatesInRange,
+		unit,
+		decimals,
+	}
 })
 
 export const visibleDatasetEnhancer = connect(visibleDataInfoConnector)
 
 export const onlyWhenValidDimension = branch(
-  ({ dimensionInfo = [] }) => dimensionInfo.length <= 0,
-  renderNothing
+	({ dimensionInfo = [] }) => dimensionInfo.length <= 0,
+	renderNothing,
 )

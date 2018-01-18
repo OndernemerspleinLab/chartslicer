@@ -6,17 +6,17 @@ import { reducers } from '../reducers/reducers'
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 
 export const startStore = () => {
-  const preloadedState = rehydrateState()
+	const preloadedState = rehydrateState()
 
-  const store = createStore(
-    reducers,
-    preloadedState,
-    composeEnhancers(applyMiddleware(thunk))
-  )
+	const store = createStore(
+		reducers,
+		preloadedState,
+		composeEnhancers(applyMiddleware(thunk)),
+	)
 
-  managePersistence(store)
+	managePersistence(store)
 
-  rehydrateMetadata(store)
+	rehydrateMetadata(store)
 
-  return store
+	return store
 }

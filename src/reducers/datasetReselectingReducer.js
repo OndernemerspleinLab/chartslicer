@@ -13,61 +13,61 @@ import { activeDatasetGetIdConnector } from '../connectors/activeDatasetIdConnec
 import { tableLanguageGetter } from '../connectors/tableInfoConnectors'
 
 const getConfigWithDateAndLanguage = (state: State): ConfigWithDate => {
-  const config = configConnector(state)
-  const { now } = state
-  const language = tableLanguageGetter(state)
+	const config = configConnector(state)
+	const { now } = state
+	const language = tableLanguageGetter(state)
 
-  return { ...config, now, language }
+	return { ...config, now, language }
 }
 
 const reduceWhenReselectingDataset = reduceWhen(
-  (state: State, { reselectDataset }: Action) =>
-    reselectDataset && metadataIsLoadedConnector(state)
+	(state: State, { reselectDataset }: Action) =>
+		reselectDataset && metadataIsLoadedConnector(state),
 )
 
 const setDatasetQueryLoading = (state: State, { queryString, id }) => {
-  return updateIn(
-    ['dataQueryLoadingState', id, queryString],
-    (loadingState = {}) => {
-      if (loadingState.loaded) {
-        return loadingState
-      } else {
-        return {
-          error: null,
-          loading: true,
-          loaded: false,
-          query: queryString,
-          id,
-        }
-      }
-    }
-  )(state)
+	return updateIn(
+		['dataQueryLoadingState', id, queryString],
+		(loadingState = {}) => {
+			if (loadingState.loaded) {
+				return loadingState
+			} else {
+				return {
+					error: null,
+					loading: true,
+					loaded: false,
+					query: queryString,
+					id,
+				}
+			}
+		},
+	)(state)
 }
 
 const setActiveDatasetQueries = (state, { queryString, id }) =>
-  setIn(['activeDatasetQueries', id], queryString)(state)
+	setIn(['activeDatasetQueries', id], queryString)(state)
 
 const setVisibleDatasetQueries = (state, { queryString, id }) =>
-  getIn(['dataQueryLoadingState', id, queryString, 'loaded'])(state)
-    ? setIn(['visibleDatasetQueries', id], queryString)(state)
-    : state
+	getIn(['dataQueryLoadingState', id, queryString, 'loaded'])(state)
+		? setIn(['visibleDatasetQueries', id], queryString)(state)
+		: state
 
 const reduceDatasetReselecting = (state: State, { type }): State => {
-  const queryString = getDatasetQueryString(getConfigWithDateAndLanguage(state))
-  const id = activeDatasetGetIdConnector(state)
+	const queryString = getDatasetQueryString(getConfigWithDateAndLanguage(state))
+	const id = activeDatasetGetIdConnector(state)
 
-  return composeReducers(
-    setActiveDatasetQueries,
-    setDatasetQueryLoading,
-    setVisibleDatasetQueries
-  )(state, {
-    queryString,
-    id,
-  })
+	return composeReducers(
+		setActiveDatasetQueries,
+		setDatasetQueryLoading,
+		setVisibleDatasetQueries,
+	)(state, {
+		queryString,
+		id,
+	})
 }
 
 export const datasetReselectingReducer: Reducer = composeReducers(
-  reduceWhenReselectingDataset(reduceDatasetReselecting),
-  reduceIn('dataQueryLoadingState')((state = {}) => state),
-  reduceIn('visibleDatasetQueries')((state = {}) => state)
+	reduceWhenReselectingDataset(reduceDatasetReselecting),
+	reduceIn('dataQueryLoadingState')((state = {}) => state),
+	reduceIn('visibleDatasetQueries')((state = {}) => state),
 )

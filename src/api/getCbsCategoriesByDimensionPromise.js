@@ -7,30 +7,30 @@ import type { CbsDimensions, CbsCategories } from './apiShape'
 import type { CbsDataProperties } from './getCbsDataPropertiesPromise'
 
 export type CbsCategoriesByDimension = {
-  [DimensionKey]: CbsCategories,
+	[DimensionKey]: CbsCategories,
 }
 export type CbsCategoriesByDimensionPromise = Promise<CbsCategoriesByDimension>
 
 // Fetches all CategoryGroups
 const getCategoriesPromise = ({
-  id,
-  cbsDimensions,
+	id,
+	cbsDimensions,
 }: {
-  id: DatasetId,
-  cbsDimensions: CbsDimensions,
+	id: DatasetId,
+	cbsDimensions: CbsDimensions,
 }) => {
-  const dimensionKeys = cbsDimensions.map(({ Key }) => Key)
+	const dimensionKeys = cbsDimensions.map(({ Key }) => Key)
 
-  return Promise.all(
-    dimensionKeys.map(fetchCategory(id))
-  ).then(cbsCategories => {
-    return zipObject(dimensionKeys, cbsCategories)
-  })
+	return Promise.all(dimensionKeys.map(fetchCategory(id))).then(
+		cbsCategories => {
+			return zipObject(dimensionKeys, cbsCategories)
+		},
+	)
 }
 
 // Fetches Dimensions, TopicGroups and Topics
 export const getCbsCategorieByDimensionPromise = (id: DatasetId) => ({
-  Dimension = [],
-  GeoDimension = [],
+	Dimension = [],
+	GeoDimension = [],
 }: CbsDataProperties): CbsCategoriesByDimensionPromise =>
-  getCategoriesPromise({ id, cbsDimensions: [...Dimension, ...GeoDimension] })
+	getCategoriesPromise({ id, cbsDimensions: [...Dimension, ...GeoDimension] })

@@ -12,14 +12,14 @@ import { App } from './App'
 import { Provider } from 'react-redux'
 
 Array.from(document.getElementsByClassName('removeOnLoad')).forEach(element =>
-  element.parentNode.removeChild(element)
+	element.parentNode.removeChild(element),
 )
 
 const store = startStore()
 
 ReactDOM.render(
-  <Provider store={store}>
-    <App />
-  </Provider>,
-  document.getElementById('root')
+	<Provider store={store}>
+		<App />
+	</Provider>,
+	document.getElementById('root'),
 )

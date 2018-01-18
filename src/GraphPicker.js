@@ -13,31 +13,31 @@ import { orderedDimensionsConnector } from './connectors/dimensionConnectors'
 import { CategoryPicker } from './graphPickerSteps/CategoryPicker'
 
 const GraphPickerComp = glamorous.div(counterResetStyle, {
-  backgroundColor: violet.lightest,
-  flex: '0 0 auto',
-  [mqSmall]: {
-    borderBottom: `2px solid ${violet.default}`,
-  },
-  [mqBig]: {
-    width: sidebarWidth,
-    minHeight: '100vh',
-    height: '100%',
-  },
+	backgroundColor: violet.lightest,
+	flex: '0 0 auto',
+	[mqSmall]: {
+		borderBottom: `2px solid ${violet.default}`,
+	},
+	[mqBig]: {
+		width: sidebarWidth,
+		minHeight: '100vh',
+		height: '100%',
+	},
 })
 
 const GraphPickerContainer = ({ dimensionKeys = [] }) => (
-  <GraphPickerComp>
-    <Intro />
-    <TablePicker />
-    <TablePickerResult />
-    <XAxis />
-    <TopicPicker />
-    {dimensionKeys.map(dimensionKey => (
-      <CategoryPicker dimensionKey={dimensionKey} key={dimensionKey} />
-    ))}
-  </GraphPickerComp>
+	<GraphPickerComp>
+		<Intro />
+		<TablePicker />
+		<TablePickerResult />
+		<XAxis />
+		<TopicPicker />
+		{dimensionKeys.map(dimensionKey => (
+			<CategoryPicker dimensionKey={dimensionKey} key={dimensionKey} />
+		))}
+	</GraphPickerComp>
 )
 
 export const GraphPicker = connect(orderedDimensionsConnector)(
-  GraphPickerContainer
+	GraphPickerContainer,
 )

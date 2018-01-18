@@ -1,34 +1,34 @@
 // @flow
 
 import {
-  getActiveSubstate,
-  pickFromActiveSubstate,
-  mapFromActiveSubstate,
+	getActiveSubstate,
+	pickFromActiveSubstate,
+	mapFromActiveSubstate,
 } from './connectorHelpers'
 import { get } from '../helpers/getset'
 
 export const allMetadataLoadingStateConnector = get('metadataLoadingState')
 
 export const metadataLoadingStateConnector = getActiveSubstate(
-  'metadataLoadingState'
+	'metadataLoadingState',
 )
 
 export const metadataLoadingStatePickConnector = pickFromActiveSubstate(
-  metadataLoadingStateConnector
+	metadataLoadingStateConnector,
 )
 
 export const metadataLoadingStateMapConnector = mapFromActiveSubstate(
-  metadataLoadingStateConnector
+	metadataLoadingStateConnector,
 )
 
 export const metadataIsLoadingConnector = pickFromActiveSubstate(
-  metadataLoadingStateConnector
+	metadataLoadingStateConnector,
 )(['loading'])
 
 export const metadataIsLoadedConnector = pickFromActiveSubstate(
-  metadataLoadingStateConnector
+	metadataLoadingStateConnector,
 )(['loaded'])
 
 export const metadataErrorConnector = pickFromActiveSubstate(
-  metadataLoadingStateConnector
+	metadataLoadingStateConnector,
 )(['error'])

@@ -3,21 +3,21 @@ import { last, push } from './arrayHelpers'
 const seperator = ' '
 
 export const wordBreakIntoArray = ({ sentence = '', lineLength }) => {
-  const words = sentence.split(seperator)
+	const words = sentence.split(seperator)
 
-  const splitSentence = words.reduce((lines, word) => {
-    const lastLine = last(lines) || ''
-    const appendedLastLine = lastLine.concat(seperator, word)
+	const splitSentence = words.reduce((lines, word) => {
+		const lastLine = last(lines) || ''
+		const appendedLastLine = lastLine.concat(seperator, word)
 
-    if (appendedLastLine.length < lineLength) {
-      return push(appendedLastLine)(lines.slice(0, -1))
-    }
+		if (appendedLastLine.length < lineLength) {
+			return push(appendedLastLine)(lines.slice(0, -1))
+		}
 
-    return push(word)(lines)
-  }, [])
+		return push(word)(lines)
+	}, [])
 
-  return splitSentence
+	return splitSentence
 }
 export const wordBreak = ({ sentence = '', lineLength }) => {
-  return wordBreakIntoArray({ sentence, lineLength }).join('\n')
+	return wordBreakIntoArray({ sentence, lineLength }).join('\n')
 }

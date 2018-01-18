@@ -4,48 +4,48 @@ import { withState, withHandlers, compose } from 'recompose'
 import glamorous from 'glamorous'
 
 const Textarea = glamorous.textarea(
-  {
-    resize: 'none',
-    overflow: 'hidden',
-    border: 'none',
-    background: 'none',
-    padding: 0,
-    color: 'inherit',
-    font: 'inherit',
-    width: '100%',
-    '::placeholder': {
-      color: 'inherit',
-      opacity: 0.3,
-    },
-  },
-  ({ height, inline }) => ({
-    height,
-  })
+	{
+		resize: 'none',
+		overflow: 'hidden',
+		border: 'none',
+		background: 'none',
+		padding: 0,
+		color: 'inherit',
+		font: 'inherit',
+		width: '100%',
+		'::placeholder': {
+			color: 'inherit',
+			opacity: 0.3,
+		},
+	},
+	({ height, inline }) => ({
+		height,
+	}),
 )
 
 const resize = ({ setHeight }) => element => {
-  if (unexisting(element)) {
-    return
-  }
-  element.style.height = 0
+	if (unexisting(element)) {
+		return
+	}
+	element.style.height = 0
 
-  const { offsetHeight } = element
+	const { offsetHeight } = element
 
-  setHeight(element.scrollHeight + offsetHeight)
+	setHeight(element.scrollHeight + offsetHeight)
 
-  element.style.height = ''
+	element.style.height = ''
 }
 
 export const SeamlessTextarea = compose(
-  withState('height', 'setHeight'),
-  withHandlers({
-    onChange: props => event => {
-      resize(props)(event.currentTarget)
+	withState('height', 'setHeight'),
+	withHandlers({
+		onChange: props => event => {
+			resize(props)(event.currentTarget)
 
-      if (typeof props.onChange === 'function') {
-        props.onChange(event)
-      }
-    },
-    innerRef: resize,
-  })
+			if (typeof props.onChange === 'function') {
+				props.onChange(event)
+			}
+		},
+		innerRef: resize,
+	}),
 )(Textarea)

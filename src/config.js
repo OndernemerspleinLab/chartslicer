@@ -37,22 +37,22 @@ export const getStatLineUrl = lang => `https://opendata.cbs.nl/#/CBS/${lang}/`
 export const DIMENSION_TOPIC = 'DIMENSION_TOPIC'
 
 export const chartColors = [
-  {
-    color: hemelblauw.default,
-    colorDarker: hemelblauw.darker,
-    colorId: 'gradient-hemelblauw',
-    symbol: 'circle',
-  },
-  {
-    color: violet.default,
-    colorDarker: violet.darker,
-    colorId: 'gradient-violet',
-    symbol: 'diamond',
-  },
-  {
-    color: mosgroen.default,
-    colorDarker: mosgroen.darker,
-    colorId: 'gradient-mosgroen',
-    symbol: 'square',
-  },
+	{
+		color: hemelblauw.default,
+		colorDarker: hemelblauw.darker,
+		colorId: 'gradient-hemelblauw',
+		symbol: 'circle',
+	},
+	{
+		color: violet.default,
+		colorDarker: violet.darker,
+		colorId: 'gradient-violet',
+		symbol: 'diamond',
+	},
+	{
+		color: mosgroen.default,
+		colorDarker: mosgroen.darker,
+		colorId: 'gradient-mosgroen',
+		symbol: 'square',
+	},
 ]

@@ -1,7 +1,7 @@
 import {
-  getActiveSubstate,
-  mapFromActiveSubstate,
-  getInFromActiveSubstate,
+	getActiveSubstate,
+	mapFromActiveSubstate,
+	getInFromActiveSubstate,
 } from './connectorHelpers'
 import { visibleDatasetInfoConnector } from './visibleDatasetQueryConnector'
 import type { DimensionKey } from '../store/stateShape'
@@ -12,7 +12,7 @@ import { set } from '../helpers/getset'
 export const categoriesConnector = getActiveSubstate('categories')
 
 export const categoriesGetInConnector = getInFromActiveSubstate(
-  categoriesConnector
+	categoriesConnector,
 )
 
 export const categoriesMapConnector = mapFromActiveSubstate(categoriesConnector)
@@ -20,71 +20,71 @@ export const categoriesMapConnector = mapFromActiveSubstate(categoriesConnector)
 export const categoryGroupsConnector = getActiveSubstate('categoryGroups')
 
 export const categoryGroupsGetInConnector = getInFromActiveSubstate(
-  categoryGroupsConnector
+	categoryGroupsConnector,
 )
 
 export const categoryGroupsMapConnector = mapFromActiveSubstate(
-  categoryGroupsConnector
+	categoryGroupsConnector,
 )
 
 export const visibleCategoriesConnector = (state: State) => {
-  const visibleDatasetInfo = visibleDatasetInfoConnector(state)
+	const visibleDatasetInfo = visibleDatasetInfoConnector(state)
 
-  const categoryEntries = Object.entries(visibleDatasetInfo.categoryKeys)
+	const categoryEntries = Object.entries(visibleDatasetInfo.categoryKeys)
 
-  const categories = categoryEntries.map(([dimensionKey, [categoryKey]]) => {
-    return categoriesGetInConnector([dimensionKey, categoryKey])(state)
-  })
+	const categories = categoryEntries.map(([dimensionKey, [categoryKey]]) => {
+		return categoriesGetInConnector([dimensionKey, categoryKey])(state)
+	})
 
-  return { categories }
+	return { categories }
 }
 
 export const selectedCategoriesConnector = (dimensionKey: DimensionKey) => (
-  state: State
+	state: State,
 ) => {
-  const categoryKeys = configGetInConnector(['categoryKeys', dimensionKey])(
-    state
-  )
+	const categoryKeys = configGetInConnector(['categoryKeys', dimensionKey])(
+		state,
+	)
 
-  return {
-    selectedCategories: categoryKeys.map(categoryKey =>
-      categoriesGetInConnector([dimensionKey, categoryKey])(state)
-    ),
-  }
+	return {
+		selectedCategories: categoryKeys.map(categoryKey =>
+			categoriesGetInConnector([dimensionKey, categoryKey])(state),
+		),
+	}
 }
 
 const selectedCategoriesObjectConnector = (dimensionKey: DimensionKey) => (
-  state: State
+	state: State,
 ) => {
-  const categoryKeys = configGetInConnector(['categoryKeys', dimensionKey])(
-    state
-  )
+	const categoryKeys = configGetInConnector(['categoryKeys', dimensionKey])(
+		state,
+	)
 
-  return {
-    selectedCategories: categoryKeys.reduce((memo, categoryKey) => {
-      const category = categoriesGetInConnector([dimensionKey, categoryKey])(
-        state
-      )
-      return set(categoryKey, category)(memo)
-    }, {}),
-  }
+	return {
+		selectedCategories: categoryKeys.reduce((memo, categoryKey) => {
+			const category = categoriesGetInConnector([dimensionKey, categoryKey])(
+				state,
+			)
+			return set(categoryKey, category)(memo)
+		}, {}),
+	}
 }
 
 const allSelectedCategoriesReducer = (state: State) => (memo, dimensionKey) => {
-  const { selectedCategories = [] } = selectedCategoriesObjectConnector(
-    dimensionKey
-  )(state)
+	const { selectedCategories = [] } = selectedCategoriesObjectConnector(
+		dimensionKey,
+	)(state)
 
-  return set(dimensionKey, selectedCategories)(memo)
+	return set(dimensionKey, selectedCategories)(memo)
 }
 
 export const allSelectedCategoriesConnector = (state: State) => {
-  const { dimensionKeys = [] } = orderedDimensionsConnector(state)
+	const { dimensionKeys = [] } = orderedDimensionsConnector(state)
 
-  return {
-    selectedCategories: dimensionKeys.reduce(
-      allSelectedCategoriesReducer(state),
-      {}
-    ),
-  }
+	return {
+		selectedCategories: dimensionKeys.reduce(
+			allSelectedCategoriesReducer(state),
+			{},
+		),
+	}
 }

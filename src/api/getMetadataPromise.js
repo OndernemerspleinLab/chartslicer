@@ -12,62 +12,64 @@ import { fetchCategoryGroups } from './apiCalls'
 import type { DatasetId } from '../store/stateShape'
 
 const getFirstMetadataPromise = (id: DatasetId) =>
-  Promise.all([
-    getTableInfoPromise(id),
-    getCbsDataPropertiesPromise(id),
-    fetchCategoryGroups(id),
-  ]).then(([tableInfo, cbsDataProperties, cbsCategoryGroups]) => ({
-    tableInfo,
-    cbsDataProperties,
-    cbsCategoryGroups,
-  }))
+	Promise.all([
+		getTableInfoPromise(id),
+		getCbsDataPropertiesPromise(id),
+		fetchCategoryGroups(id),
+	]).then(([tableInfo, cbsDataProperties, cbsCategoryGroups]) => ({
+		tableInfo,
+		cbsDataProperties,
+		cbsCategoryGroups,
+	}))
 
 const addTopicsAndDimensions = ({ id, tableInfo, cbsDataProperties }) => {
-  const topicGroups = getTopicGroups(id)(cbsDataProperties)
+	const topicGroups = getTopicGroups(id)(cbsDataProperties)
 
-  return {
-    id,
-    tableInfo,
-    topicGroups,
-    topics: getTopics(id)({ cbsDataProperties, topicGroups }),
-    dimensions: getDimensions(id)(cbsDataProperties),
-  }
+	return {
+		id,
+		tableInfo,
+		topicGroups,
+		topics: getTopics(id)({ cbsDataProperties, topicGroups }),
+		dimensions: getDimensions(id)(cbsDataProperties),
+	}
 }
 
 const getSecondMetadataPromise = (id: DatasetId) => ({
-  tableInfo,
-  cbsDataProperties,
-  cbsCategoryGroups,
+	tableInfo,
+	cbsDataProperties,
+	cbsCategoryGroups,
 }) =>
-  Promise.all([
-    addTopicsAndDimensions({
-      id,
-      tableInfo,
-      cbsDataProperties,
-    }),
-    cbsCategoryGroups,
-    getCbsCategorieByDimensionPromise(id)(cbsDataProperties),
-  ])
+	Promise.all([
+		addTopicsAndDimensions({
+			id,
+			tableInfo,
+			cbsDataProperties,
+		}),
+		cbsCategoryGroups,
+		getCbsCategorieByDimensionPromise(id)(cbsDataProperties),
+	])
 
-const getThirdMetadaPromise = (id: DatasetId) => (
-  [memo, cbsCategoryGroups, cbsCategoriesByDimension]
-) => {
-  const categoryGroups = getCategoryGroups(id)({
-    cbsCategoryGroups,
-    cbsCategoriesByDimension,
-  })
+const getThirdMetadaPromise = (id: DatasetId) => ([
+	memo,
+	cbsCategoryGroups,
+	cbsCategoriesByDimension,
+]) => {
+	const categoryGroups = getCategoryGroups(id)({
+		cbsCategoryGroups,
+		cbsCategoriesByDimension,
+	})
 
-  return {
-    ...memo,
-    categoryGroups,
-    categories: getCategories(id)({
-      cbsCategoriesByDimension,
-      categoryGroups,
-    }),
-  }
+	return {
+		...memo,
+		categoryGroups,
+		categories: getCategories(id)({
+			cbsCategoriesByDimension,
+			categoryGroups,
+		}),
+	}
 }
 
 export const getMetadataPromise = (id: DatasetId) =>
-  getFirstMetadataPromise(id)
-    .then(getSecondMetadataPromise(id))
-    .then(getThirdMetadaPromise(id))
+	getFirstMetadataPromise(id)
+		.then(getSecondMetadataPromise(id))
+		.then(getThirdMetadaPromise(id))

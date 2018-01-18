@@ -6,64 +6,64 @@ import { connect } from 'react-redux'
 import { multiDimensionConnector } from '../connectors/configConnectors'
 
 export const configChangeHandlersEnhancer = withHandlers({
-  onChange: ({
-    activeDatasetId,
-    keyPath,
-    configChanged,
-    inputValue,
-    multiValue,
-    replaceValue,
-    min,
-    max,
-    maxLength,
-    type,
-  }) => event => {
-    const value = existing(inputValue) ? inputValue : event.currentTarget.value
+	onChange: ({
+		activeDatasetId,
+		keyPath,
+		configChanged,
+		inputValue,
+		multiValue,
+		replaceValue,
+		min,
+		max,
+		maxLength,
+		type,
+	}) => event => {
+		const value = existing(inputValue) ? inputValue : event.currentTarget.value
 
-    // const value = minMaxValue({ fieldValue, min, max })
+		// const value = minMaxValue({ fieldValue, min, max })
 
-    configChanged({
-      keyPath,
-      value,
-      activeDatasetId,
-      multiValue,
-      replaceValue,
-      maxLength,
-    })
-  },
+		configChanged({
+			keyPath,
+			value,
+			activeDatasetId,
+			multiValue,
+			replaceValue,
+			maxLength,
+		})
+	},
 })
 
 export const configChangeEnhancer = compose(
-  connect(activeDatasetIdConnector, mapDispatchToProps),
-  configChangeHandlersEnhancer
+	connect(activeDatasetIdConnector, mapDispatchToProps),
+	configChangeHandlersEnhancer,
 )
 
 const multiDimensionOptionConnector = state => {
-  const { multiDimension } = multiDimensionConnector(state)
-  const { activeDatasetId } = activeDatasetIdConnector(state)
+	const { multiDimension } = multiDimensionConnector(state)
+	const { activeDatasetId } = activeDatasetIdConnector(state)
 
-  return {
-    value: multiDimension,
-    activeDatasetId,
-  }
+	return {
+		value: multiDimension,
+		activeDatasetId,
+	}
 }
 
 export const multiDimensionOptionChangeHandlersEnhancer = withHandlers({
-  onChange: ({
-    activeDatasetId,
-    multiDimensionChanged,
-    inputValue,
-  }) => event => {
-    const newValue = event.target.checked ? inputValue : false
+	onChange: ({
+		activeDatasetId,
+		multiDimensionChanged,
+		inputValue,
+	}) => event => {
+		const newValue = event.target.checked ? inputValue : false
 
-    multiDimensionChanged({
-      multiDimension: newValue,
-      activeDatasetId,
-    })
-  },
+		multiDimensionChanged({
+			multiDimension: newValue,
+			activeDatasetId,
+		})
+	},
 })
 
 export const multiDimensionOptionEnhancer = compose(
-  connect(multiDimensionOptionConnector, mapDispatchToProps),
-  multiDimensionOptionChangeHandlersEnhancer
+	connect(multiDimensionOptionConnector, mapDispatchToProps),
+	multiDimensionOptionChangeHandlersEnhancer,
 )

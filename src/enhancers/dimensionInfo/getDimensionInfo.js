@@ -5,40 +5,40 @@ import { chartColors } from '../../config'
 import { set } from '../../helpers/getset'
 
 export const getDimensionInfo = ({
-  dimensionKeys,
-  multiDimension,
-  valuesByDimension,
-  selectedTopics,
-  selectedCategories,
-  labelAliases,
+	dimensionKeys,
+	multiDimension,
+	valuesByDimension,
+	selectedTopics,
+	selectedCategories,
+	labelAliases,
 }) => {
-  const dimensionInfo = dimensionKeys.map(dimensionKey => {
-    const dimensionLabel = getDimensionLabel({
-      multiDimension,
-      selectedTopics,
-      selectedCategories,
-      labelAliases,
-      dimensionKey,
-    })
+	const dimensionInfo = dimensionKeys.map(dimensionKey => {
+		const dimensionLabel = getDimensionLabel({
+			multiDimension,
+			selectedTopics,
+			selectedCategories,
+			labelAliases,
+			dimensionKey,
+		})
 
-    const dimensionDataProperties = getDimensionDataProperties({
-      dimensionKey,
-      valuesByDimension,
-    })
+		const dimensionDataProperties = getDimensionDataProperties({
+			dimensionKey,
+			valuesByDimension,
+		})
 
-    return {
-      dimensionKey,
-      ...dimensionLabel,
-      ...dimensionDataProperties,
-    }
-  })
+		return {
+			dimensionKey,
+			...dimensionLabel,
+			...dimensionDataProperties,
+		}
+	})
 
-  const sortedDimensionInfo = sortBy(({ average }) => -average)(dimensionInfo)
+	const sortedDimensionInfo = sortBy(({ average }) => -average)(dimensionInfo)
 
-  const sortedDimensionInfoWithChartColors = sortedDimensionInfo.map(
-    (singleDimensionInfo, index) =>
-      set('chartColor', chartColors[index])(singleDimensionInfo)
-  )
+	const sortedDimensionInfoWithChartColors = sortedDimensionInfo.map(
+		(singleDimensionInfo, index) =>
+			set('chartColor', chartColors[index])(singleDimensionInfo),
+	)
 
-  return sortedDimensionInfoWithChartColors
+	return sortedDimensionInfoWithChartColors
 }

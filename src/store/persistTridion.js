@@ -9,148 +9,148 @@ import { allSelectedCategoriesConnector } from '../connectors/categoryConnectors
 import { metadataIsLoadedConnector } from '../connectors/metadataLoadingStateConnectors'
 
 const getFieldFromOpener = opener => {
-  const getView = getIn(['$display', 'getView'])(opener)
+	const getView = getIn(['$display', 'getView'])(opener)
 
-  if (unexisting(getView)) {
-    return
-  }
+	if (unexisting(getView)) {
+		return
+	}
 
-  const tridionView = getView()
+	const tridionView = getView()
 
-  const tridionFieldBuilder = getIn(['properties', 'controls', 'fieldBuilder'])(
-    tridionView
-  )
+	const tridionFieldBuilder = getIn(['properties', 'controls', 'fieldBuilder'])(
+		tridionView,
+	)
 
-  if (typeof tridionFieldBuilder !== 'object' && tridionFieldBuilder !== null) {
-    return
-  }
+	if (typeof tridionFieldBuilder !== 'object' && tridionFieldBuilder !== null) {
+		return
+	}
 
-  const field = tridionFieldBuilder.getField('Text')
+	const field = tridionFieldBuilder.getField('Text')
 
-  return field
+	return field
 }
 
 const getField = () => {
-  const { opener } = window
+	const { opener } = window
 
-  if (typeof opener === 'object' && opener !== null) {
-    return getFieldFromOpener(opener)
-  }
+	if (typeof opener === 'object' && opener !== null) {
+		return getFieldFromOpener(opener)
+	}
 }
 
 const getValue = () => {
-  const field = getField()
+	const field = getField()
 
-  if (
-    typeof field === 'object' &&
-    field !== null &&
-    existing(field.getValues)
-  ) {
-    return first(field.getValues())
-  }
+	if (
+		typeof field === 'object' &&
+		field !== null &&
+		existing(field.getValues)
+	) {
+		return first(field.getValues())
+	}
 }
 
 const setValue = value => {
-  const field = getField()
+	const field = getField()
 
-  if (typeof field === 'object' && existing(field.setValues)) {
-    field.setValues([value])
-  }
+	if (typeof field === 'object' && existing(field.setValues)) {
+		field.setValues([value])
+	}
 }
 
 const getJsonValue = () => {
-  try {
-    const rawValue = getValue()
+	try {
+		const rawValue = getValue()
 
-    const value = JSON.parse(rawValue)
+		const value = JSON.parse(rawValue)
 
-    return value
-  } catch (e) {}
+		return value
+	} catch (e) {}
 }
 
 const setJsonValue = jsValue => {
-  try {
-    const value = JSON.stringify(jsValue, null, '  ')
+	try {
+		const value = JSON.stringify(jsValue, null, '  ')
 
-    setValue(value)
+		setValue(value)
 
-    return true
-  } catch (e) {
-    return false
-  }
+		return true
+	} catch (e) {
+		return false
+	}
 }
 
 export const isWritable = () => {
-  const field = getField()
+	const field = getField()
 
-  return existing(field) && !field.getReadOnly()
+	return existing(field) && !field.getReadOnly()
 }
 
 export const shouldPersist = ({
-  activeDatasetId,
-  activeConfig,
-  loadedMetadata,
+	activeDatasetId,
+	activeConfig,
+	loadedMetadata,
 }) => {
-  return (
-    isWritable() &&
-    loadedMetadata &&
-    existing(activeDatasetId) &&
-    existing(activeConfig)
-  )
+	return (
+		isWritable() &&
+		loadedMetadata &&
+		existing(activeDatasetId) &&
+		existing(activeConfig)
+	)
 }
 
 export const canPersist = () => {
-  const field = getField()
+	const field = getField()
 
-  return existing(field)
+	return existing(field)
 }
 
 export const getPersistentData = () => {
-  const tridionData = getJsonValue()
+	const tridionData = getJsonValue()
 
-  return typeof tridionData === 'object' && existing(tridionData.id)
-    ? {
-        activeDatasetId: tridionData.id,
-        config: {
-          [tridionData.id]: omit([
-            'selectedTopics',
-            'selectedCategories',
-            'language',
-          ])(tridionData),
-        },
-      }
-    : {}
+	return typeof tridionData === 'object' && existing(tridionData.id)
+		? {
+				activeDatasetId: tridionData.id,
+				config: {
+					[tridionData.id]: omit([
+						'selectedTopics',
+						'selectedCategories',
+						'language',
+					])(tridionData),
+				},
+			}
+		: {}
 }
 
 export const gatherPersistentData = state => {
-  const activeConfig = configConnector(state)
-  const language = tableLanguageGetter(state)
-  const { selectedTopics } = selectedTopicsConnector(state)
-  const { selectedCategories } = allSelectedCategoriesConnector(state)
+	const activeConfig = configConnector(state)
+	const language = tableLanguageGetter(state)
+	const { selectedTopics } = selectedTopicsConnector(state)
+	const { selectedCategories } = allSelectedCategoriesConnector(state)
 
-  return {
-    language,
-    selectedTopics,
-    selectedCategories,
-    ...activeConfig,
-  }
+	return {
+		language,
+		selectedTopics,
+		selectedCategories,
+		...activeConfig,
+	}
 }
 
 export const setPersistentData = state => {
-  const activeDatasetId = activeDatasetGetIdConnector(state)
-  const activeConfig = configConnector(state)
-  const loadedMetadata = metadataIsLoadedConnector(state)
+	const activeDatasetId = activeDatasetGetIdConnector(state)
+	const activeConfig = configConnector(state)
+	const loadedMetadata = metadataIsLoadedConnector(state)
 
-  if (
-    !shouldPersist({
-      activeDatasetId,
-      activeConfig,
-      loadedMetadata,
-    })
-  ) {
-    return
-  }
-  const data = gatherPersistentData(state)
+	if (
+		!shouldPersist({
+			activeDatasetId,
+			activeConfig,
+			loadedMetadata,
+		})
+	) {
+		return
+	}
+	const data = gatherPersistentData(state)
 
-  setJsonValue(data)
+	setJsonValue(data)
 }

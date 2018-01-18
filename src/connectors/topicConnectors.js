@@ -2,10 +2,10 @@
 
 import { pick } from 'lodash/fp'
 import {
-  getActiveSubstate,
-  pickFromActiveSubstate,
-  mapFromActiveSubstate,
-  getFromActiveSubstate,
+	getActiveSubstate,
+	pickFromActiveSubstate,
+	mapFromActiveSubstate,
+	getFromActiveSubstate,
 } from './connectorHelpers'
 import type { State, Key } from '../store/stateShape'
 import { visibleDatasetInfoConnector } from './visibleDatasetQueryConnector'
@@ -24,57 +24,57 @@ export const topicsMapConnector = mapFromActiveSubstate(topicsConnector)
 export const topicGroupsConnector = getActiveSubstate('topicGroups')
 
 export const topicGroupsGetConnector = getFromActiveSubstate(
-  topicGroupsConnector
+	topicGroupsConnector,
 )
 
 export const topicGroupsPickConnector = pickFromActiveSubstate(
-  topicGroupsConnector
+	topicGroupsConnector,
 )
 
 export const topicGroupsMapConnector = mapFromActiveSubstate(
-  topicGroupsConnector
+	topicGroupsConnector,
 )
 
 export const topicConnector = (state: State, { topicKey }: { topicKey: Key }) =>
-  topicsGetConnector(topicKey)(state)
+	topicsGetConnector(topicKey)(state)
 
 export const visibleTopicConnector = (state: State) => {
-  const topicKeys =
-    getIn(['topicKeys'])(visibleDatasetInfoConnector(state)) || []
+	const topicKeys =
+		getIn(['topicKeys'])(visibleDatasetInfoConnector(state)) || []
 
-  return {
-    topics: topicKeys.map(topicKey => topicsGetConnector(topicKey)(state)),
-  }
+	return {
+		topics: topicKeys.map(topicKey => topicsGetConnector(topicKey)(state)),
+	}
 }
 
 export const selectedTopicListConnector = (state: State) => {
-  const topicKeys = configGetInConnector(['topicKeys'])(state)
+	const topicKeys = configGetInConnector(['topicKeys'])(state)
 
-  return {
-    selectedTopics: topicKeys.map(topicKey => {
-      return topicsGetConnector(topicKey)(state)
-    }),
-  }
+	return {
+		selectedTopics: topicKeys.map(topicKey => {
+			return topicsGetConnector(topicKey)(state)
+		}),
+	}
 }
 
 const pickFromSelectedTopic = pick(['key', 'title', 'unit', 'decimals'])
 
 export const selectedTopicsConnector = (state: State) => {
-  const { topicKeys = [] } = configConnector(state)
+	const { topicKeys = [] } = configConnector(state)
 
-  return {
-    selectedTopics: topicKeys.reduce((memo, topicKey) => {
-      return set(
-        topicKey,
-        pickFromSelectedTopic(topicsGetConnector(topicKey)(state))
-      )(memo)
-    }, {}),
-  }
+	return {
+		selectedTopics: topicKeys.reduce((memo, topicKey) => {
+			return set(
+				topicKey,
+				pickFromSelectedTopic(topicsGetConnector(topicKey)(state)),
+			)(memo)
+		}, {}),
+	}
 }
 
 export const selectedUnitAndDecimalsConnector = (state: State) => {
-  const { topicKeys = [] } = configConnector(state)
-  const firstTopicKey = first(topicKeys)
+	const { topicKeys = [] } = configConnector(state)
+	const firstTopicKey = first(topicKeys)
 
-  return pick(['unit', 'decimals'])(topicsGetConnector(firstTopicKey)(state))
+	return pick(['unit', 'decimals'])(topicsGetConnector(firstTopicKey)(state))
 }

@@ -3,21 +3,14 @@ import { StepTitle, Step } from './Elements'
 import { TablePickerInput } from './TablePickerInput'
 
 const urlExplanationText =
-  'bijvoorbeeld ‘https://opendata.cbs.nl/#/CBS/nl/dataset/82439NED/line?graphtype=Line’'
+	'bijvoorbeeld ‘https://opendata.cbs.nl/#/CBS/nl/dataset/82439NED/line?graphtype=Line’'
 const idExplanationText = 'bijvoorbeeld ‘82439NED’'
 export const TablePicker = () => (
-  <Step>
-    <StepTitle>
-      Plak de
-      {' '}
-      <abbr title={urlExplanationText}>URL</abbr>
-      {' '}
-      of de
-      {' '}
-      <abbr title={idExplanationText}>ID</abbr>
-      {' '}
-      van de dataset hier
-    </StepTitle>
-    <TablePickerInput />
-  </Step>
+	<Step>
+		<StepTitle>
+			Plak de <abbr title={urlExplanationText}>URL</abbr> of de{' '}
+			<abbr title={idExplanationText}>ID</abbr> van de dataset hier
+		</StepTitle>
+		<TablePickerInput />
+	</Step>
 )

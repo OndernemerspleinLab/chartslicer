@@ -6,27 +6,27 @@ import { unexisting, existing } from '../helpers/helpers'
 import { dataQueryLoadingStateConnector } from '../connectors/datasetsLoadingStateConnectors'
 
 export const onlyWhenVisibleDataset = compose(
-  connect(visibleDatasetQueryConnector),
-  branch(
-    ({ visibleDatasetQuery }) => unexisting(visibleDatasetQuery),
-    renderNothing
-  )
+	connect(visibleDatasetQueryConnector),
+	branch(
+		({ visibleDatasetQuery }) => unexisting(visibleDatasetQuery),
+		renderNothing,
+	),
 )
 
 export const onlyWhenNoVisibleDataset = compose(
-  connect(visibleDatasetQueryConnector),
-  branch(
-    ({ visibleDatasetQuery }) => existing(visibleDatasetQuery),
-    renderNothing
-  )
+	connect(visibleDatasetQueryConnector),
+	branch(
+		({ visibleDatasetQuery }) => existing(visibleDatasetQuery),
+		renderNothing,
+	),
 )
 
 export const onlyWhenActiveQueryLoading = compose(
-  connect(dataQueryLoadingStateConnector),
-  branch(({ loading } = {}) => !loading, renderNothing)
+	connect(dataQueryLoadingStateConnector),
+	branch(({ loading } = {}) => !loading, renderNothing),
 )
 
 export const onlyWhenActiveQueryError = compose(
-  connect(dataQueryLoadingStateConnector),
-  branch(({ error } = {}) => unexisting(error), renderNothing)
+	connect(dataQueryLoadingStateConnector),
+	branch(({ error } = {}) => unexisting(error), renderNothing),
 )

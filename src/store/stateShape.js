@@ -16,20 +16,20 @@ export type DatasetQuery = string
 ///////// Network state /////////
 
 export type NetworkState = {
-  loading: boolean,
-  loaded: boolean,
-  error: ?Error,
-  id: DatasetId,
+	loading: boolean,
+	loaded: boolean,
+	error: ?Error,
+	id: DatasetId,
 }
 
 export type MetadataNetworkState = NetworkState
 
 export type DatasetQueryNetworkState = {
-  query: DatasetQuery,
+	query: DatasetQuery,
 } & NetworkState
 
 export type DataQueryNetworkState = {
-  [DatasetQuery]: DatasetQueryNetworkState,
+	[DatasetQuery]: DatasetQueryNetworkState,
 }
 
 ///////// Table info /////////
@@ -37,11 +37,11 @@ export type DataQueryNetworkState = {
 export type PeriodType = 'Jaar' | 'Maanden' | 'Kwartalen'
 
 export type TableInfo = {
-  title: string,
-  id: DatasetId,
-  graphTypes: string[],
-  language: string,
-  periodTypes: PeriodType[],
+	title: string,
+	id: DatasetId,
+	graphTypes: string[],
+	language: string,
+	periodTypes: PeriodType[],
 }
 
 ///////// Topics /////////
@@ -51,33 +51,33 @@ export type TopicKey = Key | 'root'
 export type TopicGroupId = Id | 'root'
 
 export type TopicGroupRoot = {
-  id: TopicGroupId,
-  topics: TopicKey[],
-  topicGroups: TopicGroupId[],
-  parentId: ?TopicGroupId,
+	id: TopicGroupId,
+	topics: TopicKey[],
+	topicGroups: TopicGroupId[],
+	parentId: ?TopicGroupId,
 }
 
 export type TopicGroup = TopicGroupRoot & {
-  title?: string,
+	title?: string,
 }
 
 export type TopicGroups = {
-  id: DatasetId,
-  root: TopicGroupRoot,
-  [TopicGroupId]: TopicGroup,
+	id: DatasetId,
+	root: TopicGroupRoot,
+	[TopicGroupId]: TopicGroup,
 }
 
 export type Topic = {
-  key: TopicKey,
-  title: string,
-  unit: string,
-  decimals: number,
-  parentGroupIds: TopicGroupId[],
+	key: TopicKey,
+	title: string,
+	unit: string,
+	decimals: number,
+	parentGroupIds: TopicGroupId[],
 }
 
 export type Topics = {
-  id: DatasetId,
-  [TopicKey]: Topic,
+	id: DatasetId,
+	[TopicKey]: Topic,
 }
 
 ///////// Categories /////////
@@ -89,39 +89,39 @@ export type DimensionKey = Key
 export type CategoryGroupKeyPath = [DimensionKey, CategoryGroupId]
 
 export type CategoryGroupRoot = {
-  id: CategoryGroupId,
-  dimensionKey: DimensionKey,
-  categories: CategoryKey[],
-  categoryGroups: CategoryGroupId[],
-  parentId: ?CategoryGroupId,
+	id: CategoryGroupId,
+	dimensionKey: DimensionKey,
+	categories: CategoryKey[],
+	categoryGroups: CategoryGroupId[],
+	parentId: ?CategoryGroupId,
 }
 
 export type CategoryGroup = CategoryGroupRoot & {
-  title?: string,
+	title?: string,
 }
 
 export type CategoryGroupsForDimension = {
-  root: CategoryGroupRoot,
-  [CategoryGroupId]: CategoryGroup,
+	root: CategoryGroupRoot,
+	[CategoryGroupId]: CategoryGroup,
 }
 
 export type CategoryGroups = {
-  id: DatasetId,
-  [DimensionKey]: CategoryGroupsForDimension,
+	id: DatasetId,
+	[DimensionKey]: CategoryGroupsForDimension,
 }
 
 export type Category = {
-  dimensionKey: DimensionKey,
-  key: CategoryKey,
-  title: string,
-  parentGroupIds: CategoryGroupId[],
+	dimensionKey: DimensionKey,
+	key: CategoryKey,
+	title: string,
+	parentGroupIds: CategoryGroupId[],
 }
 
 export type Categories = {
-  id: DatasetId,
-  [DimensionKey]: {
-    [CategoryKey]: Category,
-  },
+	id: DatasetId,
+	[DimensionKey]: {
+		[CategoryKey]: Category,
+	},
 }
 
 ///////// Dimensions /////////
@@ -129,115 +129,115 @@ export type Categories = {
 export type DimenisionType = 'Dimension' | 'TimeDimension' | 'GeoDimension'
 
 export type Dimension = {
-  type: DimenisionType,
-  title: string,
-  key: DimensionKey,
+	type: DimenisionType,
+	title: string,
+	key: DimensionKey,
 }
 
 export type Dimensions = {
-  id: DatasetId,
-  order: DimensionKey[],
-  [DimensionKey]: Dimension,
+	id: DatasetId,
+	order: DimensionKey[],
+	[DimensionKey]: Dimension,
 }
 
 export type CategoryKeys = {
-  [DimensionKey]: CategoryKey[],
+	[DimensionKey]: CategoryKey[],
 }
 
 ///////// Config state /////////
 
 export type ConfigState = {
-  id: DatasetId,
-  periodType: PeriodType,
-  periodLength: number,
-  topicKeys: TopicKey[],
-  title: string,
-  description: string,
-  multiDimension: MultiDimensionSetting,
-  categoryKeys: CategoryKeys,
+	id: DatasetId,
+	periodType: PeriodType,
+	periodLength: number,
+	topicKeys: TopicKey[],
+	title: string,
+	description: string,
+	multiDimension: MultiDimensionSetting,
+	categoryKeys: CategoryKeys,
 }
 
 ///////// Dataset /////////
 
 export type DataEntry = {
-  id: DataEntryId,
-  periodDate: Date,
-  periodType: PeriodType,
-  [TopicKey | DimensionKey]: number | CategoryKey,
+	id: DataEntryId,
+	periodDate: Date,
+	periodType: PeriodType,
+	[TopicKey | DimensionKey]: number | CategoryKey,
 }
 
 export type DataEntries = {
-  id: DatasetId,
-  [DataEntryId]: DataEntry,
+	id: DatasetId,
+	[DataEntryId]: DataEntry,
 }
 
 export type DataQuery = {
-  query: DatasetQuery,
-  dataList: DataEntryId[],
+	query: DatasetQuery,
+	dataList: DataEntryId[],
 } & ConfigState
 
 export type DataQueries = {
-  id: DatasetId,
+	id: DatasetId,
 
-  [DatasetQuery]: DataQuery,
+	[DatasetQuery]: DataQuery,
 }
 
 export type DatasetQueries = {
-  [DatasetId]: ?DatasetQuery,
+	[DatasetId]: ?DatasetQuery,
 }
 
 ///////// Full State /////////
 
 export type State = {
-  now: Date,
-  activeDatasetId: MaybeDatasetId,
-  activeDatasetQueries: DatasetQueries,
-  visibleDatasetQueries: DatasetQueries,
-  config: {
-    [DatasetId]: ConfigState,
-  },
-  tableInfo: {
-    [DatasetId]: TableInfo,
-  },
-  topicGroups: {
-    [DatasetId]: TopicGroups,
-  },
-  topics: {
-    [DatasetId]: Topics,
-  },
-  dimensions: {
-    [DatasetId]: Dimensions,
-  },
-  categoryGroups: {
-    [DatasetId]: CategoryGroups,
-  },
-  categories: {
-    [DatasetId]: Categories,
-  },
-  dataEntries: {
-    [DatasetId]: DataEntries,
-  },
-  dataQueries: {
-    [DatasetId]: DataQueries,
-  },
-  metadataLoadingState: {
-    [DatasetId]: MetadataNetworkState,
-  },
-  datasetLoadingState: {
-    [DatasetId]: DataQueryNetworkState,
-  },
+	now: Date,
+	activeDatasetId: MaybeDatasetId,
+	activeDatasetQueries: DatasetQueries,
+	visibleDatasetQueries: DatasetQueries,
+	config: {
+		[DatasetId]: ConfigState,
+	},
+	tableInfo: {
+		[DatasetId]: TableInfo,
+	},
+	topicGroups: {
+		[DatasetId]: TopicGroups,
+	},
+	topics: {
+		[DatasetId]: Topics,
+	},
+	dimensions: {
+		[DatasetId]: Dimensions,
+	},
+	categoryGroups: {
+		[DatasetId]: CategoryGroups,
+	},
+	categories: {
+		[DatasetId]: Categories,
+	},
+	dataEntries: {
+		[DatasetId]: DataEntries,
+	},
+	dataQueries: {
+		[DatasetId]: DataQueries,
+	},
+	metadataLoadingState: {
+		[DatasetId]: MetadataNetworkState,
+	},
+	datasetLoadingState: {
+		[DatasetId]: DataQueryNetworkState,
+	},
 }
 
 export type Substate =
-  | ConfigState
-  | TableInfo
-  | TopicGroups
-  | Topics
-  | Dimensions
-  | CategoryGroups
-  | Categories
-  | MetadataNetworkState
-  | DataQueryNetworkState
-  | DataEntries
-  | DataQueries
-  | DatasetQueries
+	| ConfigState
+	| TableInfo
+	| TopicGroups
+	| Topics
+	| Dimensions
+	| CategoryGroups
+	| Categories
+	| MetadataNetworkState
+	| DataQueryNetworkState
+	| DataEntries
+	| DataQueries
+	| DatasetQueries
