@@ -47,7 +47,7 @@ const chartParentStyle = {
 
 export const chartPaddingFactory = ({ decimals, globalMax }) => {
 	return {
-		top: 60,
+		top: 80,
 		left: getChartLeftPadding({
 			decimals,
 			globalMax,

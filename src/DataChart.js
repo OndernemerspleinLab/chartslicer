@@ -103,32 +103,6 @@ const DataChartContainer = ({
 							/>
 						)
 					})}
-					<VictoryLegend
-						{...legendPropsFactory({})}
-						data={dimensionInfo.map(({ dimensionLabel, chartColor }) =>
-							getLegendData({ dimensionLabel, ...chartColor }),
-						)}
-						labelComponent={<VictoryLabel {...legendLabelPropsFactory({})} />}
-					/>
-					<VictoryAxis
-						tickValues={periodDatesInRange}
-						tickFormat={formatWithNewYearFactory({ language, periodType })}
-						scale="time"
-						style={xAxisStyleFactory({})}
-						tickCount={chartXAxisTickCount}
-						tickLabelComponent={
-							<VictoryLabel {...xAxisTickLabelPropsFactory({})} />
-						}
-					/>
-					<VictoryAxis
-						dependentAxis
-						label={unit}
-						tickFormat={formatNumber(decimals)}
-						style={yAxisStyleFactory({
-							decimals,
-							globalMax,
-						})}
-					/>
 					{dimensionInfo.map(singleDimensionInfo =>
 						Tooltips({
 							...singleDimensionInfo,
@@ -151,6 +125,25 @@ const DataChartContainer = ({
 							valuesByDimension,
 						}),
 					)}
+					<VictoryAxis
+						tickValues={periodDatesInRange}
+						tickFormat={formatWithNewYearFactory({ language, periodType })}
+						scale="time"
+						style={xAxisStyleFactory({})}
+						tickCount={chartXAxisTickCount}
+						tickLabelComponent={
+							<VictoryLabel {...xAxisTickLabelPropsFactory({})} />
+						}
+					/>
+					<VictoryAxis
+						dependentAxis
+						label={unit}
+						tickFormat={formatNumber(decimals)}
+						style={yAxisStyleFactory({
+							decimals,
+							globalMax,
+						})}
+					/>
 					{dimensionInfo.map(singleDimensionInfo =>
 						Line({
 							...singleDimensionInfo,
@@ -161,6 +154,13 @@ const DataChartContainer = ({
 							valuesByDimension,
 						}),
 					)}
+					<VictoryLegend
+						{...legendPropsFactory({})}
+						data={dimensionInfo.map(({ dimensionLabel, chartColor }) =>
+							getLegendData({ dimensionLabel, ...chartColor }),
+						)}
+						labelComponent={<VictoryLabel {...legendLabelPropsFactory({})} />}
+					/>
 				</ChartWrapper>
 				<DataSource />
 			</Rectangle>

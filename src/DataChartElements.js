@@ -14,6 +14,7 @@ import {
 } from 'victory'
 import { formatSingleLineCbsPeriod } from './cbsPeriod'
 import { formatNumber, existing, unexisting } from './helpers/helpers'
+import chroma from 'chroma-js'
 import {
 	lineStyleFactory,
 	areaStyleFactory,
@@ -23,23 +24,26 @@ import {
 	tooltipLabelPropsFactory,
 } from './chartStyle'
 import { wordBreakIntoArray } from './helpers/stringHelpers'
+import { wit } from './colors'
 
-const getStops = ({ min, max }) => {
+const getStops = ({ min, max, color }) => {
 	const cutoffPercentage = max / (max - min) * 100
-	const maxOpacity = 0.15
-	const minOpacity = 0.02
+	const maxOpacity = 0.1
+	const minOpacity = 0.01
+	const maxColor = chroma.mix(wit, color, maxOpacity)
+	const minColor = chroma.mix(wit, color, minOpacity)
 	const startOffsetRatio = 0.2
 	const endOffsetRatio = 0.5
 	const stops = [
-		{ offset: cutoffPercentage * startOffsetRatio, opacity: maxOpacity },
-		{ offset: cutoffPercentage * endOffsetRatio, opacity: minOpacity },
+		{ offset: cutoffPercentage * startOffsetRatio, stopColor: maxColor },
+		{ offset: cutoffPercentage * endOffsetRatio, stopColor: minColor },
 		{
 			offset: 100 - (100 - cutoffPercentage) * endOffsetRatio,
-			opacity: minOpacity,
+			stopColor: minColor,
 		},
 		{
 			offset: 100 - (100 - cutoffPercentage) * startOffsetRatio,
-			opacity: maxOpacity,
+			stopColor: maxColor,
 		},
 	]
 
@@ -47,18 +51,11 @@ const getStops = ({ min, max }) => {
 }
 
 const ChartLineGradientComp = ({ color, colorId, min, max }) => {
-	const stops = getStops({ min, max })
+	const stops = getStops({ min, max, color })
 	return (
 		<linearGradient id={colorId} x1="0" x2="0" y1="0" y2="1">
-			{stops.map(({ offset, opacity }, index) => {
-				return (
-					<stop
-						key={index}
-						offset={`${offset}%`}
-						stopColor={color}
-						stopOpacity={opacity}
-					/>
-				)
+			{stops.map(({ offset, stopColor }, index) => {
+				return <stop key={index} offset={`${offset}%`} stopColor={stopColor} />
 			})}
 		</linearGradient>
 	)
