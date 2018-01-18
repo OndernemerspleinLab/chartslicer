@@ -27,7 +27,8 @@ import { wordBreakIntoArray } from './helpers/stringHelpers'
 import { wit } from './colors'
 
 const getStops = ({ min, max, color }) => {
-	const cutoffPercentage = max / (max - min) * 100
+	const beforeCutOffPercentage = max / (max - min) * 100
+	const afterCutOffPercentage = 100 - beforeCutOffPercentage
 	const maxOpacity = 0.1
 	const minOpacity = 0.01
 	const maxColor = chroma.mix(wit, color, maxOpacity)
@@ -35,14 +36,14 @@ const getStops = ({ min, max, color }) => {
 	const startOffsetRatio = 0.2
 	const endOffsetRatio = 0.5
 	const stops = [
-		{ offset: cutoffPercentage * startOffsetRatio, stopColor: maxColor },
-		{ offset: cutoffPercentage * endOffsetRatio, stopColor: minColor },
+		{ offset: beforeCutOffPercentage * startOffsetRatio, stopColor: maxColor },
+		{ offset: beforeCutOffPercentage * endOffsetRatio, stopColor: minColor },
 		{
-			offset: 100 - (100 - cutoffPercentage) * endOffsetRatio,
+			offset: 100 - afterCutOffPercentage * endOffsetRatio,
 			stopColor: minColor,
 		},
 		{
-			offset: 100 - (100 - cutoffPercentage) * startOffsetRatio,
+			offset: 100 - afterCutOffPercentage * startOffsetRatio,
 			stopColor: maxColor,
 		},
 	]
