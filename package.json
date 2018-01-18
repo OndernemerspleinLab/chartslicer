@@ -29,9 +29,6 @@
 		"whatwg-fetch": "^2.0.3"
 	},
 	"devDependencies": {
-		"eslint": "^3.19.0",
-		"eslint-plugin-import": "^2.3.0",
-		"eslint-plugin-react": "^7.0.1",
 		"flow-bin": "^0.47.0",
 		"react-scripts": "^1.0.17"
 	},
@@ -40,7 +37,7 @@
 		"build": "react-scripts build",
 		"test": "react-scripts test --env=jsdom",
 		"eject": "react-scripts eject",
-		"lint": "eslint .",
+		"lint": "eslint src/**/*.js",
 		"precommit": "lint-staged",
 		"predeploy": "yarn run build",
 		"deploy": "gh-pages -d build",
