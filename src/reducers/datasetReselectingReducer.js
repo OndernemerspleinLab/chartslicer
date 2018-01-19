@@ -1,4 +1,4 @@
-//@flow
+// @flow
 
 import type { State } from '../store/stateShape'
 import { reduceWhen, composeReducers, reduceIn } from './reducerHelpers'

@@ -23,8 +23,8 @@ import type {
 } from './apiShape'
 import { createCbsPeriods } from '../cbsPeriod'
 
-const getOnlyValue = responseBody => getIn(['value', 0])(responseBody) || {}
-const getValues = responseBody => get('value')(responseBody) || []
+const getOnlyValue = responseBody => getIn(['value', 0])(responseBody)
+const getValues = responseBody => get('value')(responseBody)
 
 const select = (keys: string[]) =>
 	`$select=${encodeURIComponent(keys.join(','))}`

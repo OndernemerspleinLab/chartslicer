@@ -1,4 +1,4 @@
-//@flow
+// @flow
 
 import { negate } from 'lodash/fp'
 import { thousandsSeperator, numberSeperator } from '../config'

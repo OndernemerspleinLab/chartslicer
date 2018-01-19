@@ -1,4 +1,4 @@
-//@flow
+// @flow
 
 import { getCbsDataPropertiesPromise } from './getCbsDataPropertiesPromise'
 import { getCbsCategorieByDimensionPromise } from './getCbsCategoriesByDimensionPromise'

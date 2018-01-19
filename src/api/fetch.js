@@ -5,6 +5,7 @@ import { setIn } from '../helpers/getset'
 type PromiseAny = Promise<any>
 type PromiseResponse = Promise<Response>
 type PromiseString = Promise<string>
+type ResponseError = { response?: Response } & Error
 
 const maxApiUrlLength = 15000
 
@@ -23,7 +24,7 @@ const checkStatus = (response: Response): Response => {
 		return response
 	}
 
-	const error: { response?: Response } & Error = new Error(response.statusText)
+	const error: ResponseError = new Error(response.statusText)
 
 	error.response = response
 	throw error
@@ -45,7 +46,7 @@ export const httpFetch = (
 		return new Promise((resolve, reject) => reject(error))
 	}
 
-	const responsePromise = fetch(url, options).then(checkStatus)
+	const responsePromise = window.fetch(url, options || {}).then(checkStatus)
 	responsePromise.catch(error => {
 		console.log(error)
 	})
@@ -61,10 +62,16 @@ export const fetchText = (
 ): PromiseString =>
 	httpFetch(url, addTextHeaders(options)).then(response => response.text())
 
-export const customError = ({ predicate, message }) => promise =>
-	promise.catch(error => {
+export const customError = ({
+	predicate,
+	message,
+}: {
+	message: string,
+	predicate: ResponseError => boolean,
+}) => (promise: Promise<*>) =>
+	promise.catch((error: ResponseError) => {
 		if (predicate(error)) {
-			const newError = new error.constructor(message)
+			const newError: ResponseError = new error.constructor(message)
 
 			newError.response = error.response
 			throw newError

@@ -1,4 +1,4 @@
-/*@flow*/
+// @flow
 
 import { existing } from './../helpers/helpers'
 import { pick, mapValues } from 'lodash/fp'

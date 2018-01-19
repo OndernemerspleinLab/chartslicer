@@ -1,4 +1,4 @@
-//@flow
+// @flow
 
 import { get } from '../helpers/getset'
 import type { State } from '../store/stateShape'
