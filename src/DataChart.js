@@ -9,11 +9,11 @@ import {
 	chartXAxisTickCount,
 	chartLegendLineLength,
 } from './config'
+import { visibleDatasetEnhancer } from './enhancers/visibleDatasetEnhancer'
 import {
-	visibleDatasetEnhancer,
-	onlyWhenValidDimension,
-} from './enhancers/visibleDatasetEnhancer'
-import { onlyWhenVisibleDataset } from './enhancers/datasetEnhancer'
+	onlyWhenDataAvailable,
+	onlyWhenVisibleDataset,
+} from './enhancers/datasetGuardEnhancer'
 import { connect } from 'react-redux'
 import { formatWithNewYearFactory } from './cbsPeriod'
 import { formatNumber } from './helpers/helpers'
@@ -39,7 +39,7 @@ const enhancer = compose(
 	onlyWhenVisibleDataset,
 	connect(tableLanguageConnector),
 	visibleDatasetEnhancer,
-	onlyWhenValidDimension,
+	onlyWhenDataAvailable,
 )
 
 const Rectangle = glamorous.div({

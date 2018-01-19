@@ -7,7 +7,7 @@ import { css } from 'glamor'
 import {
 	onlyWhenActiveQueryLoading,
 	onlyWhenVisibleDataset,
-} from './enhancers/datasetEnhancer'
+} from './enhancers/datasetGuardEnhancer'
 import { compose } from 'recompose'
 
 const sizeInRem = 2

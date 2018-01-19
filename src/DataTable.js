@@ -4,7 +4,10 @@ import glamorous from 'glamorous'
 import { hemelblauw, wit } from './colors'
 import { InsideMargin } from './graphPickerSteps/Elements'
 import { fadeInAnimation } from './styles'
-import { onlyWhenVisibleDataset } from './enhancers/datasetEnhancer'
+import {
+	onlyWhenDataAvailable,
+	onlyWhenVisibleDataset,
+} from './enhancers/datasetGuardEnhancer'
 import { connect } from 'react-redux'
 import { formatSingleLineCbsPeriod, getCbsPeriodLabel } from './cbsPeriod'
 import { formatNumber } from './helpers/helpers'
@@ -12,16 +15,13 @@ import { getIn } from './helpers/getset'
 import { tableLanguageConnector } from './connectors/tableInfoConnectors'
 import { onlyWhenChildren } from './enhancers/onlyWhenChildren'
 import { LabelEditButton } from './LabelEditButton'
-import {
-	visibleDatasetEnhancer,
-	onlyWhenValidDimension,
-} from './enhancers/visibleDatasetEnhancer'
+import { visibleDatasetEnhancer } from './enhancers/visibleDatasetEnhancer'
 
 const enhancer = compose(
 	onlyWhenVisibleDataset,
 	connect(tableLanguageConnector),
 	visibleDatasetEnhancer,
-	onlyWhenValidDimension,
+	onlyWhenDataAvailable,
 )
 
 const DataTableComp = glamorous.div({

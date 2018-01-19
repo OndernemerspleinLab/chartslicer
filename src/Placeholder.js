@@ -9,7 +9,7 @@ import { compose } from 'recompose'
 import { css } from 'glamor'
 import { metadataLoadingStateConnector } from './connectors/metadataLoadingStateConnectors'
 import { connect } from 'react-redux'
-import { onlyWhenNoVisibleDataset } from './enhancers/datasetEnhancer'
+import { onlyWhenNoVisibleDataset } from './enhancers/datasetGuardEnhancer'
 import { dataQueryLoadingStateConnector } from './connectors/datasetsLoadingStateConnectors'
 import { get } from './helpers/getset'
 

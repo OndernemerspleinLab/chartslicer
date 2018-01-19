@@ -3,7 +3,7 @@ import { hemelblauw } from './colors'
 import { Center, CoverPage } from './graphPickerSteps/Elements'
 import { fadeInAnimation } from './styles'
 import React from 'react'
-import { canPersist, isWritable } from './store/persistTridion'
+import { isWritable, isPersistEnvTridion } from './store/persistTridion'
 import {
 	compose,
 	withState,
@@ -16,7 +16,7 @@ import glamorous from 'glamorous'
 
 const delay = 600
 
-const NotWritableElement = nest(
+const NotPersistableElement = nest(
 	CoverPage,
 	Center,
 	glamorous.h1({
@@ -31,34 +31,37 @@ const NotWritableElement = nest(
 		},
 	}),
 )
-const NotWritable = () => (
-	<NotWritableElement>
+const NotPersistable = () => (
+	<NotPersistableElement>
 		Het Tridion-component kan niet worden aangepast. Mogelijk is het niet
 		uitgecheckt.
-	</NotWritableElement>
+	</NotPersistableElement>
 )
 
-const guardWritableEnhancer = compose(
-	withState('writable', 'setWritable', true),
+const guardPersistableEnhancer = compose(
+	withState('persistable', 'setPersistable', true),
 	lifecycle({
-		updateWritable() {
-			const nextWritable = isWritable()
-			if (this.props.writable !== nextWritable) {
-				this.props.setWritable(nextWritable)
+		updatePersistable() {
+			const nextPersistable = isWritable()
+			if (this.props.persistable !== nextPersistable) {
+				this.props.setPersistable(nextPersistable)
 			}
 
 			clearTimeout(this.timer)
-			this.timer = setTimeout(this.updateWritable, delay)
+			this.timer = setTimeout(this.updatePersistable, delay)
 		},
 		componentDidMount() {
-			this.updateWritable = this.updateWritable.bind(this)
-			this.updateWritable()
+			this.updatePersistable = this.updatePersistable.bind(this)
+			this.updatePersistable()
 		},
 		componentWillUnmount() {
 			clearTimeout(this.timer)
 		},
 	}),
-	branch(({ writable }) => !writable, renderComponent(NotWritable)),
+	branch(({ persistable }) => !persistable, renderComponent(NotPersistable)),
 )
 
-export const writableEnhancer = branch(canPersist, guardWritableEnhancer)
+export const persistableEnhancer = branch(
+	isPersistEnvTridion,
+	guardPersistableEnhancer,
+)

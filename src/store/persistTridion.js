@@ -99,6 +99,9 @@ export const shouldPersist = ({
 	)
 }
 
+export const isPersistEnvTridion = () =>
+	process.env.REACT_APP_PERSIST === 'tridion'
+
 export const canPersist = () => {
 	const field = getField()
 

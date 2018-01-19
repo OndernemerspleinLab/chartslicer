@@ -248,8 +248,3 @@ export const visibleDataInfoConnector = weakMemoize(state => {
 })
 
 export const visibleDatasetEnhancer = connect(visibleDataInfoConnector)
-
-export const onlyWhenValidDimension = branch(
-	({ dimensionInfo = [] }) => dimensionInfo.length <= 0,
-	renderNothing,
-)

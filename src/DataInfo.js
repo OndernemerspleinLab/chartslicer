@@ -9,7 +9,7 @@ import glamorous from 'glamorous'
 import { hemelblauw } from './colors'
 import { InsideMargin, Hidden } from './graphPickerSteps/Elements'
 import { fadeInAnimation } from './styles'
-import { onlyWhenVisibleDataset } from './enhancers/datasetEnhancer'
+import { onlyWhenVisibleDataset } from './enhancers/datasetGuardEnhancer'
 
 const enhancer = compose(onlyWhenVisibleDataset)
 

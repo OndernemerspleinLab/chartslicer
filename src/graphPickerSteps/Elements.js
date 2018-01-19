@@ -1,7 +1,7 @@
 import React from 'react'
 import glamorous from 'glamorous'
 import { getCounterStyle } from './counterStyle'
-import { violet, wit } from '../colors'
+import { violet, wit, hemelblauw } from '../colors'
 import { square } from '../helpers/styleHelpers'
 import { resetMarginStyle } from '../marginStyle'
 import { css } from 'glamor'
@@ -86,6 +86,10 @@ const StepInsideMargin = withProps({ top: '0.5rem', bottom: '1rem' })(
 	InsideMargin,
 )
 
+const MainErrorInsideMargin = withProps({ top: '0.8rem', bottom: '1rem' })(
+	InsideMargin,
+)
+
 export const Step = nest(StepComp, StepInsideMargin)
 
 export const StepTitle = glamorous.h2(resetMarginStyle, {
@@ -124,26 +128,51 @@ export const Message = nest(MessageComp, StepInsideMargin)
 
 const stripeWidth = 6
 
-export const ErrorMessageComp = glamorous.section(commonStepStyle, {
-	backgroundColor: violet.default,
-	color: wit,
+const errorMessageStyleFactory = ({
+	darkColor = violet.default,
+	lightColor = violet.lightest,
+	textColor = wit,
+}) => ({
+	backgroundColor: darkColor,
+	color: textColor,
 	':before': css({
 		content: '""',
 		position: 'absolute',
 		top: 0,
 		bottom: 0,
 		left: 0,
-		backgroundColor: violet.lightest,
+		backgroundColor: lightColor,
 		width: '2.5rem',
-		backgroundImage: `repeating-linear-gradient(-45deg, ${violet.lightest}, ${
-			violet.lightest
-		} ${stripeWidth}px, ${violet.default} ${stripeWidth}px, ${
-			violet.default
-		} ${stripeWidth * 2 + 1}px)`,
+		backgroundImage: `repeating-linear-gradient(-45deg, ${lightColor}, ${lightColor} ${stripeWidth}px, ${darkColor} ${stripeWidth}px, ${darkColor} ${stripeWidth *
+			2 +
+			1}px)`,
 	}),
 })
+export const StepErrorMessageComp = glamorous.section(
+	commonStepStyle,
+	errorMessageStyleFactory({}),
+)
+export const MainErrorMessageComp = glamorous.section(
+	errorMessageStyleFactory({
+		darkColor: hemelblauw.default,
+		lightColor: hemelblauw.lighter,
+	}),
+	{
+		position: 'relative',
+		padding: '0 3rem',
+		margin: '0 -1rem',
+		[mqBig]: {
+			margin: '0 -3rem',
+		},
+	},
+)
 
-export const ErrorMessage = nest(ErrorMessageComp, StepInsideMargin)
+export const StepErrorMessage = nest(StepErrorMessageComp, StepInsideMargin)
+
+export const MainErrorMessage = nest(
+	MainErrorMessageComp,
+	MainErrorInsideMargin,
+)
 
 const labelStyle = css({
 	fontWeight: 'bold',

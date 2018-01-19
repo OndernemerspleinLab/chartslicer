@@ -1,4 +1,4 @@
-import { writableEnhancer } from './writableEnhancer'
+import { persistableEnhancer } from './persistableEnhancer'
 import React from 'react'
 import { GraphPicker } from './GraphPicker'
 import { css } from 'glamor'
@@ -12,6 +12,7 @@ import { Placeholder } from './Placeholder'
 import Color from 'color'
 import { QueryDataLoadingIndicator } from './Loading'
 import { DataQueryError } from './DataQueryError'
+import { NoDataMessage } from './NoDataMessage'
 
 css.global('*', {
 	boxSizing: 'border-box',
@@ -102,7 +103,7 @@ const MainScrollArea = glamorous.div(mainScrollbarStyle, {
 	},
 })
 
-export const App = writableEnhancer(() => (
+export const App = persistableEnhancer(() => (
 	<Layout>
 		<Sidebar>
 			<GraphPicker />
@@ -113,6 +114,7 @@ export const App = writableEnhancer(() => (
 				<DataInfo />
 				<DataChart />
 				<DataTable />
+				<NoDataMessage />
 			</MainScrollArea>
 			<QueryDataLoadingIndicator />
 			<DataQueryError />

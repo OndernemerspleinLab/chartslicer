@@ -30,7 +30,7 @@ const setActiveDatasetId = activeDatasetId => {
 	window.location.hash = newHash
 }
 
-const persist = persistTridion.canPersist()
+const persist = persistTridion.isPersistEnvTridion()
 	? persistTridion
 	: persistLocalStorage.canPersist() ? persistLocalStorage : undefined
 
