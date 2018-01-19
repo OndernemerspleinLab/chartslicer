@@ -87,8 +87,8 @@ const axisStyle = {
 
 export const legendPropsFactory = ({ canvasSizeName }) => ({
 	orientation: 'horizontal',
-	gutter: 22,
-	x: 0,
+	gutter: 10,
+	x: 6,
 	y: 6,
 	symbolSpacer: 12,
 	style: {
