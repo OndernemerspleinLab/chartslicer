@@ -1,12 +1,16 @@
 import React from 'react'
 import glamorous from 'glamorous'
 import { getCounterStyle } from './counterStyle'
-import { violet, wit, hemelblauw } from '../colors'
+import { violet, wit } from '../colors'
 import { square } from '../helpers/styleHelpers'
 import { resetMarginStyle } from '../marginStyle'
 import { css } from 'glamor'
 import { withProps, nest, branch, renderNothing } from 'recompose'
-import { borderRadius, fadeInAnimation } from '../styles'
+import {
+	borderRadius,
+	fadeInAnimation,
+	diagonalStripesFactory,
+} from '../styles'
 import { mqSmall, mqBig } from '../config'
 import { unexisting } from '../helpers/helpers'
 
@@ -86,10 +90,6 @@ const StepInsideMargin = withProps({ top: '0.5rem', bottom: '1rem' })(
 	InsideMargin,
 )
 
-const MainErrorInsideMargin = withProps({ top: '0.8rem', bottom: '1rem' })(
-	InsideMargin,
-)
-
 export const Step = nest(StepComp, StepInsideMargin)
 
 export const StepTitle = glamorous.h2(resetMarginStyle, {
@@ -126,8 +126,6 @@ const MessageComp = glamorous.section(commonStepStyle, {
 
 export const Message = nest(MessageComp, StepInsideMargin)
 
-const stripeWidth = 6
-
 const errorMessageStyleFactory = ({
 	darkColor = violet.default,
 	lightColor = violet.lightest,
@@ -135,44 +133,24 @@ const errorMessageStyleFactory = ({
 }) => ({
 	backgroundColor: darkColor,
 	color: textColor,
-	':before': css({
-		content: '""',
-		position: 'absolute',
-		top: 0,
-		bottom: 0,
-		left: 0,
-		backgroundColor: lightColor,
-		width: '2.5rem',
-		backgroundImage: `repeating-linear-gradient(-45deg, ${lightColor}, ${lightColor} ${stripeWidth}px, ${darkColor} ${stripeWidth}px, ${darkColor} ${stripeWidth *
-			2 +
-			1}px)`,
-	}),
+	':before': css(
+		{
+			content: '""',
+			position: 'absolute',
+			top: 0,
+			bottom: 0,
+			left: 0,
+			width: '2.5rem',
+		},
+		diagonalStripesFactory({}),
+	),
 })
 export const StepErrorMessageComp = glamorous.section(
 	commonStepStyle,
 	errorMessageStyleFactory({}),
 )
-export const MainErrorMessageComp = glamorous.section(
-	errorMessageStyleFactory({
-		darkColor: hemelblauw.default,
-		lightColor: hemelblauw.lighter,
-	}),
-	{
-		position: 'relative',
-		padding: '0 3rem',
-		margin: '0 -1rem',
-		[mqBig]: {
-			margin: '0 -3rem',
-		},
-	},
-)
 
 export const StepErrorMessage = nest(StepErrorMessageComp, StepInsideMargin)
-
-export const MainErrorMessage = nest(
-	MainErrorMessageComp,
-	MainErrorInsideMargin,
-)
 
 const labelStyle = css({
 	fontWeight: 'bold',
@@ -358,6 +336,7 @@ export const Radio = ({
 	onChange,
 	checked,
 	differentSelectionGroup,
+	title,
 }) => (
 	<RadioComp>
 		<RadioInput
@@ -372,6 +351,7 @@ export const Radio = ({
 			htmlFor={id}
 			checked={checked}
 			differentSelectionGroup={differentSelectionGroup}
+			title={title}
 		>
 			{children}
 		</RadioLabel>
@@ -386,6 +366,7 @@ export const Checkbox = ({
 	onChange,
 	checked,
 	differentSelectionGroup,
+	title,
 }) => (
 	<RadioComp>
 		<RadioInput
@@ -400,6 +381,7 @@ export const Checkbox = ({
 			htmlFor={id}
 			checked={checked}
 			differentSelectionGroup={differentSelectionGroup}
+			title={title}
 		>
 			{children}
 		</CheckboxLabel>

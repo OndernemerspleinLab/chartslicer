@@ -34,7 +34,7 @@ const getParentTopicGroups = ({
 }
 
 const topicMapper = ({
-	topic: { Key, Title, Unit, Decimals, ParentID },
+	topic: { Key, Title, Description, Unit, Decimals, ParentID },
 	topicGroups,
 }: {
 	topic: CbsTopic,
@@ -42,6 +42,7 @@ const topicMapper = ({
 }): Topic => ({
 	key: Key,
 	title: Title,
+	description: Description,
 	unit: Unit,
 	decimals: Decimals,
 	parentGroupIds: getParentTopicGroups({ parentId: ParentID, topicGroups }),

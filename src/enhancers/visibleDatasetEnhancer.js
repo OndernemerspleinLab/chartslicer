@@ -20,7 +20,6 @@ import {
 	topicsConnector,
 } from '../connectors/topicConnectors'
 import { categoriesConnector } from '../connectors/categoryConnectors'
-import { branch, renderNothing } from 'recompose'
 import { configConnector } from '../connectors/configConnectors'
 import { getDimensionInfo } from './dimensionInfo/getDimensionInfo'
 import { weakMemoize } from '../helpers/weakMemoize'

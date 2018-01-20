@@ -94,6 +94,7 @@ export const fetchPeriods = ({
 // const dataPropertiesSelection = [
 //   'Key',
 //   'Title',
+//   'Description',
 //   'Type',
 //   'Unit',
 //   'Decimals',
@@ -120,7 +121,7 @@ export const fetchCategoryGroups = (id: DatasetId): CbsCategoryGroupsPromise =>
 
 ///////// Categories /////////
 
-const categorySelection = ['Key', 'Title', 'CategoryGroupID']
+const categorySelection = ['Key', 'Title', 'CategoryGroupID', 'Description']
 
 const getCategoryUrl = ({
 	id,

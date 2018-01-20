@@ -42,6 +42,7 @@ const RadioTopicUnit = compose(
 
 const TopicRadioComp = ({
 	title,
+	description,
 	unit,
 	inputValue,
 	onChange,
@@ -59,6 +60,7 @@ const TopicRadioComp = ({
 			onChange={onChange}
 			checked={value.includes(inputValue)}
 			differentSelectionGroup={differentSelectionGroup}
+			title={description}
 		>
 			{title} <RadioTopicUnit>{unit}</RadioTopicUnit>
 			<Alias>{alias}</Alias>
@@ -71,6 +73,7 @@ const TopicRadioComp = ({
 			onChange={onChange}
 			checked={first(value) === inputValue}
 			differentSelectionGroup={differentSelectionGroup}
+			title={description}
 		>
 			{title} <RadioTopicUnit>{unit}</RadioTopicUnit>
 			<Alias>{alias}</Alias>

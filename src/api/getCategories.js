@@ -41,10 +41,16 @@ const mapCategory = ({
 }: {
 	dimensionKey: DimensionKey,
 	categoryGroupsForDimension: CategoryGroupsForDimension,
-}) => ({ Key, Title, CategoryGroupID }: CbsCategory): Category => ({
+}) => ({
+	Key,
+	Title,
+	Description,
+	CategoryGroupID,
+}: CbsCategory): Category => ({
 	dimensionKey: dimensionKey,
 	key: Key,
 	title: Title,
+	description: Description,
 	parentGroupIds: getParentCategoryGroups({
 		parentId: CategoryGroupID,
 		categoryGroupsForDimension,

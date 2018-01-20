@@ -31,6 +31,7 @@ import { Media, MediaText, MediaFigure } from '../Media'
 
 const CategoryRadioComp = ({
 	title,
+	description,
 	dimensionKey,
 	inputValue,
 	onChange,
@@ -46,6 +47,7 @@ const CategoryRadioComp = ({
 			value={inputValue}
 			onChange={onChange}
 			checked={value.includes(inputValue)}
+			title={description}
 		>
 			{title}
 			<Alias>{alias}</Alias>
@@ -57,6 +59,7 @@ const CategoryRadioComp = ({
 			value={inputValue}
 			onChange={onChange}
 			checked={first(value) === inputValue}
+			title={description}
 		>
 			{title}
 			<Alias>{alias}</Alias>

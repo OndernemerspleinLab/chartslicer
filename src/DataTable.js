@@ -31,6 +31,9 @@ const DataTableComp = glamorous.div({
 
 const Table = glamorous.table({
 	lineHeight: 1.2,
+	maxWidth: '100%',
+	display: 'block',
+	overflowX: 'auto',
 })
 
 const TableHead = glamorous.thead()

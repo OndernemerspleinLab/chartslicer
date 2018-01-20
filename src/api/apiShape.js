@@ -27,6 +27,7 @@ export type CbsTopicType = 'Topic'
 export type CbsTopic = {
 	Key: TopicKey,
 	Title: string,
+	Description?: string,
 	Unit: string,
 	Decimals: number,
 	ParentID: Id,
@@ -69,6 +70,7 @@ export type CbsDataPropertiesPromise = Promise<CbsDataProperties>
 export type CbsCategory = {
 	Key: CategoryKey,
 	Title: string,
+	Description?: string,
 	CategoryGroupID: CategoryGroupId,
 }
 

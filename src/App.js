@@ -9,10 +9,10 @@ import glamorous from 'glamorous'
 import { mqBig, sidebarWidth } from './config'
 import { hemelblauw, violet } from './colors'
 import { Placeholder } from './Placeholder'
-import Color from 'color'
 import { QueryDataLoadingIndicator } from './Loading'
 import { DataQueryError } from './DataQueryError'
 import { NoDataMessage } from './NoDataMessage'
+import { sideScrollbarStyle, mainScrollbarStyle } from './styles'
 
 css.global('*', {
 	boxSizing: 'border-box',
@@ -33,46 +33,6 @@ const Layout = glamorous.div({
 	},
 })
 
-const sideScrollbarStyle = {
-	'::-webkit-scrollbar': {
-		width: '0.5rem',
-		height: '0.5rem',
-	},
-	'::-webkit-scrollbar-track': {
-		backgroundColor: Color(violet.lightest)
-			.lighten(0.04)
-			.string(),
-	},
-
-	'::-webkit-scrollbar-thumb': {
-		backgroundColor: violet.darker,
-		borderRadius: '999px',
-		border: `1px solid ${Color(violet.lightest)
-			.lighten(0.04)
-			.string()}`,
-	},
-}
-
-const mainScrollbarStyle = {
-	'::-webkit-scrollbar': {
-		width: '0.5rem',
-		height: '0.5rem',
-	},
-	'::-webkit-scrollbar-track': {
-		backgroundColor: Color(hemelblauw.lighter)
-			.lighten(0.04)
-			.string(),
-	},
-
-	'::-webkit-scrollbar-thumb': {
-		backgroundColor: hemelblauw.darker,
-		borderRadius: '999px',
-		border: `1px solid ${Color(hemelblauw.lighter)
-			.lighten(0.04)
-			.string()}`,
-	},
-}
-
 const Sidebar = glamorous.div(sideScrollbarStyle, {
 	flex: 'none',
 	overflowX: 'hidden',
@@ -88,6 +48,9 @@ const Main = glamorous.div(mainScrollbarStyle, {
 	position: 'relative',
 	backgroundColor: hemelblauw.lighter,
 	height: '100%',
+	[mqBig]: {
+		width: '0',
+	},
 })
 
 const MainScrollArea = glamorous.div(mainScrollbarStyle, {

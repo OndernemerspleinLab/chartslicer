@@ -12,14 +12,28 @@ import {
 } from 'recompose'
 import { connectActions } from './connectors/actionConnectors'
 import { violet } from './colors'
-import { borderRadius, borderRadiusOnlyLeft } from './styles'
-import { Label, Input, Hidden, AlignRight } from './graphPickerSteps/Elements'
+import {
+	borderRadius,
+	borderRadiusOnlyLeft,
+	sideScrollbarStyle,
+} from './styles'
+import {
+	Label,
+	Input,
+	Hidden,
+	AlignRight,
+	Paragraph,
+} from './graphPickerSteps/Elements'
 import { css } from 'glamor'
 import { Submit } from './CallToAction'
 import { Media, MediaText, MediaFigure } from './Media'
 import { autofocusEnhancer } from './enhancers/autofocusEnhancer'
+import { onlyWhenChildren } from './enhancers/onlyWhenChildren'
 
 const Form = glamorous.form(borderRadius, {
+	display: 'flex',
+	flexDirection: 'column',
+	maxHeight: '90vh',
 	position: 'relative',
 	backgroundColor: violet.lightest,
 	color: violet.default,
@@ -28,6 +42,10 @@ const Form = glamorous.form(borderRadius, {
 	maxWidth: '90vw',
 	flex: 'none',
 	padding: '0.8rem 1rem 0.5rem 1rem',
+})
+
+const FieldContainer = glamorous.div({
+	flex: 'none',
 })
 
 const LabelAliasInput = withProps({
@@ -122,8 +140,41 @@ const ClearButton = nest(
 	Hidden,
 )
 
+const DescriptionStyled = glamorous.div(sideScrollbarStyle, {
+	overflowX: 'hidden',
+	overflowY: 'auto',
+	marginTop: '0.5rem',
+	marginLeft: '-1rem',
+	marginRight: '-1rem',
+	marginBottom: '-0.5rem',
+	paddingLeft: '1rem',
+	paddingRight: '1rem',
+	paddingBottom: '0.5rem',
+	flex: 'auto',
+})
+const DescriptionTitle = glamorous.h2({
+	fontSize: '1em',
+	margin: '0',
+})
+
+const DescriptionComp = ({ children }) => {
+	return (
+		<DescriptionStyled>
+			<DescriptionTitle>Beschrijving</DescriptionTitle>
+			<Paragraph
+				css={{
+					whiteSpace: 'pre-wrap',
+				}}
+			>
+				{children}
+			</Paragraph>
+		</DescriptionStyled>
+	)
+}
+const Description = onlyWhenChildren(DescriptionComp)
+
 const LabelEditorElement = ({
-	info: { title },
+	info: { title, description },
 	value,
 	close,
 	setValue,
@@ -138,30 +189,35 @@ const LabelEditorElement = ({
 	return (
 		<Modal>
 			<Form onSubmit={onSubmit}>
-				<LabelAliasLabel htmlFor={id}>
-					Overschrijf label voor{' '}
-					<CopyButton onClick={setTitleAsValue}>‘{title}’</CopyButton>
-				</LabelAliasLabel>
+				<FieldContainer>
+					<LabelAliasLabel htmlFor={id}>
+						Overschrijf label voor{' '}
+						<CopyButton onClick={setTitleAsValue}>‘{title}’</CopyButton>
+					</LabelAliasLabel>
 
-				<Media>
-					<MediaText css={{ position: 'relative' }}>
-						<LabelAliasInput
-							id={id}
-							value={value}
-							onChange={setValue}
-							innerRef={refInputDomElement}
-						/>
-						<ClearButton value={value} onClick={clearValue}>
-							Veld leegmaken
-						</ClearButton>
-					</MediaText>
-					<MediaFigure>
-						<Submit>Opslaan</Submit>
-					</MediaFigure>
-				</Media>
-				<AlignRight>
-					<ResetButton onClick={onReset}>Verwijderen &amp; sluiten</ResetButton>
-				</AlignRight>
+					<Media>
+						<MediaText css={{ position: 'relative' }}>
+							<LabelAliasInput
+								id={id}
+								value={value}
+								onChange={setValue}
+								innerRef={refInputDomElement}
+							/>
+							<ClearButton value={value} onClick={clearValue}>
+								Veld leegmaken
+							</ClearButton>
+						</MediaText>
+						<MediaFigure>
+							<Submit>Opslaan</Submit>
+						</MediaFigure>
+					</Media>
+					<AlignRight>
+						<ResetButton onClick={onReset}>
+							Verwijderen &amp; sluiten
+						</ResetButton>
+					</AlignRight>
+				</FieldContainer>
+				<Description>{description}</Description>
 				<CloseButton onClick={close}>Sluiten</CloseButton>
 			</Form>
 		</Modal>

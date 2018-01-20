@@ -34,6 +34,7 @@ export const categoryEnhancer = compose(
 		return {
 			isMultiDimension,
 			title: category.title,
+			description: category.description,
 			inputValue: category.key,
 			name: `${dimensionKey}-categoryKey`,
 			multiValue: true,

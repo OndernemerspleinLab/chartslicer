@@ -10,6 +10,7 @@ import { hemelblauw } from './colors'
 import { InsideMargin, Hidden } from './graphPickerSteps/Elements'
 import { fadeInAnimation } from './styles'
 import { onlyWhenVisibleDataset } from './enhancers/datasetGuardEnhancer'
+import { mqBig } from './config'
 
 const enhancer = compose(onlyWhenVisibleDataset)
 
@@ -36,7 +37,10 @@ const TextAreaLabelElement = glamorous.label({
 	top: '0.3em',
 	bottom: '0.3em',
 	right: '100%',
-	paddingRight: '0.8rem',
+	paddingRight: '0.1rem',
+	[mqBig]: {
+		paddingRight: '0.8rem',
+	},
 })
 
 const TextareaLabel = ({ children, htmlFor }) => (

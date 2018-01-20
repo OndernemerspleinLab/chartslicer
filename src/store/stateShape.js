@@ -70,6 +70,7 @@ export type TopicGroups = {
 export type Topic = {
 	key: TopicKey,
 	title: string,
+	description?: string,
 	unit: string,
 	decimals: number,
 	parentGroupIds: TopicGroupId[],
@@ -114,6 +115,7 @@ export type Category = {
 	dimensionKey: DimensionKey,
 	key: CategoryKey,
 	title: string,
+	description?: string,
 	parentGroupIds: CategoryGroupId[],
 }
 
