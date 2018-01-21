@@ -32,10 +32,7 @@ const NoDataMessageStyled = nest(
 		backgroundColor: hemelblauw.default,
 		color: hemelblauw.lighter,
 		padding: '1rem 0.5rem',
-		margin: '0 0.5rem',
-		[mqBig]: {
-			margin: '0 2.5rem',
-		},
+		margin: '0 2.5rem',
 	}),
 )
 
@@ -43,6 +40,7 @@ const Message = glamorous.h2({
 	margin: 0,
 	fontSize: '1.3rem',
 	lineHeight: 1.15,
+	textAlign: 'center',
 })
 
 const NoDataMessageComponent = () => {
