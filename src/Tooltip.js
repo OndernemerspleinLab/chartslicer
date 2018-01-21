@@ -7,6 +7,7 @@ import { hemelblauw, grayBlue } from './colors'
 import { unexisting, existing } from './helpers/helpers'
 import Color from 'color'
 import { withCloseOnEscape } from './enhancers/withCloseOnEscape'
+import { tooltipZIndex } from './zIndex'
 
 const getUpdatedPosition = ({ anchorDOMElement }) => {
 	if (!anchorDOMElement) return {}
@@ -55,7 +56,7 @@ const FlyoutPlacer = glamorous.div(({ x, y }) => ({
 	left: 0,
 	top: 0,
 	transform: `translate(${x}px, ${y}px)`,
-	zIndex: 200,
+	zIndex: tooltipZIndex,
 	width: 0,
 	height: 0,
 }))
@@ -75,17 +76,21 @@ const getMaxHeight = ({
 }) => {
 	return Math.max(
 		Math.min(
-			windowHeight - height,
+			windowHeight - height - flyoutMargin - flyoutArrowSize,
 			yTop - windowTop - flyoutMargin - flyoutArrowSize,
 		),
 		Math.min(
-			windowHeight - height,
+			windowHeight - height - flyoutMargin - flyoutArrowSize,
 			windowBottom - yBottom - flyoutMargin - flyoutArrowSize,
 		),
 	)
 }
 const getSide = ({ maxHeight, elementHeight, yBottom, windowBottom }) =>
-	Math.min(maxHeight, elementHeight) + yBottom <= windowBottom
+	Math.min(maxHeight, elementHeight) +
+		yBottom +
+		flyoutMargin +
+		flyoutArrowSize <=
+	windowBottom
 		? 'bottom'
 		: 'top'
 

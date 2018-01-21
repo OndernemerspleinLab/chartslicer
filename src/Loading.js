@@ -9,6 +9,7 @@ import {
 	onlyWhenVisibleDataset,
 } from './enhancers/datasetGuardEnhancer'
 import { compose } from 'recompose'
+import { loadingZIndex } from './zIndex'
 
 const sizeInRem = 2
 
@@ -29,7 +30,7 @@ const LoadingElement = glamorous.div({
 	backgroundColor: Color(hemelblauw.lighter)
 		.alpha(0.8)
 		.string(),
-	zIndex: 5,
+	zIndex: loadingZIndex,
 	opacity: 0,
 	animation: `${fadeInLoadingKeyframes} 200ms ease-in-out 200ms forwards`,
 	pointerEvents: 'none',

@@ -13,6 +13,7 @@ import {
 } from '../styles'
 import { mqSmall, mqBig } from '../config'
 import { unexisting } from '../helpers/helpers'
+import { stickyZIndex } from '../zIndex'
 
 const hiddenStyle = {
 	position: 'absolute',
@@ -103,7 +104,7 @@ export const Sticky = glamorous.div({
 	position: 'sticky',
 	top: 0,
 	backgroundColor: violet.lightest,
-	zIndex: 2,
+	zIndex: stickyZIndex,
 })
 
 export const Paragraph = glamorous.p({

@@ -1,6 +1,7 @@
 import ReactDOM from 'react-dom'
 import React from 'react'
 import glamorous from 'glamorous'
+import { modalZIndex } from './zIndex'
 
 const modalRoot = document.getElementById('modalRoot')
 
@@ -13,7 +14,7 @@ const ModalContentStyled = glamorous.div({
 	top: '50%',
 	alignItems: 'center',
 	justifyContent: 'center',
-	zIndex: 200,
+	zIndex: modalZIndex,
 })
 
 export class Modal extends React.Component {
