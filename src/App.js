@@ -14,21 +14,20 @@ import { DataQueryError } from './DataQueryError'
 import { NoDataMessage } from './NoDataMessage'
 import { sideScrollbarStyle, mainScrollbarStyle } from './styles'
 
-css.global('*', {
-	boxSizing: 'border-box',
-})
-css.global('html', {
-	lineHeight: 1.5,
-	color: hemelblauw.darkest,
-	[mqBig]: {
-		overflow: 'hidden',
-	},
-})
-css.global('body', {
-	[mqBig]: {
-		overflow: 'hidden',
-	},
-})
+css.insert(`
+	* {
+		box-sizing: border-box;
+	}
+	html {
+		line-height: 1.5;
+		color: ${hemelblauw.darkest};
+	}
+	${mqBig} {
+		html, body {
+			overflow: hidden;
+		}
+	}
+`)
 
 const Layout = glamorous.div({
 	display: 'flex',
@@ -55,9 +54,8 @@ const Main = glamorous.div(mainScrollbarStyle, {
 	flex: 'auto',
 	position: 'relative',
 	backgroundColor: hemelblauw.lighter,
-	height: '100%',
 	[mqBig]: {
-		width: '0',
+		height: '100%',
 	},
 })
 
