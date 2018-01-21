@@ -45,42 +45,39 @@ export const diagonalStripesFactory = ({
 		1}px)`,
 })
 
-export const sideScrollbarStyle = {
-	'::-webkit-scrollbar': {
-		width: '0.5rem',
-		height: '0.5rem',
-	},
-	'::-webkit-scrollbar-track': {
-		backgroundColor: Color(violet.lightest)
-			.lighten(0.04)
-			.string(),
-	},
+export const scrollbarStyleFactory = ({
+	trackColor,
+	thumbColor,
+	trackBorderRadius = 0,
+}) => {
+	return {
+		'::-webkit-scrollbar': {
+			width: '0.5rem',
+			height: '0.5rem',
+		},
+		'::-webkit-scrollbar-track': {
+			backgroundColor: trackColor,
+			borderRadius: trackBorderRadius,
+		},
 
-	'::-webkit-scrollbar-thumb': {
-		backgroundColor: violet.darker,
-		borderRadius: '999px',
-		border: `1px solid ${Color(violet.lightest)
-			.lighten(0.04)
-			.string()}`,
-	},
+		'::-webkit-scrollbar-thumb': {
+			backgroundColor: thumbColor,
+			borderRadius: '999px',
+			border: `1px solid ${trackColor}`,
+		},
+	}
 }
 
-export const mainScrollbarStyle = {
-	'::-webkit-scrollbar': {
-		width: '0.5rem',
-		height: '0.5rem',
-	},
-	'::-webkit-scrollbar-track': {
-		backgroundColor: Color(hemelblauw.lighter)
-			.lighten(0.04)
-			.string(),
-	},
+export const sideScrollbarStyle = scrollbarStyleFactory({
+	trackColor: Color(violet.lightest)
+		.lighten(0.04)
+		.string(),
+	thumbColor: violet.darker,
+})
 
-	'::-webkit-scrollbar-thumb': {
-		backgroundColor: hemelblauw.darker,
-		borderRadius: '999px',
-		border: `1px solid ${Color(hemelblauw.lighter)
-			.lighten(0.04)
-			.string()}`,
-	},
-}
+export const mainScrollbarStyle = scrollbarStyleFactory({
+	trackColor: Color(hemelblauw.lighter)
+		.lighten(0.04)
+		.string(),
+	thumbColor: hemelblauw.darker,
+})

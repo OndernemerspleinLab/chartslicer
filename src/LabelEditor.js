@@ -29,6 +29,7 @@ import { Submit } from './CallToAction'
 import { Media, MediaText, MediaFigure } from './Media'
 import { autofocusEnhancer } from './enhancers/autofocusEnhancer'
 import { onlyWhenChildren } from './enhancers/onlyWhenChildren'
+import { withCloseOnEscape } from './enhancers/withCloseOnEscape'
 
 const Form = glamorous.form(borderRadius, {
 	display: 'flex',
@@ -171,6 +172,7 @@ const DescriptionComp = ({ children }) => {
 		</DescriptionStyled>
 	)
 }
+
 const Description = onlyWhenChildren(DescriptionComp)
 
 const LabelEditorElement = ({
@@ -191,8 +193,9 @@ const LabelEditorElement = ({
 			<Form onSubmit={onSubmit}>
 				<FieldContainer>
 					<LabelAliasLabel htmlFor={id}>
-						Overschrijf label voor{' '}
-						<CopyButton onClick={setTitleAsValue}>‘{title}’</CopyButton>
+						Overschrijf label voor ‘<CopyButton onClick={setTitleAsValue}>
+							{title}
+						</CopyButton>’
 					</LabelAliasLabel>
 
 					<Media>
@@ -226,6 +229,7 @@ const LabelEditorElement = ({
 
 export const LabelEditor = compose(
 	connectActions,
+	withCloseOnEscape,
 	withStateHandlers(({ alias }) => ({ value: alias || '' }), {
 		setValue: () => event => ({ value: event.target.value }),
 		clearValue: () => () => ({ value: '' }),

@@ -25,6 +25,7 @@ import { first } from 'lodash/fp'
 import { maxDimensions, DIMENSION_TOPIC } from '../config'
 import { MediaText, MediaFigure, Media } from '../Media'
 import { OpenCloseAll } from './OpenCloseAll'
+import { InputTooltip } from './Tooltips'
 
 const RadioTopicUnit = compose(
 	branch(({ children }) => unexisting(children), renderNothing),
@@ -51,35 +52,40 @@ const TopicRadioComp = ({
 	isMultiDimension,
 	differentSelectionGroup,
 	alias,
-}) =>
-	isMultiDimension ? (
-		<Checkbox
-			id={`topic-${inputValue}`}
-			name={name}
-			value={inputValue}
-			onChange={onChange}
-			checked={value.includes(inputValue)}
-			differentSelectionGroup={differentSelectionGroup}
-			title={description}
-		>
-			{title} <RadioTopicUnit>{unit}</RadioTopicUnit>
-			<Alias>{alias}</Alias>
-		</Checkbox>
+}) => {
+	const id = `topic-${inputValue}`
+	const checked = isMultiDimension
+		? value.includes(inputValue)
+		: first(value) === inputValue
+	const commonProps = {
+		id,
+		name,
+		value: inputValue,
+		onChange,
+		differentSelectionGroup,
+		checked,
+		afterChildren: (
+			<InputTooltip
+				checked={checked}
+				differentSelectionGroup={differentSelectionGroup}
+				id={id}
+				title={title}
+				description={description}
+			/>
+		),
+		children: (
+			<React.Fragment>
+				{title} <RadioTopicUnit>{unit}</RadioTopicUnit>
+				<Alias>{alias}</Alias>
+			</React.Fragment>
+		),
+	}
+	return isMultiDimension ? (
+		<Checkbox {...commonProps} />
 	) : (
-		<Radio
-			id={`topic-${inputValue}`}
-			name={name}
-			value={inputValue}
-			onChange={onChange}
-			checked={first(value) === inputValue}
-			differentSelectionGroup={differentSelectionGroup}
-			title={description}
-		>
-			{title} <RadioTopicUnit>{unit}</RadioTopicUnit>
-			<Alias>{alias}</Alias>
-		</Radio>
+		<Radio {...commonProps} />
 	)
-
+}
 const TopicRadio = compose(topicEnhancer, configChangeEnhancer)(TopicRadioComp)
 
 const TopicGroupComp = glamorous.div(

@@ -14,19 +14,30 @@ import { connect } from 'react-redux'
 import { tableInfoPickConnector } from '../connectors/tableInfoConnectors'
 import { composeConnectors } from '../connectors/connectorHelpers'
 import { onlyWhenMetadataLoaded } from '../enhancers/metadataEnhancers'
+import { MediaText, Media, MediaFigure } from '../Media'
+import { TitleTooltip } from './Tooltips'
 
 const connectMetadata = compose(
 	connect(
 		composeConnectors(
 			metadataErrorConnector,
-			tableInfoPickConnector(['title', 'id']),
+			tableInfoPickConnector(['title', 'id', 'description']),
 		),
 	),
 )
 
-const TablePickerResultContainer = ({ title, id }) => (
+const TablePickerResultContainer = ({ title, id, description }) => (
 	<Message>
-		<StepTitle>{title}</StepTitle>
+		<Media>
+			<MediaText>
+				<StepTitle>{title}</StepTitle>
+			</MediaText>
+			{Boolean(description) ? (
+				<MediaFigure>
+					<TitleTooltip title={title} description={description} />
+				</MediaFigure>
+			) : null}
+		</Media>
 		<Paragraph>
 			<InlineTerm>Dataset ID:</InlineTerm> <code>{id}</code>
 		</Paragraph>

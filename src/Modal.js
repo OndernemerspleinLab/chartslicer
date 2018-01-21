@@ -4,7 +4,7 @@ import glamorous from 'glamorous'
 
 const modalRoot = document.getElementById('modalRoot')
 
-const ModalContent = glamorous.div({
+const ModalContentStyled = glamorous.div({
 	position: 'fixed',
 	display: 'flex',
 	height: 0,
@@ -31,8 +31,9 @@ export class Modal extends React.Component {
 	}
 
 	render() {
+		const { children, ModalContent = <ModalContentStyled /> } = this.props
 		return ReactDOM.createPortal(
-			<ModalContent>{this.props.children}</ModalContent>,
+			React.cloneElement(ModalContent, null, children),
 			this.el,
 		)
 	}

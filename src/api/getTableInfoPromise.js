@@ -19,11 +19,12 @@ const getPeriodTypes = compose(
 )
 
 const mapCbsTableInfo = (id: DatasetId) => ([
-	{ Title, GraphTypes, Language }: CbsTableInfo,
+	{ Title, GraphTypes, ShortDescription, Language }: CbsTableInfo,
 	cbsPeriods: CbsPeriods,
 ]): TableInfo => ({
 	id,
 	title: Title,
+	description: ShortDescription,
 	language: Language,
 	graphTypes: split(',')(GraphTypes),
 	periodTypes: getPeriodTypes(cbsPeriods),

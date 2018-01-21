@@ -38,7 +38,12 @@ export const apiBaseUrl = `${apiOrigin}/ODataApi/odata`
 
 ///////// TableInfo /////////
 
-const tableInfoSelection = ['Title', 'GraphTypes', 'Language']
+const tableInfoSelection = [
+	'Title',
+	'GraphTypes',
+	'Language',
+	'ShortDescription',
+]
 
 const getTableInfoUrl = (id: DatasetId) =>
 	`${apiBaseUrl}/${id}/TableInfos?${select(tableInfoSelection)}`

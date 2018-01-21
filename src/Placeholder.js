@@ -4,7 +4,7 @@ import glamorous from 'glamorous'
 // Source of image: https://commons.wikimedia.org/wiki/File:George_Bernard_Shaw_1925.jpg
 import imageSrc from './George_Bernard_Shaw_1925.jpg'
 import Color from 'color'
-import { hemelblauw } from './colors'
+import { hemelblauw, grayBlue } from './colors'
 import { compose } from 'recompose'
 import { css } from 'glamor'
 import { metadataLoadingStateConnector } from './connectors/metadataLoadingStateConnectors'
@@ -25,7 +25,7 @@ const PlaceholderComp = glamorous.div({
 	fontFamily: 'georgia, serif',
 	maxWidth: '30rem',
 	padding: '3rem',
-	color: 'hsl(207, 13%, 37%)',
+	color: grayBlue,
 	marginBottom: '10%',
 })
 const BlockQuote = glamorous.blockquote({

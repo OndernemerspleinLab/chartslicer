@@ -8,13 +8,19 @@ const OpenCloseAllStyled = glamorous.div({
 	padding: '0.5rem 0 0.5rem 0.5rem',
 })
 
+const buttonLineHeight = 1.1
+
 const OpenCloseAllComponent = ({ openAll, closeAll }) => {
 	return (
 		<OpenCloseAllStyled>
-			<AccordionButton onClick={openAll}>
+			<AccordionButton lineHeight={buttonLineHeight} onClick={openAll}>
 				<Hidden>Alles openen</Hidden>
 			</AccordionButton>
-			<AccordionButton opened={true} onClick={closeAll}>
+			<AccordionButton
+				lineHeight={buttonLineHeight}
+				opened={true}
+				onClick={closeAll}
+			>
 				<Hidden>Alles sluiten</Hidden>
 			</AccordionButton>
 		</OpenCloseAllStyled>

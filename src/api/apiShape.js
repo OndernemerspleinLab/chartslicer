@@ -16,6 +16,7 @@ export type CbsTableInfo = {
 	Title: string,
 	GraphTypes: string[],
 	Language: string,
+	ShortDescription?: string,
 }
 
 export type CbsTableInfoPromise = Promise<CbsTableInfo>

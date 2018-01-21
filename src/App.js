@@ -20,6 +20,14 @@ css.global('*', {
 css.global('html', {
 	lineHeight: 1.5,
 	color: hemelblauw.darkest,
+	[mqBig]: {
+		overflow: 'hidden',
+	},
+})
+css.global('body', {
+	[mqBig]: {
+		overflow: 'hidden',
+	},
 })
 
 const Layout = glamorous.div({
@@ -58,8 +66,7 @@ const MainScrollArea = glamorous.div(mainScrollbarStyle, {
 	height: '100%',
 	flex: 'auto',
 	position: 'relative',
-	overflowX: 'hidden',
-	overflowY: 'auto',
+	overflow: 'auto',
 	padding: '0 1rem',
 	[mqBig]: {
 		padding: '0 3rem',

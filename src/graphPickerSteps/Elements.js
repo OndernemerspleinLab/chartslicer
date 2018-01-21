@@ -218,14 +218,14 @@ export const NumberInput = withProps({
 })(Input)
 
 const RadioComp = glamorous.span({
-	display: 'inline-block',
+	display: 'inline-flex',
 	verticalAlign: 'top',
 	margin: '0.5rem 0.3rem 0 0',
 	position: 'relative',
 })
 
 const SingleRadioComp = glamorous.span({
-	display: 'inline-block',
+	display: 'inline-flex',
 	verticalAlign: 'top',
 	margin: '0 0.3rem 0.5rem 0',
 	position: 'relative',
@@ -246,6 +246,7 @@ const RadioLabel = glamorous.label(
 		display: 'inline-block',
 		padding: '0.2em 0.6em 0.2em 1.4em',
 		position: 'relative',
+		flex: 'auto',
 		':before': {
 			content: '""',
 			left: '0.55em',
@@ -277,6 +278,7 @@ const CheckboxLabel = glamorous.label(
 		display: 'inline-block',
 		padding: '0.2em 0.6em 0.2em 1.4em',
 		position: 'relative',
+		flex: 'auto',
 		':before': {
 			content: '""',
 			left: '0.6em',
@@ -311,6 +313,7 @@ const SingleCheckboxLabel = glamorous.label(
 		display: 'inline-block',
 		padding: '0.2em 0.6em 0.2em 0.8em',
 		position: 'relative',
+		flex: 'auto',
 		':before': {
 			content: '""',
 			left: 0,
@@ -337,6 +340,7 @@ export const Radio = ({
 	checked,
 	differentSelectionGroup,
 	title,
+	afterChildren,
 }) => (
 	<RadioComp>
 		<RadioInput
@@ -355,6 +359,7 @@ export const Radio = ({
 		>
 			{children}
 		</RadioLabel>
+		{afterChildren}
 	</RadioComp>
 )
 
@@ -367,6 +372,7 @@ export const Checkbox = ({
 	checked,
 	differentSelectionGroup,
 	title,
+	afterChildren,
 }) => (
 	<RadioComp>
 		<RadioInput
@@ -385,6 +391,7 @@ export const Checkbox = ({
 		>
 			{children}
 		</CheckboxLabel>
+		{afterChildren}
 	</RadioComp>
 )
 
@@ -395,6 +402,7 @@ export const SingleCheckbox = ({
 	value = '',
 	onChange,
 	checked,
+	afterChildren,
 }) => (
 	<SingleRadioComp>
 		<RadioInput
@@ -408,6 +416,7 @@ export const SingleCheckbox = ({
 		<SingleCheckboxLabel htmlFor={id} checked={checked}>
 			{children}
 		</SingleCheckboxLabel>
+		{afterChildren}
 	</SingleRadioComp>
 )
 
@@ -420,7 +429,7 @@ export const AccordionButton = glamorous.button(
 		padding: 0,
 		cursor: 'pointer',
 	},
-	({ opened, includesSelection }) => ({
+	({ opened, includesSelection, lineHeight = 1.3 }) => ({
 		fontWeight: 'inherit',
 		':after': {
 			content: opened ? '"×"' : '"+"',
@@ -431,7 +440,7 @@ export const AccordionButton = glamorous.button(
 			textAlign: 'center',
 			width: '1rem',
 			height: '1rem',
-			lineHeight: 1.3,
+			lineHeight,
 			boxShadow: `0 0 0 1px ${violet.darker}`,
 			...(includesSelection
 				? {
@@ -476,7 +485,6 @@ export const Center = glamorous.div({
 
 export const AlignRight = glamorous.div({
 	display: 'flex',
-	height: '100%',
 	width: '100%',
 	flexDirection: 'column',
 	alignItems: 'flex-end',

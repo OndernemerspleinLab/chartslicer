@@ -41,6 +41,7 @@ export type TableInfo = {
 	id: DatasetId,
 	graphTypes: string[],
 	language: string,
+	description?: string,
 	periodTypes: PeriodType[],
 }
 

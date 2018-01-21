@@ -12,6 +12,7 @@ export const hemelblauw = {
 	lightest: '#f3f9ff',
 	grijscontrast: '#0670b2',
 }
+export const grayBlue = 'hsl(207, 13%, 37%)'
 export const violet = {
 	darker: '#75154b',
 	default: '#a90061',

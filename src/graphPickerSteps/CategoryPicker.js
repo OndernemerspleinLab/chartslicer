@@ -28,6 +28,7 @@ import { first } from 'lodash/fp'
 import { maxDimensions } from '../config'
 import { OpenCloseAll } from './OpenCloseAll'
 import { Media, MediaText, MediaFigure } from '../Media'
+import { InputTooltip } from './Tooltips'
 
 const CategoryRadioComp = ({
 	title,
@@ -39,33 +40,37 @@ const CategoryRadioComp = ({
 	value = [],
 	isMultiDimension,
 	alias,
-}) =>
-	isMultiDimension ? (
-		<Checkbox
-			id={`category-${dimensionKey}-${inputValue}`}
-			name={name}
-			value={inputValue}
-			onChange={onChange}
-			checked={value.includes(inputValue)}
-			title={description}
-		>
-			{title}
-			<Alias>{alias}</Alias>
-		</Checkbox>
+}) => {
+	const id = `category-${dimensionKey}-${inputValue}`
+	const checked = isMultiDimension
+		? value.includes(inputValue)
+		: first(value) === inputValue
+	const commonProps = {
+		id,
+		name,
+		value: inputValue,
+		onChange,
+		checked,
+		afterChildren: (
+			<InputTooltip
+				checked={checked}
+				id={id}
+				title={title}
+				description={description}
+			/>
+		),
+		children: (
+			<React.Fragment>
+				{title} <Alias>{alias}</Alias>
+			</React.Fragment>
+		),
+	}
+	return isMultiDimension ? (
+		<Checkbox {...commonProps} />
 	) : (
-		<Radio
-			id={`category-${dimensionKey}-${inputValue}`}
-			name={name}
-			value={inputValue}
-			onChange={onChange}
-			checked={first(value) === inputValue}
-			title={description}
-		>
-			{title}
-			<Alias>{alias}</Alias>
-		</Radio>
+		<Radio {...commonProps} />
 	)
-
+}
 const CategoryRadio = compose(categoryEnhancer, configChangeEnhancer)(
 	CategoryRadioComp,
 )
