@@ -7,13 +7,10 @@ const modalRoot = document.getElementById('modalRoot')
 
 const ModalContentStyled = glamorous.div({
 	position: 'fixed',
-	display: 'flex',
 	height: 0,
 	width: 0,
 	left: '50%',
 	top: '50%',
-	alignItems: 'center',
-	justifyContent: 'center',
 	zIndex: modalZIndex,
 })
 

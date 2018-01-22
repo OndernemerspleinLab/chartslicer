@@ -11,6 +11,7 @@ import {
 	Checkbox,
 	Alias,
 	Sticky,
+	Frag,
 } from './Elements'
 import glamorous from 'glamorous'
 import { violet } from '../colors'
@@ -74,10 +75,10 @@ const TopicRadioComp = ({
 			/>
 		),
 		children: (
-			<React.Fragment>
+			<Frag>
 				{title} <RadioTopicUnit>{unit}</RadioTopicUnit>
 				<Alias>{alias}</Alias>
-			</React.Fragment>
+			</Frag>
 		),
 	}
 	return isMultiDimension ? (

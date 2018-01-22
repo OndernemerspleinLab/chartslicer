@@ -23,6 +23,14 @@ const hiddenStyle = {
 	overflow: 'hidden',
 }
 
+// replacement for React.Fragment because it does not work in IE11
+export const Frag = ({ children }) => children
+
+export const FlexIEMinMaxHeightFix = glamorous.div({
+	display: 'flex',
+	flexDirection: 'row',
+})
+
 export const Hidden = glamorous.span(hiddenStyle)
 
 export const InsideMargin = glamorous.div(

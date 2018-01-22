@@ -3,7 +3,8 @@ import { lifecycle } from 'recompose'
 export const withCloseOnEscape = lifecycle({
 	componentDidMount() {
 		this.handleKeyDown = ({ key }) => {
-			if (key === 'Escape') {
+			// 'Esc' for IE11 support
+			if (key === 'Escape' || key === 'Esc') {
 				if (this.props.close) this.props.close()
 			}
 		}

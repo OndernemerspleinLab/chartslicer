@@ -11,6 +11,7 @@ import {
 	CloseAccordion,
 	Alias,
 	Sticky,
+	Frag,
 } from './Elements'
 import glamorous from 'glamorous'
 import { violet } from '../colors'
@@ -60,9 +61,9 @@ const CategoryRadioComp = ({
 			/>
 		),
 		children: (
-			<React.Fragment>
+			<Frag>
 				{title} <Alias>{alias}</Alias>
-			</React.Fragment>
+			</Frag>
 		),
 	}
 	return isMultiDimension ? (

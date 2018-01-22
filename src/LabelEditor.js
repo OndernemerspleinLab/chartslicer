@@ -23,6 +23,7 @@ import {
 	Hidden,
 	AlignRight,
 	Paragraph,
+	FlexIEMinMaxHeightFix,
 } from './graphPickerSteps/Elements'
 import { css } from 'glamor'
 import { Submit } from './CallToAction'
@@ -36,13 +37,14 @@ const Form = glamorous.form(borderRadius, {
 	flexDirection: 'column',
 	maxHeight: '90vh',
 	position: 'relative',
+	flex: 'none',
 	backgroundColor: violet.lightest,
 	color: violet.default,
 	border: `2px solid ${violet.default}`,
 	width: '30rem',
 	maxWidth: '90vw',
-	flex: 'none',
 	padding: '0.8rem 1rem 0.5rem 1rem',
+	transform: 'translate(-50%, -50%)',
 })
 
 const FieldContainer = glamorous.div({
@@ -190,39 +192,41 @@ const LabelEditorElement = ({
 	const id = `labelAliasInput${index}`
 	return (
 		<Modal>
-			<Form onSubmit={onSubmit}>
-				<FieldContainer>
-					<LabelAliasLabel htmlFor={id}>
-						Overschrijf label voor ‘<CopyButton onClick={setTitleAsValue}>
-							{title}
-						</CopyButton>’
-					</LabelAliasLabel>
+			<FlexIEMinMaxHeightFix>
+				<Form onSubmit={onSubmit}>
+					<FieldContainer>
+						<LabelAliasLabel htmlFor={id}>
+							Overschrijf label voor ‘<CopyButton onClick={setTitleAsValue}>
+								{title}
+							</CopyButton>’
+						</LabelAliasLabel>
 
-					<Media>
-						<MediaText css={{ position: 'relative' }}>
-							<LabelAliasInput
-								id={id}
-								value={value}
-								onChange={setValue}
-								innerRef={refInputDomElement}
-							/>
-							<ClearButton value={value} onClick={clearValue}>
-								Veld leegmaken
-							</ClearButton>
-						</MediaText>
-						<MediaFigure>
-							<Submit>Opslaan</Submit>
-						</MediaFigure>
-					</Media>
-					<AlignRight>
-						<ResetButton onClick={onReset}>
-							Verwijderen &amp; sluiten
-						</ResetButton>
-					</AlignRight>
-				</FieldContainer>
-				<Description>{description}</Description>
-				<CloseButton onClick={close}>Sluiten</CloseButton>
-			</Form>
+						<Media>
+							<MediaText css={{ position: 'relative' }}>
+								<LabelAliasInput
+									id={id}
+									value={value}
+									onChange={setValue}
+									innerRef={refInputDomElement}
+								/>
+								<ClearButton value={value} onClick={clearValue}>
+									Veld leegmaken
+								</ClearButton>
+							</MediaText>
+							<MediaFigure>
+								<Submit>Opslaan</Submit>
+							</MediaFigure>
+						</Media>
+						<AlignRight>
+							<ResetButton onClick={onReset}>
+								Verwijderen &amp; sluiten
+							</ResetButton>
+						</AlignRight>
+					</FieldContainer>
+					<Description>{description}</Description>
+					<CloseButton onClick={close}>Sluiten</CloseButton>
+				</Form>
+			</FlexIEMinMaxHeightFix>
 		</Modal>
 	)
 }

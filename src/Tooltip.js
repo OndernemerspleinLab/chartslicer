@@ -8,13 +8,14 @@ import { unexisting, existing } from './helpers/helpers'
 import Color from 'color'
 import { withCloseOnEscape } from './enhancers/withCloseOnEscape'
 import { tooltipZIndex } from './zIndex'
+import { Frag } from './graphPickerSteps/Elements'
 
 const getUpdatedPosition = ({ anchorDOMElement }) => {
 	if (!anchorDOMElement) return {}
 
 	const { width, height, left, top } = anchorDOMElement.getBoundingClientRect()
 
-	const { scrollX, scrollY } = window
+	const { scrollX = window.pageXOffset, scrollY = window.pageYOffset } = window
 	const windowWidth = window.innerWidth
 	const windowHeight = window.innerHeight
 
@@ -127,15 +128,22 @@ const getArrowPosition = ({ elementWidth, windowOverflow }) => {
 
 	return arrowPosition
 }
+const getMaxWidth = ({ windowWidth }) => {
+	const maxWidth = existing(windowWidth)
+		? Math.min(windowWidth - 2 * flyoutMargin, 480)
+		: undefined
+	return maxWidth
+}
 
 const addFlyoutProps = props => {
 	const maxHeight = getMaxHeight(props)
+	const maxWidth = getMaxWidth(props)
 	const side = getSide({ ...props, maxHeight })
 	const windowOverflow = getWindowOverflowLeftShift(props)
 	const leftShift = getLeftShift({ ...props, windowOverflow })
 	const arrowPosition = getArrowPosition({ ...props, windowOverflow })
 
-	return { ...props, maxHeight, side, leftShift, arrowPosition }
+	return { ...props, maxHeight, maxWidth, side, leftShift, arrowPosition }
 }
 
 const FlyoutContentStyled = glamorous
@@ -154,6 +162,7 @@ const FlyoutContentStyled = glamorous
 			windowWidth,
 			height,
 			maxHeight,
+			maxWidth,
 			side,
 			leftShift,
 			flyoutBorderColor,
@@ -162,16 +171,11 @@ const FlyoutContentStyled = glamorous
 			const directionalTopShift =
 				side === 'bottom' ? absoluteTopShift : -absoluteTopShift
 			return {
+				display: 'inline-block',
 				position: 'absolute',
-				display: 'flex',
-				flexDirection: 'column',
-				alignItems: 'stretch',
-				justifyContent: 'stretch',
 				[side === 'bottom' ? 'top' : 'bottom']: 0,
 				left: 0,
-				maxWidth: existing(windowWidth)
-					? Math.min(windowWidth - 2 * flyoutMargin, 480)
-					: undefined,
+				maxWidth,
 				maxHeight: !isNaN(maxHeight) ? maxHeight : undefined,
 				animation: fadeInAnimation,
 				transform: `translate(${leftShift}px, ${directionalTopShift}px)`,
@@ -204,17 +208,17 @@ const FlyoutContentWrapper = glamorous.div(
 		windowTop,
 		heightPadding,
 		maxHeight,
+		maxWidth,
 		side,
 		arrowPosition,
 	}) => {
 		return {
-			display: 'flex',
+			display: 'block',
 			position: 'relative',
-			flexDirection: 'column',
-			alignItems: 'stretch',
-			justifyContent: 'stretch',
+			// Fallback for IE11, tooltips will always have the maxWidth in this browser
+			width: [`${maxWidth}px`, 'max-content'],
 			maxWidth: '100%',
-			width: 'max-content',
+			maxHeight,
 			border: `${flyoutBorderWidth}px solid ${flyoutBorderColor}`,
 			borderRadius: flyoutBorderRadius,
 			backgroundColor: flyoutBackgroundColor,
@@ -270,13 +274,14 @@ const FlyoutArrowStyled = glamorous.div(({ side, arrowPosition }) => {
 
 const FlyoutArrow = nest(FlyoutArrowStyled, FlyoutArrowSvg)
 
-const FlyoutScrollArea = glamorous.div(({ scrollbarStyle }) => {
+const FlyoutScrollArea = glamorous.div(({ scrollbarStyle, maxHeight }) => {
 	return {
 		...scrollbarStyle,
 		overflowX: 'hidden',
 		overflowY: 'auto',
 		padding: '0.6rem 1rem',
 		margin: '1px',
+		maxHeight,
 	}
 })
 
@@ -451,7 +456,7 @@ export const Tooltip = class Tooltip extends React.PureComponent {
 			typeof Component.type === 'string' ? 'ref' : 'innerRef'
 
 		return (
-			<React.Fragment>
+			<Frag>
 				{React.cloneElement(
 					Component,
 					{ [refPropertyName]: this.saveRef, onClick: this.handleClick },
@@ -475,7 +480,7 @@ export const Tooltip = class Tooltip extends React.PureComponent {
 				) : (
 					undefined
 				)}
-			</React.Fragment>
+			</Frag>
 		)
 	}
 }
