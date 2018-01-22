@@ -1,3 +1,4 @@
+import { negate } from 'lodash/fp'
 import { connect } from 'react-redux'
 import { first, findLast, pickBy } from 'lodash/fp'
 import { get, setIn, getIn } from '../helpers/getset'
@@ -24,6 +25,7 @@ import { configConnector } from '../connectors/configConnectors'
 import { getDimensionInfo } from './dimensionInfo/getDimensionInfo'
 import { weakMemoize } from '../helpers/weakMemoize'
 import { getGlobalDataProperties } from './dimensionInfo/getGlobalDataProperties'
+import { getDimensionLabel } from './dimensionInfo/getDimensionLabel'
 
 const getPeriodDate = get('periodDate')
 
@@ -117,13 +119,14 @@ const arrangeValuesByDimension = ({
 	return valuesByDimension
 }
 
+const hasEnoughValuesForDimension = valuesForDimension =>
+	Object.keys(valuesForDimension).length > minPeriodLength
+
 const getDimensionKeys = valuesByDimension =>
-	Object.keys(
-		pickBy(
-			valuesForDimension =>
-				Object.keys(valuesForDimension).length > minPeriodLength,
-		)(valuesByDimension),
-	)
+	Object.keys(pickBy(hasEnoughValuesForDimension)(valuesByDimension))
+
+const getRejectedDimensionKeys = valuesByDimension =>
+	Object.keys(pickBy(negate(hasEnoughValuesForDimension))(valuesByDimension))
 
 const hasValueForPeriod = ({
 	periodDate,
@@ -209,6 +212,7 @@ export const visibleDataInfoConnector = weakMemoize(state => {
 	})
 
 	const dimensionKeys = getDimensionKeys(valuesByDimension)
+	const rejectedDimensionKeys = getRejectedDimensionKeys(valuesByDimension)
 
 	const topics = topicsConnector(state)
 	const categories = categoriesConnector(state)
@@ -231,6 +235,19 @@ export const visibleDataInfoConnector = weakMemoize(state => {
 		periodDatesInRange,
 	})
 
+	const rejectedDimensionInfo = rejectedDimensionKeys.map(dimensionKey => {
+		return {
+			dimensionKey,
+			...getDimensionLabel({
+				multiDimension,
+				selectedTopics: topics,
+				selectedCategories: categories,
+				labelAliases,
+				dimensionKey,
+			}),
+		}
+	})
+
 	const globalDataProperties = getGlobalDataProperties(dimensionInfo)
 
 	const { unit, decimals } = topicsGetConnector(first(topicKeys))(state)
@@ -240,6 +257,7 @@ export const visibleDataInfoConnector = weakMemoize(state => {
 		...globalDataProperties,
 		valuesByDimension,
 		dimensionInfo,
+		rejectedDimensionInfo,
 		periodDatesInRange,
 		unit,
 		decimals,

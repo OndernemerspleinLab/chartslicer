@@ -13,6 +13,7 @@ import { QueryDataLoadingIndicator } from './Loading'
 import { DataQueryError } from './DataQueryError'
 import { NoDataMessage } from './NoDataMessage'
 import { sideScrollbarStyle, mainScrollbarStyle } from './styles'
+import { NoDataForDimensionMessageList } from './NoDataForDimensionMessage'
 
 // Each rule needs a seperate insert, because otherwise it will not work in production mode
 css.insert(`
@@ -86,6 +87,7 @@ export const App = persistableEnhancer(() => (
 				<Placeholder />
 				<DataInfo />
 				<DataChart />
+				<NoDataForDimensionMessageList />
 				<DataTable />
 				<NoDataMessage />
 			</MainScrollArea>
