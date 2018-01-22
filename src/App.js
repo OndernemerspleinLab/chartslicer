@@ -14,14 +14,19 @@ import { DataQueryError } from './DataQueryError'
 import { NoDataMessage } from './NoDataMessage'
 import { sideScrollbarStyle, mainScrollbarStyle } from './styles'
 
+// Each rule needs a seperate insert, because otherwise it will not work in production mode
 css.insert(`
 	* {
 		box-sizing: border-box;
 	}
+`)
+css.insert(`
 	html {
 		line-height: 1.5;
 		color: ${hemelblauw.darkest};
 	}
+`)
+css.insert(`
 	${mqBig} {
 		html, body {
 			overflow: hidden;
