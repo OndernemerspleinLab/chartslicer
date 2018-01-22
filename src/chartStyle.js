@@ -19,18 +19,19 @@ const yAxisLabelPadding = 20
 
 const chartLeftPaddingMinimum = 100
 
-const getYAxisLabelOffset = ({ decimals, globalMax }) => {
+const getYAxisLabelOffset = ({ decimals, globalMax, globalMin }) => {
 	const globalMaxFormatted = formatNumber(decimals)(globalMax)
+	const globalMinFormatted = formatNumber(decimals)(globalMin)
 	const { width } = TextSize.approximateTextSize(
-		globalMaxFormatted,
+		[globalMaxFormatted, globalMinFormatted],
 		tickLabelStyle,
 	)
 	return width + yAxisLabelPadding
 }
 
-const getChartLeftPadding = ({ decimals, globalMax }) => {
+const getChartLeftPadding = ({ decimals, globalMax, globalMin }) => {
 	return Math.max(
-		yAxisLabelSpace + getYAxisLabelOffset({ decimals, globalMax }),
+		yAxisLabelSpace + getYAxisLabelOffset({ decimals, globalMax, globalMin }),
 		chartLeftPaddingMinimum,
 	)
 }
@@ -45,12 +46,13 @@ const chartParentStyle = {
 	border: `1px solid ${hemelblauw.light}`,
 }
 
-export const chartPaddingFactory = ({ decimals, globalMax }) => {
+const chartPaddingFactory = ({ decimals, globalMax, globalMin }) => {
 	return {
 		top: 80,
 		left: getChartLeftPadding({
 			decimals,
 			globalMax,
+			globalMin,
 		}),
 		bottom: 110,
 		right: 100,
@@ -59,13 +61,14 @@ export const chartPaddingFactory = ({ decimals, globalMax }) => {
 
 const chartYDomainPadding = 40
 
-export const chartPropsFactory = ({ decimals, globalMax }) => ({
+export const chartPropsFactory = ({ decimals, globalMax, globalMin }) => ({
 	width: chartWidth,
 	height: chartHeight,
 	style: { parent: chartParentStyle },
 	padding: chartPaddingFactory({
 		decimals,
 		globalMax,
+		globalMin,
 	}),
 	domainPadding: {
 		y: [chartYDomainPadding, chartYDomainPadding],
@@ -113,7 +116,7 @@ export const xAxisTickLabelPropsFactory = () => {
 	}
 }
 
-export const yAxisStyleFactory = ({ decimals, globalMax }) => ({
+export const yAxisStyleFactory = ({ decimals, globalMax, globalMin }) => ({
 	axis: axisStyle,
 	tickLabels: tickLabelStyle,
 	axisLabel: {
@@ -121,6 +124,7 @@ export const yAxisStyleFactory = ({ decimals, globalMax }) => ({
 		padding: getYAxisLabelOffset({
 			decimals,
 			globalMax,
+			globalMin,
 		}),
 		fontWeight: 'bold',
 		fill: hemelblauw.darker,

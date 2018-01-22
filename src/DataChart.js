@@ -142,6 +142,7 @@ const DataChartContainer = ({
 						style={yAxisStyleFactory({
 							decimals,
 							globalMax,
+							globalMin,
 						})}
 					/>
 					{dimensionInfo.map(singleDimensionInfo =>

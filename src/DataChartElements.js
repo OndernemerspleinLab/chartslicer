@@ -90,6 +90,7 @@ export const ChartWrapper = ({
 		<VictoryChart
 			{...chartPropsFactory({
 				globalMax,
+				globalMin,
 				decimals,
 			})}
 			containerComponent={containerComponent}
