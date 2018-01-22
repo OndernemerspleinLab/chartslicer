@@ -73,7 +73,7 @@ export const TitleTooltip = ({ title, description }) => {
 				<Button
 					color={violet.darker}
 					backgroundColor={wit}
-					css={{ marginTop: '0.3rem' }}
+					css={{ marginTop: '0.3rem', marginLeft: '1rem' }}
 				/>
 			}
 			TooltipContent={<PreFormattedText>{description}</PreFormattedText>}
