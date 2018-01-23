@@ -1,4 +1,3 @@
-import { negate } from 'lodash/fp'
 import { connect } from 'react-redux'
 import { first, findLast, pickBy } from 'lodash/fp'
 import { get, setIn, getIn } from '../helpers/getset'
