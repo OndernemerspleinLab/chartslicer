@@ -125,8 +125,32 @@ const hasEnoughValuesForDimension = valuesForDimension =>
 const getDimensionKeys = valuesByDimension =>
 	Object.keys(pickBy(hasEnoughValuesForDimension)(valuesByDimension))
 
-const getRejectedDimensionKeys = valuesByDimension =>
-	Object.keys(pickBy(negate(hasEnoughValuesForDimension))(valuesByDimension))
+const getKeysForMultiDimension = ({
+	multiDimension,
+	topicKeys,
+	categoryKeys,
+}) => {
+	return !multiDimension || multiDimension === DIMENSION_TOPIC
+		? topicKeys
+		: categoryKeys[multiDimension]
+}
+const getRejectedDimensionKeys = ({
+	multiDimension,
+	topicKeys,
+	categoryKeys,
+	acceptedDimensionKeys,
+}) => {
+	const allDimensionKeys = getKeysForMultiDimension({
+		multiDimension,
+		topicKeys,
+		categoryKeys,
+	})
+	const rejectedDimensionKeys = allDimensionKeys.filter(
+		dimensionKey => !acceptedDimensionKeys.includes(dimensionKey),
+	)
+
+	return rejectedDimensionKeys
+}
 
 const hasValueForPeriod = ({
 	periodDate,
@@ -212,7 +236,12 @@ export const visibleDataInfoConnector = weakMemoize(state => {
 	})
 
 	const dimensionKeys = getDimensionKeys(valuesByDimension)
-	const rejectedDimensionKeys = getRejectedDimensionKeys(valuesByDimension)
+	const rejectedDimensionKeys = getRejectedDimensionKeys({
+		multiDimension,
+		topicKeys,
+		categoryKeys,
+		acceptedDimensionKeys: dimensionKeys,
+	})
 
 	const topics = topicsConnector(state)
 	const categories = categoriesConnector(state)

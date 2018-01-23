@@ -161,7 +161,7 @@ export const StepErrorMessageComp = glamorous.section(
 
 export const StepErrorMessage = nest(StepErrorMessageComp, StepInsideMargin)
 
-const labelStyle = css({
+export const labelStyle = css({
 	fontWeight: 'bold',
 	lineHeight: 1.15,
 	fontSize: '0.8rem',

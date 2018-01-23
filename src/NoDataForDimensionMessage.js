@@ -2,14 +2,16 @@ import React from 'react'
 import glamorous from 'glamorous'
 import { diagonalStripesFactory } from './styles'
 import { hemelblauw, wit } from './colors'
-import { compose, branch, renderNothing } from 'recompose'
+import { compose, branch, renderNothing, withProps } from 'recompose'
 import { visibleDatasetEnhancer } from './enhancers/visibleDatasetEnhancer'
 import {
 	onlyWhenVisibleDataset,
 	onlyWhenDataAvailable,
 } from './enhancers/datasetGuardEnhancer'
 import { existing } from './helpers/helpers'
-import { Paragraph } from './graphPickerSteps/Elements'
+import { Paragraph, labelStyle, AlignRight } from './graphPickerSteps/Elements'
+import { configChangeEnhancer } from './enhancers/configEnhancers'
+import { maxDimensions } from './config'
 
 const NoDataForDimensionStyled = glamorous.div({
 	position: 'relative',
@@ -34,15 +36,66 @@ const NoDataForDimensionStyled = glamorous.div({
 	},
 })
 
-const NoDataForDimensionHeading = glamorous.h2({
-	fontSize: 'inherit',
-	fontWeight: 'bold',
-	margin: '0 0 0.2rem 0',
+const NoDataForDimensionHeading = glamorous.h2(labelStyle, {
+	margin: '0 0 0.3rem 0',
 })
 
+const DeleteButtonStyled = glamorous
+	.button({
+		background: 'none',
+		border: 'none',
+		padding: 0,
+		color: 'inherit',
+		textDecoration: 'underline',
+		fontSize: '0.8rem',
+		marginTop: '0.4rem',
+	})
+	.withProps({ type: 'button' })
+
+const DeleteButtonComp = ({ onChange, children }) => {
+	return <DeleteButtonStyled onClick={onChange}>{children}</DeleteButtonStyled>
+}
+
+const addCategoryPropsEnhancer = withProps(
+	({ inputValue, dimensionKey, multiDimension }) => {
+		return {
+			multiValue: true,
+			replaceValue: false,
+			keyPath: ['categoryKeys', dimensionKey],
+			inputValue,
+			maxLength: maxDimensions,
+		}
+	},
+)
+
+const deleteCategoryEnhancer = compose(
+	addCategoryPropsEnhancer,
+	configChangeEnhancer,
+)
+
+const addTopicPropsEnhancer = withProps(({ inputValue, multiDimension }) => {
+	return {
+		multiValue: true,
+		replaceValue: false,
+		keyPath: ['topicKeys'],
+		inputValue,
+		maxLength: maxDimensions,
+	}
+})
+
+const deleteTopicEnhancer = compose(addTopicPropsEnhancer, configChangeEnhancer)
+
+const DeleteButton = branch(
+	({ dimensionType }) => dimensionType === 'category',
+	deleteCategoryEnhancer,
+	deleteTopicEnhancer,
+)(DeleteButtonComp)
+
 const NoDataForDimensionMessage = ({
-	info: { title },
+	info: { title, key, dimensionKey },
 	dimensionLabelAlias,
+	dimensionType,
+	multiDimension,
 }) => {
 	return (
 		<NoDataForDimensionStyled>
@@ -55,6 +108,16 @@ const NoDataForDimensionMessage = ({
 					? ` (alias: ‘${dimensionLabelAlias}’)`
 					: null}
 			</Paragraph>
+			<AlignRight>
+				<DeleteButton
+					dimensionType={dimensionType}
+					multiDimension={multiDimension}
+					inputValue={key}
+					dimensionKey={dimensionKey}
+				>
+					Verwijderen
+				</DeleteButton>
+			</AlignRight>
 		</NoDataForDimensionStyled>
 	)
 }
@@ -65,12 +128,16 @@ const NoDataForDimensionMessageListStyled = glamorous.div({
 	flexWrap: 'wrap',
 })
 
-const NoDataForDimensionMessageListComp = ({ rejectedDimensionInfo = [] }) => {
+const NoDataForDimensionMessageListComp = ({
+	multiDimension,
+	rejectedDimensionInfo = [],
+}) => {
 	return (
 		<NoDataForDimensionMessageListStyled>
 			{rejectedDimensionInfo.map(rejectedSingleDimensionInfo => {
 				return (
 					<NoDataForDimensionMessage
+						multiDimension={multiDimension}
 						{...rejectedSingleDimensionInfo}
 						key={rejectedSingleDimensionInfo.dimensionKey}
 					/>

@@ -24,6 +24,7 @@ import {
 	AlignRight,
 	Paragraph,
 	FlexIEMinMaxHeightFix,
+	labelStyle,
 } from './graphPickerSteps/Elements'
 import { css } from 'glamor'
 import { Submit } from './CallToAction'
@@ -153,11 +154,11 @@ const DescriptionStyled = glamorous.div(sideScrollbarStyle, {
 	paddingLeft: '1rem',
 	paddingRight: '1rem',
 	paddingBottom: '0.5rem',
+	fontSize: '0.8rem',
 	flex: 'auto',
 })
-const DescriptionTitle = glamorous.h2({
-	fontSize: '1em',
-	margin: '0',
+const DescriptionTitle = glamorous.h2(labelStyle, {
+	margin: '0 0 0.1rem 0',
 })
 
 const DescriptionComp = ({ children }) => {
