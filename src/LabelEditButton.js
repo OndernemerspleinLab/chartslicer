@@ -12,6 +12,7 @@ const EditButton = glamorous.button({
 	borderRadius: 0,
 	color: wit,
 	fill: 'currentColor',
+	cursor: 'pointer',
 })
 
 const Wrapper = ({ children }) => children

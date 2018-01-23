@@ -76,6 +76,7 @@ const CloseButtonElement = glamorous.button({
 	color: violet.darker,
 	width: '1em',
 	height: '1em',
+	cursor: 'pointer',
 
 	':after': {
 		content: '"×"',
@@ -100,6 +101,7 @@ const ResetButtonElement = glamorous.button({
 	textDecoration: 'underline',
 	fontSize: '0.8rem',
 	marginTop: '0.5rem',
+	cursor: 'pointer',
 })
 const ResetButton = withProps({ type: 'button' })(ResetButtonElement)
 
@@ -110,6 +112,7 @@ const CopyButtonElement = glamorous.button({
 	borderRadius: 0,
 	color: 'inherit',
 	textDecoration: 'underline',
+	cursor: 'pointer',
 })
 const CopyButton = withProps({ type: 'button' })(CopyButtonElement)
 
@@ -220,7 +223,7 @@ const LabelEditorElement = ({
 						</Media>
 						<AlignRight>
 							<ResetButton onClick={onReset}>
-								Verwijderen &amp; sluiten
+								Resetten &amp; sluiten
 							</ResetButton>
 						</AlignRight>
 					</FieldContainer>

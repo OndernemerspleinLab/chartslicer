@@ -40,7 +40,7 @@ const NoDataForDimensionHeading = glamorous.h2(labelStyle, {
 	margin: '0 0 0.3rem 0',
 })
 
-const DeleteButtonStyled = glamorous
+const DeselectButtonStyled = glamorous
 	.button({
 		background: 'none',
 		border: 'none',
@@ -49,11 +49,14 @@ const DeleteButtonStyled = glamorous
 		textDecoration: 'underline',
 		fontSize: '0.8rem',
 		marginTop: '0.4rem',
+		cursor: 'pointer',
 	})
 	.withProps({ type: 'button' })
 
-const DeleteButtonComp = ({ onChange, children }) => {
-	return <DeleteButtonStyled onClick={onChange}>{children}</DeleteButtonStyled>
+const DeselectButtonComp = ({ onChange, children }) => {
+	return (
+		<DeselectButtonStyled onClick={onChange}>{children}</DeselectButtonStyled>
+	)
 }
 
 const addCategoryPropsEnhancer = withProps(
@@ -85,11 +88,11 @@ const addTopicPropsEnhancer = withProps(({ inputValue, multiDimension }) => {
 
 const deleteTopicEnhancer = compose(addTopicPropsEnhancer, configChangeEnhancer)
 
-const DeleteButton = branch(
+const DeselectButton = branch(
 	({ dimensionType }) => dimensionType === 'category',
 	deleteCategoryEnhancer,
 	deleteTopicEnhancer,
-)(DeleteButtonComp)
+)(DeselectButtonComp)
 
 const NoDataForDimensionMessage = ({
 	info: { title, key, dimensionKey },
@@ -109,14 +112,14 @@ const NoDataForDimensionMessage = ({
 					: null}
 			</Paragraph>
 			<AlignRight>
-				<DeleteButton
+				<DeselectButton
 					dimensionType={dimensionType}
 					multiDimension={multiDimension}
 					inputValue={key}
 					dimensionKey={dimensionKey}
 				>
-					Verwijderen
-				</DeleteButton>
+					Deselecteren
+				</DeselectButton>
 			</AlignRight>
 		</NoDataForDimensionStyled>
 	)
