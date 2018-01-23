@@ -127,6 +127,10 @@ export const getPersistentData = () => {
 
 export const gatherPersistentData = state => {
 	const activeConfig = configConnector(state)
+	if (!activeConfig) {
+		return {}
+	}
+
 	const language = tableLanguageGetter(state)
 	const { selectedTopics } = selectedTopicsConnector(state)
 	const { selectedCategories } = allSelectedCategoriesConnector(state)
