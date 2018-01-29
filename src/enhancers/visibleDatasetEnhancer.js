@@ -119,7 +119,7 @@ const arrangeValuesByDimension = ({
 }
 
 const hasEnoughValuesForDimension = valuesForDimension =>
-	Object.keys(valuesForDimension).length > minPeriodLength
+	Object.keys(valuesForDimension).length >= minPeriodLength
 
 const getDimensionKeys = valuesByDimension =>
 	Object.keys(pickBy(hasEnoughValuesForDimension)(valuesByDimension))
