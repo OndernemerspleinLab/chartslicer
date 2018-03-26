@@ -7,6 +7,7 @@ import { first } from 'lodash/fp'
 import { tableLanguageGetter } from '../connectors/tableInfoConnectors'
 import { allSelectedCategoriesConnector } from '../connectors/categoryConnectors'
 import { metadataIsLoadedConnector } from '../connectors/metadataLoadingStateConnectors'
+import { environmentLanguageGetter } from '../connectors/environmentLanguageConnectors'
 
 const getFieldFromOpener = opener => {
 	const getView = getIn(['$display', 'getView'])(opener)
@@ -131,11 +132,13 @@ export const gatherPersistentData = state => {
 		return {}
 	}
 
-	const language = tableLanguageGetter(state)
+	const dataSourceLanguage = tableLanguageGetter(state)
+	const language = environmentLanguageGetter(state)
 	const { selectedTopics } = selectedTopicsConnector(state)
 	const { selectedCategories } = allSelectedCategoriesConnector(state)
 
 	return {
+		dataSourceLanguage,
 		language,
 		selectedTopics,
 		selectedCategories,
