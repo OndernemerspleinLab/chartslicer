@@ -76,12 +76,12 @@ const DataChartContainer = ({
 	dimensionInfo,
 	periodDatesInRange,
 	valuesByDimension,
-	unit,
-	decimals,
+	unitInfo,
 	globalMiddle,
 	globalMax,
 	globalMin,
 }) => {
+	const { title: unit, decimals } = unitInfo
 	return (
 		<DataChartComp>
 			<Rectangle>

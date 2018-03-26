@@ -495,6 +495,10 @@ export const Center = glamorous.div({
 	justifyContent: 'center',
 })
 
+export const CenterText = glamorous.div({
+	textAlign: 'center',
+})
+
 export const AlignRight = glamorous.div({
 	display: 'flex',
 	width: '100%',

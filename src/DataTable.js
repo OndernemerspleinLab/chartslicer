@@ -2,7 +2,12 @@ import React from 'react'
 import { compose } from 'recompose'
 import glamorous from 'glamorous'
 import { hemelblauw, wit } from './colors'
-import { InsideMargin } from './graphPickerSteps/Elements'
+import {
+	InsideMargin,
+	Hidden,
+	Center,
+	CenterText,
+} from './graphPickerSteps/Elements'
 import { fadeInAnimation } from './styles'
 import {
 	onlyWhenDataAvailable,
@@ -11,7 +16,7 @@ import {
 import { connect } from 'react-redux'
 import { formatSingleLineCbsPeriod, getCbsPeriodLabel } from './cbsPeriod'
 import { formatNumber } from './helpers/helpers'
-import { getIn } from './helpers/getset'
+import { getIn, get } from './helpers/getset'
 import { onlyWhenChildren } from './enhancers/onlyWhenChildren'
 import { LabelEditButton } from './LabelEditButton'
 import { visibleDatasetEnhancer } from './enhancers/visibleDatasetEnhancer'
@@ -66,24 +71,39 @@ const Unit = onlyWhenChildren(UnitContainer)
 
 const ValueHeadingCell = ({
 	alias,
+	unitAlias,
 	title,
 	info,
 	dimensionType,
-	unit,
+	unitInfo,
 	activeDatasetId,
 	index,
 }) => (
 	<HeadingCell>
-		<LabelEditButton
-			alias={alias}
-			info={info}
-			dimensionType={dimensionType}
-			activeDatasetId={activeDatasetId}
-			index={index}
-		>
-			Label aanpassen
-		</LabelEditButton>{' '}
-		{title} <Unit>{unit}</Unit>
+		<CenterText>
+			<LabelEditButton
+				alias={alias}
+				info={info}
+				dimensionType={dimensionType}
+				activeDatasetId={activeDatasetId}
+				index={index}
+			>
+				<Hidden>Label aanpassen</Hidden>
+				{title}
+			</LabelEditButton>
+		</CenterText>
+		<CenterText>
+			<LabelEditButton
+				alias={get('alias')(unitInfo)}
+				info={unitInfo}
+				dimensionType={'unit'}
+				activeDatasetId={activeDatasetId}
+				index={`${index}-unit`}
+			>
+				<Hidden>Label aanpassen</Hidden>
+				<Unit>{get('title')(unitInfo)}</Unit>
+			</LabelEditButton>
+		</CenterText>
 	</HeadingCell>
 )
 
@@ -115,8 +135,7 @@ const DataTableContainer = ({
 	dimensionInfo,
 	periodDatesInRange,
 	valuesByDimension,
-	unit,
-	decimals,
+	unitInfo,
 	id,
 }) => {
 	const periodLabel = getCbsPeriodLabel({
@@ -146,7 +165,7 @@ const DataTableContainer = ({
 										activeDatasetId={id}
 										key={index}
 										index={index}
-										unit={unit}
+										unitInfo={unitInfo}
 										title={dimensionLabel}
 										alias={dimensionLabelAlias}
 										info={info}
@@ -162,7 +181,7 @@ const DataTableContainer = ({
 								language={environmentLanguage}
 								key={periodDate}
 								periodDate={periodDate}
-								decimals={decimals}
+								decimals={get('decimals')(unitInfo)}
 								periodType={periodType}
 								dimensionInfo={dimensionInfo}
 								valuesByDimension={valuesByDimension}

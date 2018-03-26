@@ -25,6 +25,7 @@ import { getDimensionInfo } from './dimensionInfo/getDimensionInfo'
 import { weakMemoize } from '../helpers/weakMemoize'
 import { getGlobalDataProperties } from './dimensionInfo/getGlobalDataProperties'
 import { getDimensionLabel } from './dimensionInfo/getDimensionLabel'
+import { getUnitInfo } from './getUnitInfo'
 
 const getPeriodDate = get('periodDate')
 
@@ -276,9 +277,10 @@ export const visibleDataInfoConnector = weakMemoize(state => {
 		}
 	})
 
-	const globalDataProperties = getGlobalDataProperties(dimensionInfo)
-
 	const { unit, decimals } = topicsGetConnector(first(topicKeys))(state)
+	const unitInfo = getUnitInfo({ unit, decimals, labelAliases })
+
+	const globalDataProperties = getGlobalDataProperties(dimensionInfo)
 
 	return {
 		...visibleDatasetInfo,
@@ -287,8 +289,7 @@ export const visibleDataInfoConnector = weakMemoize(state => {
 		dimensionInfo,
 		rejectedDimensionInfo,
 		periodDatesInRange,
-		unit,
-		decimals,
+		unitInfo,
 	}
 })
 

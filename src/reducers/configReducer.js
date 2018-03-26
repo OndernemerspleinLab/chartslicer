@@ -55,22 +55,38 @@ const setTopicLabelAlias = ({ key, value }) => (state = {}) => {
 	return set(aliasKey, value)(state)
 }
 
+const setUnitLabelAlias = ({ key, value }) => (state = {}) => {
+	const aliasKey = `unit/${key}`
+
+	if (!value) {
+		return omit(aliasKey)(state)
+	}
+
+	return set(aliasKey, value)(state)
+}
+
 const reduceLabelAliases = (
 	state = {},
 	{ value, key, dimensionKey, aliasType, activeDatasetId },
 ) => {
 	switch (aliasType) {
+		case 'unit':
+			return updateIn(
+				[activeDatasetId, 'labelAliases'],
+				setUnitLabelAlias({ value, key }),
+			)(state)
 		case 'category':
 			return updateIn(
 				[activeDatasetId, 'labelAliases'],
 				setCategoryLabelAlias({ value, key, dimensionKey }),
 			)(state)
 		case 'topic':
-		default:
 			return updateIn(
 				[activeDatasetId, 'labelAliases'],
 				setTopicLabelAlias({ value, key }),
 			)(state)
+		default:
+			throw new Error(`Invalid label alias type: ${aliasType}`)
 	}
 }
 

@@ -1,21 +1,23 @@
 import React from 'react'
 import { Pencil } from './svg/Pencil'
 import glamorous from 'glamorous'
-import { Hidden } from './graphPickerSteps/Elements'
 import { wit } from './colors'
 import { withStateHandlers } from 'recompose'
 import { LabelEditor } from './LabelEditor'
+import { Media, MediaFigure, MediaText } from './Media'
+import { Frag } from './graphPickerSteps/Elements'
 
 const EditButton = glamorous.button({
+	display: 'inline-block',
+	verticalAlign: 'middle',
 	background: 'none',
 	border: 'none',
 	borderRadius: 0,
 	color: wit,
 	fill: 'currentColor',
 	cursor: 'pointer',
+	padding: 0,
 })
-
-const Wrapper = ({ children }) => children
 
 const LabelEditButtonElement = ({
 	children,
@@ -27,12 +29,17 @@ const LabelEditButtonElement = ({
 	toggle,
 	close,
 	index,
+	css,
 }) => {
 	return (
-		<Wrapper>
-			<EditButton title={children} onClick={toggle}>
-				<Hidden>{children}</Hidden>
-				<Pencil />
+		<Frag>
+			<EditButton title={children} onClick={toggle} css={css}>
+				<Media alignItems="center">
+					<MediaFigure>
+						<Pencil css={{ marginRight: '0.3rem' }} />
+					</MediaFigure>
+					<MediaText>{children}</MediaText>
+				</Media>
 			</EditButton>
 			{editorOpened ? (
 				<LabelEditor
@@ -44,7 +51,7 @@ const LabelEditButtonElement = ({
 					index={index}
 				/>
 			) : null}
-		</Wrapper>
+		</Frag>
 	)
 }
 
