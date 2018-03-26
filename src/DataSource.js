@@ -10,15 +10,16 @@ import { CreateCommonsBy, CreateCommonsLogo } from './CreativeCommons'
 import { Hidden } from './graphPickerSteps/Elements'
 import { tableLanguageConnector } from './connectors/tableInfoConnectors'
 import { EnvironmentLanguage } from './EnvironmentLanguage'
+import { environmentLanguageConnector } from './connectors/environmentLanguageConnectors'
 
 const Link = glamorous.a({
 	color: hemelblauw.default,
 })
 
-const CreativeCommonsLink = () => (
+const CreativeCommonsLink = ({ language }) => (
 	<Link
 		target="_blank"
-		href="https://creativecommons.org/licenses/by/3.0/nl/"
+		href={`https://creativecommons.org/licenses/by/4.0/deed.${language}`}
 		title="Create Commons Naamsvermelding 3.0 Nederland"
 		css={{
 			textDecoration: 'none',
@@ -47,15 +48,21 @@ const DataSourceComp = glamorous.div({
 	fontSize: '0.8rem',
 })
 
-const DataSourceContainer = ({ activeDatasetId, language }) => (
+const DataSourceContainer = ({
+	activeDatasetId,
+	language,
+	environmentLanguage,
+}) => (
 	<DataSourceComp css={{ marginTop: '2rem' }}>
 		<EnvironmentLanguage NL={() => 'Bron: '} EN={() => 'Source: '} />
-		<CbsLink id={activeDatasetId} language={language} /> <CreativeCommonsLink />
+		<CbsLink id={activeDatasetId} language={language} />{' '}
+		<CreativeCommonsLink language={environmentLanguage} />
 	</DataSourceComp>
 )
 
 export const DataSource = compose(
 	onlyWhenVisibleDataset,
+	connect(environmentLanguageConnector),
 	connect(tableLanguageConnector),
 	connect(activeDatasetIdConnector),
 )(DataSourceContainer)
