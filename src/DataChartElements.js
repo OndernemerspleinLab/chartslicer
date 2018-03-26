@@ -78,6 +78,7 @@ export const ChartWrapper = ({
 	globalMax,
 	globalMin,
 	decimals,
+	language,
 }) => {
 	const containerComponent = (
 		<VictoryVoronoiContainer
@@ -92,6 +93,7 @@ export const ChartWrapper = ({
 				globalMax,
 				globalMin,
 				decimals,
+				language,
 			})}
 			containerComponent={containerComponent}
 			domain={{ y: [globalMin, globalMax] }}
@@ -135,7 +137,7 @@ export const Tooltips = ({
 			labels={({ x, y }) => {
 				if (unexisting(y)) return ''
 				return [
-					formatNumber(decimals)(y),
+					formatNumber({ decimals, language })(y),
 					formattedUnit,
 					' ', // empty line for vertical spacing
 					...dimensionLabelBrokenIntoArray,

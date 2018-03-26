@@ -1,7 +1,7 @@
 // @flow
 
 import { negate } from 'lodash/fp'
-import { thousandsSeperator, numberSeperator } from '../config'
+import { thousandsSeperator, getDecimalSeperator } from '../config'
 
 export const minimal = (minimum: number) => (number: number): number =>
 	Math.max(minimum, number)
@@ -32,12 +32,18 @@ export const chunkNumberString = (chunkSize: number) => (
 	return memo
 }
 
-export const formatNumber = (decimals: number = 0) => (
-	number: ?number,
-): ?string => {
+export const formatNumber = ({
+	language,
+	decimals = 0,
+}: {
+	language: string,
+	decimals: number,
+}) => (number: ?number): ?string => {
 	if (typeof number !== 'number') {
 		return number
 	}
+
+	const decimalSeperator = getDecimalSeperator(language)
 
 	const numberString = String(number)
 
@@ -53,7 +59,7 @@ export const formatNumber = (decimals: number = 0) => (
 			: chunkNumberString(3)(integerString).join(thousandsSeperator)
 
 	return formattedDecimals.length > 0
-		? `${formattedIntegers}${numberSeperator}${formattedDecimals}`
+		? `${formattedIntegers}${decimalSeperator}${formattedDecimals}`
 		: formattedIntegers
 }
 

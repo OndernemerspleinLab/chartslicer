@@ -95,9 +95,12 @@ const StepComp = glamorous.section(
 	}),
 )
 
-const StepInsideMargin = withProps({ top: '0.5rem', bottom: '1rem' })(
-	InsideMargin,
-)
+const StepInsideMargin = withProps(
+	({ marginTop = '0.5rem', marginBottom = '1rem' }) => ({
+		top: marginTop,
+		bottom: marginBottom,
+	}),
+)(InsideMargin)
 
 export const Step = nest(StepComp, StepInsideMargin)
 

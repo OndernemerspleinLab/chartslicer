@@ -59,7 +59,9 @@ const CallToActionInner = props => (
 	</InlineMedia>
 )
 const CallToActionButton = glamorous.button({})
-const CallToActionLinkComp = glamorous.a({})
+const CallToActionLinkComp = glamorous.a({
+	margin: '0 0.3rem 1rem 0',
+})
 
 export const CallToAction = glamorous(
 	props => (

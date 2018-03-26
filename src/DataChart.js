@@ -18,7 +18,6 @@ import { connect } from 'react-redux'
 import { formatWithNewYearFactory } from './cbsPeriod'
 import { formatNumber } from './helpers/helpers'
 import { DataSource } from './DataSource'
-import { tableLanguageConnector } from './connectors/tableInfoConnectors'
 import {
 	ChartWrapper,
 	ChartLineGradient,
@@ -34,10 +33,11 @@ import {
 	xAxisTickLabelPropsFactory,
 } from './chartStyle'
 import { wordBreak } from './helpers/stringHelpers'
+import { environmentLanguageConnector } from './connectors/environmentLanguageConnectors'
 
 const enhancer = compose(
 	onlyWhenVisibleDataset,
-	connect(tableLanguageConnector),
+	connect(environmentLanguageConnector),
 	visibleDatasetEnhancer,
 	onlyWhenDataAvailable,
 )
@@ -71,7 +71,7 @@ const getLegendData = ({ symbol, color, dimensionLabel }) => ({
 })
 
 const DataChartContainer = ({
-	language,
+	environmentLanguage,
 	periodType,
 	dimensionInfo,
 	periodDatesInRange,
@@ -92,6 +92,7 @@ const DataChartContainer = ({
 					periodType={periodType}
 					globalMax={globalMax}
 					globalMin={globalMin}
+					language={environmentLanguage}
 				>
 					{dimensionInfo.map(({ min, max, chartColor }, index) => {
 						return (
@@ -112,7 +113,7 @@ const DataChartContainer = ({
 							periodDatesInRange,
 							valuesByDimension,
 							globalMiddle,
-							language,
+							language: environmentLanguage,
 						}),
 					)}
 					{dimensionInfo.map(singleDimensionInfo =>
@@ -127,7 +128,10 @@ const DataChartContainer = ({
 					)}
 					<VictoryAxis
 						tickValues={periodDatesInRange}
-						tickFormat={formatWithNewYearFactory({ language, periodType })}
+						tickFormat={formatWithNewYearFactory({
+							language: environmentLanguage,
+							periodType,
+						})}
 						scale="time"
 						style={xAxisStyleFactory({})}
 						tickCount={chartXAxisTickCount}
@@ -138,7 +142,10 @@ const DataChartContainer = ({
 					<VictoryAxis
 						dependentAxis
 						label={unit}
-						tickFormat={formatNumber(decimals)}
+						tickFormat={formatNumber({
+							language: environmentLanguage,
+							decimals,
+						})}
 						style={yAxisStyleFactory({
 							decimals,
 							globalMax,

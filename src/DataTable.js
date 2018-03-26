@@ -12,14 +12,14 @@ import { connect } from 'react-redux'
 import { formatSingleLineCbsPeriod, getCbsPeriodLabel } from './cbsPeriod'
 import { formatNumber } from './helpers/helpers'
 import { getIn } from './helpers/getset'
-import { tableLanguageConnector } from './connectors/tableInfoConnectors'
 import { onlyWhenChildren } from './enhancers/onlyWhenChildren'
 import { LabelEditButton } from './LabelEditButton'
 import { visibleDatasetEnhancer } from './enhancers/visibleDatasetEnhancer'
+import { environmentLanguageConnector } from './connectors/environmentLanguageConnectors'
 
 const enhancer = compose(
 	onlyWhenVisibleDataset,
-	connect(tableLanguageConnector),
+	connect(environmentLanguageConnector),
 	visibleDatasetEnhancer,
 	onlyWhenDataAvailable,
 )
@@ -102,13 +102,15 @@ const DataRow = ({
 		{dimensionInfo.map(({ dimensionKey }, index) => {
 			const value = getIn([dimensionKey, periodDate])(valuesByDimension)
 
-			return <Cell key={index}>{formatNumber(decimals)(value)}</Cell>
+			return (
+				<Cell key={index}>{formatNumber({ decimals, language })(value)}</Cell>
+			)
 		})}
 	</Row>
 )
 
 const DataTableContainer = ({
-	language,
+	environmentLanguage,
 	periodType,
 	dimensionInfo,
 	periodDatesInRange,
@@ -117,7 +119,10 @@ const DataTableContainer = ({
 	decimals,
 	id,
 }) => {
-	const periodLabel = getCbsPeriodLabel({ language, periodType })
+	const periodLabel = getCbsPeriodLabel({
+		language: environmentLanguage,
+		periodType,
+	})
 
 	return (
 		<DataTableComp>
@@ -154,7 +159,7 @@ const DataTableContainer = ({
 					<Tablebody>
 						{periodDatesInRange.map(periodDate => (
 							<DataRow
-								language={language}
+								language={environmentLanguage}
 								key={periodDate}
 								periodDate={periodDate}
 								decimals={decimals}

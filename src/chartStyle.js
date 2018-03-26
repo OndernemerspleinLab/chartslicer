@@ -19,9 +19,9 @@ const yAxisLabelPadding = 20
 
 const chartLeftPaddingMinimum = 100
 
-const getYAxisLabelOffset = ({ decimals, globalMax, globalMin }) => {
-	const globalMaxFormatted = formatNumber(decimals)(globalMax)
-	const globalMinFormatted = formatNumber(decimals)(globalMin)
+const getYAxisLabelOffset = ({ decimals, globalMax, globalMin, language }) => {
+	const globalMaxFormatted = formatNumber({ decimals, language })(globalMax)
+	const globalMinFormatted = formatNumber({ decimals, language })(globalMin)
 	const { width } = TextSize.approximateTextSize(
 		[globalMaxFormatted, globalMinFormatted],
 		tickLabelStyle,
@@ -29,9 +29,10 @@ const getYAxisLabelOffset = ({ decimals, globalMax, globalMin }) => {
 	return width + yAxisLabelPadding
 }
 
-const getChartLeftPadding = ({ decimals, globalMax, globalMin }) => {
+const getChartLeftPadding = ({ decimals, globalMax, globalMin, language }) => {
 	return Math.max(
-		yAxisLabelSpace + getYAxisLabelOffset({ decimals, globalMax, globalMin }),
+		yAxisLabelSpace +
+			getYAxisLabelOffset({ decimals, globalMax, globalMin, language }),
 		chartLeftPaddingMinimum,
 	)
 }
@@ -46,13 +47,14 @@ const chartParentStyle = {
 	border: `1px solid ${hemelblauw.light}`,
 }
 
-const chartPaddingFactory = ({ decimals, globalMax, globalMin }) => {
+const chartPaddingFactory = ({ decimals, globalMax, globalMin, language }) => {
 	return {
 		top: 80,
 		left: getChartLeftPadding({
 			decimals,
 			globalMax,
 			globalMin,
+			language,
 		}),
 		bottom: 110,
 		right: 100,
@@ -61,7 +63,12 @@ const chartPaddingFactory = ({ decimals, globalMax, globalMin }) => {
 
 const chartYDomainPadding = 40
 
-export const chartPropsFactory = ({ decimals, globalMax, globalMin }) => ({
+export const chartPropsFactory = ({
+	decimals,
+	globalMax,
+	globalMin,
+	language,
+}) => ({
 	width: chartWidth,
 	height: chartHeight,
 	style: { parent: chartParentStyle },
@@ -69,6 +76,7 @@ export const chartPropsFactory = ({ decimals, globalMax, globalMin }) => ({
 		decimals,
 		globalMax,
 		globalMin,
+		language,
 	}),
 	domainPadding: {
 		y: [chartYDomainPadding, chartYDomainPadding],

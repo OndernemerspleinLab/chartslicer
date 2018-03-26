@@ -27,7 +27,15 @@ export const accordionFromLength = 1
 export const rootAccordionFromLength = 3
 
 export const thousandsSeperator = ' '
-export const numberSeperator = ','
+export const getDecimalSeperator = language => {
+	switch (language) {
+		case 'en':
+			return '.'
+		case 'nl':
+		default:
+			return ','
+	}
+}
 
 export const defaultLanguage = 'nl'
 export const supportedLanguages = [defaultLanguage, 'en']

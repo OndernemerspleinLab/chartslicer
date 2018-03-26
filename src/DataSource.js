@@ -9,6 +9,7 @@ import { connect } from 'react-redux'
 import { CreateCommonsBy, CreateCommonsLogo } from './CreativeCommons'
 import { Hidden } from './graphPickerSteps/Elements'
 import { tableLanguageConnector } from './connectors/tableInfoConnectors'
+import { EnvironmentLanguage } from './EnvironmentLanguage'
 
 const Link = glamorous.a({
 	color: hemelblauw.default,
@@ -46,11 +47,9 @@ const DataSourceComp = glamorous.div({
 	fontSize: '0.8rem',
 })
 
-const getSourceLabel = language => (language === 'nl' ? 'Bron:' : 'Source:')
-
 const DataSourceContainer = ({ activeDatasetId, language }) => (
 	<DataSourceComp css={{ marginTop: '2rem' }}>
-		{getSourceLabel(language)}{' '}
+		<EnvironmentLanguage NL={() => 'Bron: '} EN={() => 'Source: '} />
 		<CbsLink id={activeDatasetId} language={language} /> <CreativeCommonsLink />
 	</DataSourceComp>
 )
