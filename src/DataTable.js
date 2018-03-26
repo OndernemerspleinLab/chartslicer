@@ -2,12 +2,7 @@ import React from 'react'
 import { compose } from 'recompose'
 import glamorous from 'glamorous'
 import { hemelblauw, wit } from './colors'
-import {
-	InsideMargin,
-	Hidden,
-	Center,
-	CenterText,
-} from './graphPickerSteps/Elements'
+import { InsideMargin, Hidden, CenterText } from './graphPickerSteps/Elements'
 import { fadeInAnimation } from './styles'
 import {
 	onlyWhenDataAvailable,
