@@ -11,16 +11,22 @@ import { Hidden } from './graphPickerSteps/Elements'
 import { tableLanguageConnector } from './connectors/tableInfoConnectors'
 import { EnvironmentLanguage } from './EnvironmentLanguage'
 import { environmentLanguageConnector } from './connectors/environmentLanguageConnectors'
+import { get } from './helpers/getset'
 
 const Link = glamorous.a({
 	color: hemelblauw.default,
 })
 
-const CreativeCommonsLink = ({ language }) => (
+const creativeCommonsLinkTitle = {
+	nl: 'Creative Commons Naamsvermelding 4.0',
+	en: 'Creative Commons Attribution 4.0',
+}
+
+const CreativeCommonsLink = ({ language, environmentLanguage }) => (
 	<Link
 		target="_blank"
 		href={`https://creativecommons.org/licenses/by/4.0/deed.${language}`}
-		title="Creative Commons Naamsvermelding 4.0 Nederland"
+		title={get(environmentLanguage)(creativeCommonsLinkTitle)}
 		css={{
 			textDecoration: 'none',
 		}}
@@ -56,7 +62,10 @@ const DataSourceContainer = ({
 	<DataSourceComp css={{ marginTop: '2rem' }}>
 		<EnvironmentLanguage NL={() => 'Bron: '} EN={() => 'Source: '} />
 		<CbsLink id={activeDatasetId} language={language} />{' '}
-		<CreativeCommonsLink language={environmentLanguage} />
+		<CreativeCommonsLink
+			language={language}
+			environmentLanguage={environmentLanguage}
+		/>
 	</DataSourceComp>
 )
 
