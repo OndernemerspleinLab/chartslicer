@@ -22,10 +22,10 @@ const creativeCommonsLinkTitle = {
 	en: 'Creative Commons Attribution 4.0',
 }
 
-const CreativeCommonsLink = ({ language, environmentLanguage }) => (
+const CreativeCommonsLink = ({ environmentLanguage }) => (
 	<Link
 		target="_blank"
-		href={`https://creativecommons.org/licenses/by/4.0/deed.${language}`}
+		href={`https://creativecommons.org/licenses/by/4.0/deed.${environmentLanguage}`}
 		title={get(environmentLanguage)(creativeCommonsLinkTitle)}
 		css={{
 			textDecoration: 'none',
