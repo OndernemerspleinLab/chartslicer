@@ -20,12 +20,12 @@ const CreativeCommonsLink = ({ language }) => (
 	<Link
 		target="_blank"
 		href={`https://creativecommons.org/licenses/by/4.0/deed.${language}`}
-		title="Create Commons Naamsvermelding 3.0 Nederland"
+		title="Creative Commons Naamsvermelding 4.0 Nederland"
 		css={{
 			textDecoration: 'none',
 		}}
 	>
-		<Hidden>CC BY 3.0 NL</Hidden>
+		<Hidden>CC BY 4.0</Hidden>
 		<CreateCommonsLogo /> <CreateCommonsBy />
 	</Link>
 )

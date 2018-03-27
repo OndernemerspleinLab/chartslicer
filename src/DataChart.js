@@ -81,7 +81,7 @@ const DataChartContainer = ({
 	globalMax,
 	globalMin,
 }) => {
-	const { title: unit, decimals } = unitInfo
+	const { unitLabel: unit, decimals } = unitInfo
 	return (
 		<DataChartComp>
 			<Rectangle>

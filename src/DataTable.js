@@ -96,7 +96,7 @@ const ValueHeadingCell = ({
 				index={`${index}-unit`}
 			>
 				<Hidden>Label aanpassen</Hidden>
-				<Unit>{get('title')(unitInfo)}</Unit>
+				<Unit>{get('unitLabel')(unitInfo)}</Unit>
 			</LabelEditButton>
 		</CenterText>
 	</HeadingCell>

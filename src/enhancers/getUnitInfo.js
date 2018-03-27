@@ -5,7 +5,8 @@ export const getUnitInfo = ({ unit, decimals, labelAliases }) => {
 	const unitLabel = unitAlias || unit
 
 	return {
-		title: unitLabel,
+		title: unit,
+		unitLabel,
 		alias: unitAlias,
 		key: unit,
 		decimals,
