@@ -33,7 +33,7 @@ const LabelEditButtonElement = ({
 }) => {
 	return (
 		<Frag>
-			<EditButton title={children} onClick={toggle} css={css}>
+			<EditButton onClick={toggle} css={css}>
 				<Media alignItems="center">
 					<MediaFigure>
 						<Pencil css={{ marginRight: '0.3rem' }} />
